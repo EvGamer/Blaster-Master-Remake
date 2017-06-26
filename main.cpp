@@ -3,8 +3,8 @@
  *
  **************************///
 
-#include "stdafx.h"
-#include "player.h"
+
+#include "enemylist.h"
 
 unsigned int key;
 
@@ -92,8 +92,8 @@ int WINAPI WinMain (HINSTANCE hInstance,
     /* enable OpenGL for the window */
     EnableOpenGL (hWnd, &hDC, &hRC);
     physics Area3("Sprites\\A3a.tga",16);
-    Area3.friction=1;
-    Area3.gravity=1;
+    Area3.setGlobalFriction(1);
+    Area3.setGravity(1);
     Area3.setDefault(1,255);
     Area3.setSolid(6,8);
     Area3.setSolid(6+16,8+16);
