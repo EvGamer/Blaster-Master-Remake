@@ -1,8 +1,19 @@
+
 #include "physics.h"
 
 physics::physics(std::string fileName,float TilesInLine)
 {
-	for(unsigned i; i<(mapSX*mapSY); i++) map[i] = MAP_ARRAY[i];
+	//dont ask.
+	for(int i=0;i<=mapSY;i++)
+	{
+		for(int j=0;j<mapSY;j++)
+		{
+			int c=(mapSY-1-j)*mapSX+i;
+			map[c] = MAP_ARRAY[c];//
+ 		};
+ 	};
+	
+
 	num=0;
 	size=1/TilesInLine;
 	TiL=TilesInLine;
@@ -153,9 +164,15 @@ void physics::set(unsigned char i,int tx,int ty,bool solid,float fric)
 
 void physics::set(unsigned char i,int tx,int ty,bool solid)
 {
-	float tileFriction = 0;
-	if (solid) tileFriction = friction;
-	set(i,tx,ty,solid,tileFriction);
+	tile[i].solid=solid;
+			tile[i].texX=tx;
+			tile[i].texY=ty;
+			if (solid){tile[i].friction=friction;}
+			else {tile[i].friction=0;};
+	
+	///float tileFriction = 0;
+	//if (solid) tileFriction = friction;
+	//set(i,tx,ty,solid,tileFriction);
 }
 
 void physics::setDefault(unsigned first, unsigned last)

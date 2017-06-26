@@ -28,8 +28,8 @@ Folders=
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=3
-CompilerSettings=00000001c0000000000000000
-UnitCount=14
+CompilerSettings=00000001c0000000001000000
+UnitCount=15
 
 [VersionInfo]
 Major=1
@@ -110,27 +110,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit7]
-FileName=imageOps.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit8]
-FileName=physics.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit9]
 FileName=enemy.h
 CompileCpp=1
 Folder=
@@ -140,7 +120,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit10]
+[Unit9]
 FileName=enemylist.h
 CompileCpp=1
 Folder=
@@ -150,7 +130,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit11]
+[Unit10]
 FileName=player.cpp
 CompileCpp=1
 Folder=
@@ -160,7 +140,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit12]
+[Unit11]
 FileName=enemy.cpp
 CompileCpp=1
 Folder=
@@ -170,7 +150,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit13]
+[Unit12]
 FileName=enemylist.cpp
 CompileCpp=1
 Folder=
@@ -180,8 +160,38 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit14]
+[Unit13]
 FileName=mapArray.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit14]
+FileName=imageOps.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit15]
+FileName=imageOps.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit7]
+FileName=physics.cpp
 CompileCpp=1
 Folder=
 Compile=1

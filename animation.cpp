@@ -15,20 +15,20 @@ inline void animation::initialize
 	playType iPlay
 )
 {
-	play=iPlay;
-	texture=iTexture;
-	timer=iDelay;
-	delay=iDelay;
-	x0=iX0;
-	y0=iY0;
-	x=0;
-	y=0;
-	sizeX=iSizeX;
-	sizeY=iSizeY;
-	rows=iRows;
-	colums=iColums;
-	if (delay!=0) {stop=false;}
-	else {stop=true;}
+	m_play=iPlay;
+	m_texture=iTexture;
+	m_timer=iDelay;
+	m_delay=iDelay;
+	m_x0=iX0;
+	m_y0=iY0;
+	m_x=0;
+	m_y=0;
+	m_sizeX=iSizeX;
+	m_sizeY=iSizeY;
+	m_rows=iRows;
+	m_colums=iColums;
+	if (m_delay!=0) {m_stop=false;}
+	else {m_stop=true;}
 }
 
 
@@ -66,28 +66,28 @@ animation :: animation
 unsigned animation :: draw(char dir,float x1,float y1,float x2,float y2)
 {
 	float fx,fx1,fy,fy1;
-	if (dir>0) {fx=(x+x0)*sizeX;fx1=fx+sizeX;}
-	else {fx1=(x+x0)*sizeX,fx=fx1+sizeX;}
-	fy=(y+y0)*sizeY;
-	fy1=fy+sizeY;
+	if (dir>0) {fx=(m_x+m_x0)*m_sizeX;fx1=fx+m_sizeX;}
+	else {fx1=(m_x+m_x0)*m_sizeX,fx=fx1+m_sizeX;}
+	fy=(m_y+m_y0)*m_sizeY;
+	fy1=fy+m_sizeY;
 	const float by=0.003;
 	float bx=by*dir;
-	drawSprite(texture,x1,y1,x2,y2,fx,fy+by,fx1-bx,fy1);
-	if (!stop)
+	drawSprite(m_texture,x1,y1,x2,y2,fx,fy+by,fx1-bx,fy1);
+	if (!m_stop)
 	{
-		if (timer==0)
+		if (m_timer==0)
 		{
-			timer=delay;
-			x++;y++;
-			x=x%colums;
-			y=y%rows;
-			if((play!=LOOP)&&(x==0)&&(y==0)) {stop=true;}
+			m_timer=m_delay;
+			m_x++;m_y++;
+			m_x=m_x%m_colums;
+			m_y=m_y%m_rows;
+			if((m_play!=LOOP)&&(m_x==0)&&(m_y==0)) {m_stop=true;}
 		}
-		else {timer--;};
+		else {m_timer--;};
 
 	}
 	glColor3f(1,1,1);
-	return x;
+	return m_x;
 				
 }
 

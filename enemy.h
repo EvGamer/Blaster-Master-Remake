@@ -25,7 +25,7 @@ class enemy
 	public:
 		enemy(float x_in,float y_in,char dirrection,GLuint *tex,physics *world_in);	
 		inline bool is_dead(){	return deathAnim->is_end();	}
-		inline void self_destruct();
+		void self_destruct();
 		void update(player* p1);
 		void draw();	
 };

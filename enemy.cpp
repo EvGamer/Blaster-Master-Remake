@@ -1,3 +1,4 @@
+
 #include "enemy.h"
 
 enemy::enemy(float x_in,float y_in,char dirrection,GLuint *tex,physics *world_in)
@@ -100,3 +101,4 @@ void enemy::draw()
 	curAnim->draw(-dir,x1,y,x2,y+2);
 	hit=false;
 }
+

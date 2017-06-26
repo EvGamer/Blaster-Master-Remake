@@ -2,6 +2,7 @@
 #include "animation.h"
 #include "mapArray.h"
 
+
 struct shotType
 {
 	animation *burstAnim;

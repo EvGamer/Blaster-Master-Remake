@@ -88,7 +88,7 @@ void enemyList::draw()
 	}
 }
 		
-inline void enemyList::self_destruct()
+void enemyList::self_destruct()
 {
 	node *cur=first;
 	while (cur!=NULL)
