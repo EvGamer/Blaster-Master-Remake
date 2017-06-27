@@ -2,152 +2,152 @@
 
 void player::move(int dirrection)
 {
-	if(control)
+	if(m_control)
 	{
-		dir=dirrection;
-		if (speedX<1)speedX+=0.1;
-		if (curAnim==standAnim)curAnim=walkAnim;
+		m_dir=dirrection;
+		if (m_speedX<1)m_speedX+=0.1;
+		if (curAnim==m_standAnim)curAnim=m_walkAnim;
 		curAnim->unfreeze();
 	}
 }
 
 void player::jump()
 {
-	if(control)
+	if(m_control)
 	{
-		jumpPressed--;
-		if (ground)
+		m_timeJumpPressed--;
+		if (m_ground)
 		{
-			speedY=jumpHeight;
-			jumpPressed=20;
-			ground=false;
-			limit=y+3;
-			curAnim=(jumpAnim);
-			gunY=0.6;
+			m_speedY=m_jumpHeight;
+			m_timeJumpPressed=20;
+			m_ground=false;
+			m_jumpLimit=m_y+3;
+			curAnim=(m_jumpAnim);
+			m_cannonY=0.6;
 		}
 		else 
 		{
-			jumpPressed--;
+			m_timeJumpPressed--;
 		}
 	}
 }
 
 void player::hurt(float damage)
 {
-	if (inv<=0)
+	if (m_deathClock<=0)
 	{
-		inv=45;
-		speedX*=0.5;
-		speedY+=1;
-		health-=damage;
+		m_deathClock=45;
+		m_speedX*=0.5;
+		m_speedY+=1;
+		m_health-=damage;
 		damage=0;
 	}	
 }
 
 void player::shoot()
-{//if(control)
-	if (wpnHeat<=0)
+{//if(m_control)
+	if (m_weaponHeat<=0)
 	{
-		world->addShot(gunX,y+gunY,0.3*dir,0,&blaster);
-		wpnHeat=15;
+		m_world->addShot(m_cannonX,m_y+m_cannonY,0.3*m_dir,0,&m_blaster);
+		m_weaponHeat=15;
 	}
 }
 
 void player::continueFalling()
 {
-	if (world->collide(x+0.05,y)||world->collide(x+sizeX-0.05,y))
+	if (m_world->collide(m_x+0.05,m_y)||m_world->collide(m_x+m_sizeX-0.05,m_y))
 	{
-		y=floor(y+1);
-		speedY=0;
-		ground=true;
-		curAnim=standAnim;
-		gunY=0.4;
+		m_y=floor(m_y+1);
+		m_speedY=0;
+		m_ground=true;
+		curAnim=m_standAnim;
+		m_cannonY=0.4;
 	}
-	else {ground=false; curAnim=fallAnim;}	
+	else {m_ground=false; curAnim=m_fallAnim;}	
 }
 
 void player::update()
 {
-	if (curAnim!=deathAnim)
+	if (curAnim!=m_deathAnim)
 	{	
-		world->hit(x,y,x+sizeX,y+sizeY,true);
-		if (inv>0)inv--;
-		if (wpnHeat>0) wpnHeat--;
-		y+=jumpSpeed*speedY;
+		m_world->hit(m_x,m_y,m_x+m_sizeX,m_y+m_sizeY,true);
+		if (m_deathClock>0)m_deathClock--;
+		if (m_weaponHeat>0) m_weaponHeat--;
+		m_y+=m_JumpSpeed*m_speedY;
 		
-		if ((y>limit)&&jumpPressed>0){speedY=0;jumpPressed=0;}
-		if (speedY<=0) continueFalling();
+		if ((m_y>m_jumpLimit)&&m_timeJumpPressed>0){m_speedY=0;m_timeJumpPressed=0;}
+		if (m_speedY<=0) continueFalling();
 		
-		x+=dir*speedX*0.11;
-		//if (!(world->collide(x,y-1)&&world->collide(x+sizeX,y-1))){ground=false;}
-		speedY-=jumpSpeed*jumpHeight*0.5/world->getGravity();
-		speedX-=0.05;
+		m_x+=m_dir*m_speedX*0.11;
+		//if (!(m_world->collide(m_x,m_y-1)&&m_world->collide(m_x+m_sizeX,m_y-1))){m_ground=false;}
+		m_speedY-=m_JumpSpeed*m_jumpHeight*0.5/m_world->getGravity();
+		m_speedX-=0.05;
 		
-		if (speedX<0){speedX=0;};
-		if (dir>0)
+		if (m_speedX<0){m_speedX=0;};
+		if (m_dir>0)
 		{
-			if (world->collide(x+sizeX,y)) {x=floor(x+2)-sizeX;speedX=0;}
-			gunX=x+sizeX;
+			if (m_world->collide(m_x+m_sizeX,m_y)) {m_x=floor(m_x+2)-m_sizeX;m_speedX=0;}
+			m_cannonX=m_x+m_sizeX;
 		}
 		else
 		{
-			if (world->collide(x,y)) {x=floor(x+1);speedX=0;}
-			gunX=x;
+			if (m_world->collide(m_x,m_y)) {m_x=floor(m_x+1);m_speedX=0;}
+			m_cannonX=m_x;
 		}
 			
-		if (speedY>0)
+		if (m_speedY>0)
 		{
-			if ((world->collide(x,y+sizeY))||(world->collide(x+sizeX-0.1f,y+sizeY)))//
-			{y=floor(y+sizeY)-sizeY;speedY=0;};
+			if ((m_world->collide(m_x,m_y+m_sizeY))||(m_world->collide(m_x+m_sizeX-0.1f,m_y+m_sizeY)))//
+			{m_y=floor(m_y+m_sizeY)-m_sizeY;m_speedY=0;};
 		};
 		
-		if ((speedX>0.3)&&ground) {	curAnim=walkAnim; curAnim->unfreeze();}
+		if ((m_speedX>0.3)&&m_ground) {	curAnim=m_walkAnim; curAnim->unfreeze();}
 		
-		tada = world->hit(x-0.5,y,x+sizeX+0.5,y+sizeY+0.5,true);
-		if(tada!=0) hurt(tada);
-		if(health<=0)
+		m_hitDamage = m_world->hit(m_x-0.5,m_y,m_x+m_sizeX+0.5,m_y+m_sizeY+0.5,true);
+		if(m_hitDamage!=0) hurt(m_hitDamage);
+		if(m_health<=0)
 		{
-			if(ground)
+			if(m_ground)
 			{
-				curAnim=deathAnim;
-				control=false;
-				speedX=0;
+				curAnim=m_deathAnim;
+				m_control=false;
+				m_speedX=0;
 			}
-			else{inv=2;}
+			else{m_deathClock=2;}
 		}
 	}
 }	
 
 void player::revive()
 {
-	deathAnim->unfreeze();
-	curAnim=standAnim;
-	health=8;
-	x=startX;
-	y=startY;
-	control=true;
+	m_deathAnim->unfreeze();
+	curAnim=m_standAnim;
+	m_health=8;
+	m_x=m_startX;
+	m_y=m_startY;
+	m_control=true;
 }
 
 void player::drawGizmo()//debug option. Displays collision box.
 {
 	glColor3f(0,1,1);
 	glBegin(GL_QUADS);
-		glVertex2f(floor(x),floor(y));
-		glVertex2f(floor(x),ceil(y+sizeY));
-		glVertex2f(ceil(x+sizeX),ceil(y+sizeY));
-		glVertex2f(ceil(x+sizeX),floor(y));
+		glVertex2f(floor(m_x),floor(m_y));
+		glVertex2f(floor(m_x),ceil(m_y+m_sizeY));
+		glVertex2f(ceil(m_x+m_sizeX),ceil(m_y+m_sizeY));
+		glVertex2f(ceil(m_x+m_sizeX),floor(m_y));
 	glEnd();
 }
 
 void player::draw()
 {
 	float x1,x2;
-	if(dir<0) {x1=x;	   x2=x+2;}
-	else 	  {x2=x+sizeX; x1=x2-2;};
-	if (curAnim!=deathAnim)
+	if(m_dir<0) {x1=m_x;	   x2=m_x+2;}
+	else 	  {x2=m_x+m_sizeX; x1=x2-2;};
+	if (curAnim!=m_deathAnim)
 	{
 		
-		switch(inv%3)
+		switch(m_deathClock%3)
 		{
 			case 0:
 				glColor3f(1,1,1);
@@ -160,42 +160,42 @@ void player::draw()
 			break;
 		}
 	
-		curAnim->setCol(curFrame);//если текущую анимацию заменили, она будет начинаться с того кадра, на котором закончила другая
-		curFrame=curAnim->draw(-dir,x1,y,x2,y+2);
+		curAnim->setCol(m_curFrame);//если текущую анимацию заменили, она будет начинаться с того кадра, на котором закончила другая
+		m_curFrame=curAnim->draw(-m_dir,x1,m_y,x2,m_y+2);
 		curAnim->freeze();		
 	}
-	else curAnim->draw(-1,x1-0.5,y,x1+3.5,y+4);
+	else curAnim->draw(-1,x1-0.5,m_y,x1+3.5,m_y+4);
 }	
 
 player::player(float x_in,float y_in,GLuint *textank,GLuint *texshoot,physics *world_link)
 {
-	world=world_link;
-	x=x_in;
-	y=y_in;
-	startX=x;
-	startY=y;
-	dir=1;
-	speedX=0;
-	speedY=0;
-	sizeX=26.0/16.0;
-	sizeY=18.0/16.0;
-	control=true;
+	m_world=world_link;
+	m_x=x_in;
+	m_y=y_in;
+	m_startX=m_x;
+	m_startY=m_y;
+	m_dir=1;
+	m_speedX=0;
+	m_speedY=0;
+	m_sizeX=26.0/16.0;
+	m_sizeY=18.0/16.0;
+	m_control=true;
 	//настройка анимации
-	texture=textank;
-//	texture= new GLuint;
-//	*texture=loadTexture("Sprites\\SOPHIA.tga");
-	standAnim = new animation(texture,0.125,0,0,1,4,1,LOOP);
-	walkAnim = new animation (texture,0.125,0,0,3,4,3,LOOP);
-	jumpAnim = new animation (texture,0.125,0,3,1,4,2,LOOP);
-	fallAnim = new animation (texture,0.125,0,2,1,4,2,LOOP);
-	deathAnim = new animation (texture,0.25,0,2,1,3,3,ONCE);
+	m_texture=textank;
+//	m_texture= new GLuint;
+//	*m_texture=loadTexture("Sprites\\SOPHIA.tga");
+	m_standAnim = new animation(m_texture,0.125,0,0,1,4,1,LOOP);
+	m_walkAnim = new animation (m_texture,0.125,0,0,3,4,3,LOOP);
+	m_jumpAnim = new animation (m_texture,0.125,0,3,1,4,2,LOOP);
+	m_fallAnim = new animation (m_texture,0.125,0,2,1,4,2,LOOP);
+	m_deathAnim = new animation (m_texture,0.25,0,2,1,3,3,ONCE);
 	//настройка оружия
-	blaster.texture = texshoot; 
-	blaster.burstAnim = new animation(blaster.texture,0.25f,3,0,4,1,2,ONCE);
-	blaster.flyAnim = new animation(blaster.texture,0.5f,0.25f,0,0,1,1,0,LOOP);
-	blaster.damage = 1.5;
-	blaster.foe = false;
-	blaster.spriteX=-1.5;
-	blaster.spriteY=-0.4;
-	blaster.falling=false;
+	m_blaster.m_texture = texshoot; 
+	m_blaster.burstAnim = new animation(m_blaster.m_texture,0.25f,3,0,4,1,2,ONCE);
+	m_blaster.flyAnim = new animation(m_blaster.m_texture,0.5f,0.25f,0,0,1,1,0,LOOP);
+	m_blaster.damage = 1.5;
+	m_blaster.foe = false;
+	m_blaster.spriteX=-1.5;
+	m_blaster.spriteY=-0.4;
+	m_blaster.falling=false;
 }

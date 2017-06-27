@@ -102,7 +102,6 @@ int WINAPI WinMain (HINSTANCE hInstance,
     Area3.setSolid(4+16*10,5+16*10);
     float camX=8;
 	float camY=7;
-    float m=0;
  
 
 	GLuint texSophia=loadTexture("Sprites\\SOPHIA.tga");
@@ -142,17 +141,17 @@ int WINAPI WinMain (HINSTANCE hInstance,
             float sx,sy;
             sx=sophia.getX();
             sy=sophia.getY();
-            if(m>0)m-=0.05*m;
+           // if(m>0)m-=0.05*m;
             float camS =camY + 8 - sy;
             float camN =camY + 16 - sy;
            	float camW =camX + 10 - sx;
             float camE =camX + 20 -sx;
-            if ((camS>0)&&(camY>5)) {camY-=camS;m+=0.005-m*0.2;}
-            if ((camN<0)&&(camY<51)){ camY-=camN;m+=0.005-m*0.2;}
-            if ((camW>0)&&(camX>4)) {camX-=camW;m+=0.005-m*0.2;}
-            if ((camE<0)&&(camX<38)) {camX-=camE;m+=0.005-m*0.2;}
+            if ((camS>0)&&(camY>5)) {camY-=camS;}
+            if ((camN<0)&&(camY<51)){ camY-=camN;}
+            if ((camW>0)&&(camX>4)) {camX-=camW;}
+            if ((camE<0)&&(camX<38)) {camX-=camE;}
             glLoadIdentity();
-            drawSprite(&texBack,0,0,32,32,camX/64-m,-camY/64-m,camX/64+1+m,-camY/64+1+m);
+            drawSprite(&texBack,0,0,32,32,camX/64,-camY/64,camX/64+1,-camY/64+1);
             glTranslatef(-camX/16,-camY/12,0);
             if (keyMove) {sophia.move(dir);	}
 			if (keyJump) sophia.jump();
