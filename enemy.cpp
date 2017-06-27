@@ -3,82 +3,82 @@
 
 enemy::enemy(float x_in,float y_in,char dirrection,GLuint *tex,physics *world_in)
 {
-	texture=tex;
-	dir=dirrection;
-	health=6;
-	x=x_in;
-	y=y_in;
-	sizeX=1.6;
-	sizeY=1.1;
-	world=world_in;
-	deathAnim =new animation(texture,0.25,0,2,1,4,2,ONCE);
-	walkAnim  =new animation(texture,0.25,0,0,1,4,5,LOOP);
-	curAnim = walkAnim;
-	shootAnim  =new animation(texture,0.25,0,1,1,4,3,ONCE);
-	grenade.burstAnim = new animation(texture,0.125,0,7,1,4,2,ONCE);
-	grenade.flyAnim = new animation(texture,0.25,0.125,0,6,1,1,2,ONCE);
-	grenade.damage=1;
-	grenade.falling=true;
-	grenade.spriteX=-0.75;
-	grenade.spriteY=-0.5;
-	grenade.foe=true;
+	m_texture=tex;
+	m_dir=dirrection;
+	m_health=6;
+	m_x=x_in;
+	m_y=y_in;
+	m_sizeX=1.6;
+	m_sizeY=1.1;
+	m_world=world_in;
+	m_deathAnim =new animation(m_texture,0.25,0,2,1,4,2,ONCE);
+	m_walkAnim  =new animation(m_texture,0.25,0,0,1,4,5,LOOP);
+	m_curAnim = m_walkAnim;
+	m_shootAnim  =new animation(m_texture,0.25,0,1,1,4,3,ONCE);
+	m_grenade.burstAnim = new animation(m_texture,0.125,0,7,1,4,2,ONCE);
+	m_grenade.flyAnim = new animation(m_texture,0.25,0.125,0,6,1,1,2,ONCE);
+	m_grenade.damage=1;
+	m_grenade.falling=true;
+	m_grenade.spriteX=-0.75;
+	m_grenade.spriteY=-0.5;
+	m_grenade.foe=true;
 }	
 	
 		//
 inline void enemy::self_destruct()
 {
-	if (curAnim!=deathAnim)
+	if (m_curAnim!=m_deathAnim)
 	{
-		health=0;
-		curAnim=deathAnim;
-		speedX=0;
-		y-=0.5;
-		dir=-1;
+		m_health=0;
+		m_curAnim=m_deathAnim;
+		m_speedX=0;
+		m_y-=0.5;
+		m_dir=-1;
 	}
 }
 
 void enemy::update(player* p1)
 {
-	if (health>0){
-		if (speedY<=0)
+	if (m_health>0){
+		if (m_speedY<=0)
 		{
-			if (world->collide(x+0.05,y)||world->collide(x+sizeX-0.05,y))y=floor(y+1);
+			if (m_world->collide(m_x+0.05,m_y)||m_world->collide(m_x+m_sizeX-0.05,m_y))m_y=floor(m_y+1);
 	
 		}
-		if(reload>0)reload--;
-		if (shotLeft>0)
+		if(m_reload>0)m_reload--;
+		if (m_shotLeft>0)
 		{
-			speedX=0;
-			curAnim=shootAnim;
-			if(heat<=0)
+			m_speedX=0;
+			m_curAnim=m_shootAnim;
+			if(m_heat<=0)
 			{
-			 	heat=10;
-			 	world->addShot(x+sizeX*0.5,y+sizeY-0.4,0.4*dir,0.4f,&grenade);
-			 	shotLeft--;
+			 	m_heat=10;
+			 	m_world->addShot(m_x+m_sizeX*0.5,m_y+m_sizeY-0.4,0.4*m_dir,0.4f,&m_grenade);
+			 	m_shotLeft--;
 			}
-			else heat--;
+			else m_heat--;
 				
 		}
 		else
 		{
-			speedX=1;
-			curAnim=walkAnim;
+			m_speedX=1;
+			m_curAnim=m_walkAnim;
 		}
-		x+=0.05*speedX*dir;
-		float hurt=world->hit(x,y,x+sizeX,y+sizeY,false);
-		if(hurt>0) hit=true;
-		health-=hurt;
-		if (((dir>0)&&(world->collide(x+sizeX,y)||!world->collide(x+sizeX,y-1) ))
-			||((dir<0)&&(world->collide(x,y)||!world->collide(x,y-1) ))) 
-			dir=-dir;
-		if (health<=0) self_destruct();
-		float y1=y+sizeY*0.5;
+		m_x+=0.05*m_speedX*m_dir;
+		float hurt=m_world->hit(m_x,m_y,m_x+m_sizeX,m_y+m_sizeY,false);
+		if(hurt>0) m_hit=true;
+		m_health-=hurt;
+		if (((m_dir>0)&&(m_world->collide(m_x+m_sizeX,m_y)||!m_world->collide(m_x+m_sizeX,m_y-1) ))
+			||((m_dir<0)&&(m_world->collide(m_x,m_y)||!m_world->collide(m_x,m_y-1) ))) 
+			m_dir=-m_dir;
+		if (m_health<=0) self_destruct();
+		float y1=m_y+m_sizeY*0.5;
 		
-		if (p1->collide(x+0.1,y1)||p1->collide(x+sizeX-0.1,y1)) p1->hurt(0.7f);
-		if ((floor(p1->getY())==floor(y))&&(floor(p1->getFrontX()-x)==3*dir)&&(reload<=0)) 
+		if (p1->collide(m_x+0.1,y1)||p1->collide(m_x+m_sizeX-0.1,y1)) p1->hurt(0.7f);
+		if ((floor(p1->getY())==floor(m_y))&&(floor(p1->getFrontX()-m_x)==3*m_dir)&&(m_reload<=0)) 
 		{
-			reload=60;
-			shotLeft=4;
+			m_reload=60;
+			m_shotLeft=4;
 		}
 	}
 }
@@ -87,18 +87,18 @@ void enemy::update(player* p1)
 void enemy::draw()
 {
 	float x1,x2;
-	if (dir>0)
+	if (m_dir>0)
 	{
-		x2=x+sizeX;
+		x2=m_x+m_sizeX;
 		x1=x2-2;
 	}
 	else
 	{
-		x1=x;
+		x1=m_x;
 		x2=x1+2;
 	}
-	if (hit) glColor3f(1,0.5,0);
-	curAnim->draw(-dir,x1,y,x2,y+2);
-	hit=false;
+	if (m_hit) glColor3f(1,0.5,0);
+	m_curAnim->draw(-m_dir,x1,m_y,x2,m_y+2);
+	m_hit=false;
 }
 

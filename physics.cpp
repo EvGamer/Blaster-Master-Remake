@@ -4,24 +4,24 @@
 physics::physics(std::string fileName,float TilesInLine)
 {
 	//dont ask.
-	for(int i=0;i<=mapSY;i++)
+	for(int i=0;i<=_mapSY;i++)
 	{
-		for(int j=0;j<mapSY;j++)
+		for(int j=0;j<_mapSY;j++)
 		{
-			int c=(mapSY-1-j)*mapSX+i;
-			map[c] = MAP_ARRAY[c];//
+			int c=(_mapSY-1-j)*_mapSX+i;
+			m_map[c] = MAP_ARRAY[c];//
  		};
  	};
 	
 
-	num=0;
-	size=1/TilesInLine;
-	TiL=TilesInLine;
-	gravity=1;
+	m_num=0;
+	m_size=1/TilesInLine;
+	m_lineLenght=TilesInLine;
+	m_gravity=1;
 	shotLast=NULL;
 	shotFirst=NULL;
-	friction=0;
-	texture=loadTexture(fileName);
+	m_friction=0;
+	m_texture=loadTexture(fileName);
 	
 }
 
@@ -115,12 +115,12 @@ bool physics::collide(float x,float y)
 {
 	unsigned i=floor(x);
 	unsigned j=floor(y);
-	return tile[map[(mapSY-1-j)*mapSX+i]-1].solid;
+	return m_tile[m_map[(_mapSY-1-j)*_mapSX+i]-1].solid;
 };
 
 bool physics::getFrict(unsigned char i,unsigned char j)
 {
-	return tile[map[(mapSY-1-j)*mapSX+i]-1].friction;
+	return m_tile[m_map[(_mapSY-1-j)*_mapSX+i]-1].friction;
 }
 
 void physics::update()
@@ -134,7 +134,7 @@ void physics::update()
 		{
 			cur->x+=cur->speedX;
 			cur->y+=cur->speedY;
-			if (cur->falling) cur->speedY-=0.1*gravity;
+			if (cur->falling) cur->speedY-=0.1*m_gravity;
 			cur->hit=collide(cur->x,cur->y);
 		}
 		trash=cur;
@@ -143,32 +143,32 @@ void physics::update()
 	}
 }
 
-void physics::draw(int cx,int cy,unsigned char num)
+void physics::draw(int cx,int cy,unsigned char a_num)
 {
 	
-	float tx=tile[num].texX*size;
-	float ty=tile[num].texY*size;
+	float tx=m_tile[a_num].texX*m_size;
+	float ty=m_tile[a_num].texY*m_size;
 	float b=0.001;
-	//cy=TiL-1-cy;
-	drawSprite(&texture,cx,cy,cx+1,cy+1,tx+b,ty+b,tx+size-b,ty+size-b);
+	//cy=m_lineLenght-1-cy;
+	drawSprite(&m_texture,cx,cy,cx+1,cy+1,tx+b,ty+b,tx+m_size-b,ty+m_size-b);
 };
 
 void physics::set(unsigned char i,int tx,int ty,bool solid,float fric)
 {
-	tile[i].solid=solid;
-	tile[i].texX=tx;
-	tile[i].texY=TiL-ty;
-	tile[i].friction=fric;
+	m_tile[i].solid=solid;
+	m_tile[i].texX=tx;
+	m_tile[i].texY=m_lineLenght-ty;
+	m_tile[i].friction=fric;
 }
 
 
 void physics::set(unsigned char i,int tx,int ty,bool solid)
 {
-	tile[i].solid=solid;
-			tile[i].texX=tx;
-			tile[i].texY=ty;
-			if (solid){tile[i].friction=friction;}
-			else {tile[i].friction=0;};
+	m_tile[i].solid=solid;
+			m_tile[i].texX=tx;
+			m_tile[i].texY=ty;
+			if (solid){m_tile[i].friction=m_friction;}
+			else {m_tile[i].friction=0;};
 	
 	///float tileFriction = 0;
 	//if (solid) tileFriction = friction;
@@ -177,24 +177,24 @@ void physics::set(unsigned char i,int tx,int ty,bool solid)
 
 void physics::setDefault(unsigned first, unsigned last)
 {
-	for(unsigned i=first-1;i<last;i++) set(i,(i)%TiL,(i)/TiL,false);
+	for(unsigned i=first-1;i<last;i++) set(i,(i)%m_lineLenght,(i)/m_lineLenght,false);
 }
 
 void physics::setSolid(unsigned first,unsigned last)
 {
-	for(unsigned i=first;i<=last;i++) tile[i-1].solid=true;
+	for(unsigned i=first;i<=last;i++) m_tile[i-1].solid=true;
 }
 
 void physics::add(int tx,int ty,bool solid,float fric)
 {
-	set(num,tx,ty,solid,fric);
-	num++;
+	set(m_num,tx,ty,solid,fric);
+	m_num++;
 }
 
 void physics::add(int tx,int ty,bool solid)
 {
-	set(num,tx,ty,solid);
-	num++;
+	set(m_num,tx,ty,solid);
+	m_num++;
 }
 
 void physics::drawLevel(float scrX,float scrY)
@@ -207,7 +207,7 @@ void physics::drawLevel(float scrX,float scrY)
 	{
 		for(int j=tY0;j<tYn;j++)
 		{
-			draw(i,j,map[(mapSY-1-j)*mapSX+i]-1);//
+			draw(i,j,m_map[(_mapSY-1-j)*_mapSX+i]-1);//
  		};
  	};
 	char dir;

@@ -15,7 +15,7 @@ bool keyRestart=false;
 char dir=1;
 unsigned char n=0;
 
-/***********************
+/*********************
  * Function Decl
  *
  **************************/

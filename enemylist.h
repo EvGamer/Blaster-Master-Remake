@@ -3,21 +3,21 @@
 class enemyList
 {
 	private:
-		struct node
+		struct _node
 		{
 			enemy *link;
-			node *prev;
-			node *next;
+			_node *prev;
+			_node *next;
 		};
 		
-		node *first;
-		node *last;
+		_node *m_first;
+		_node *m_last;
 	public:
 		
 		enemyList(float x_in,float y_in,char dirrection,GLuint *tex,physics *world_in);
 		enemyList();
 		void add(float x_in,float y_in,char dirrection,GLuint *tex,physics *world_in);
-		void destroy(node *trash);
+		void destroy(_node *trash);
 		void update(player *p1);
 		void draw();
 		void self_destruct();

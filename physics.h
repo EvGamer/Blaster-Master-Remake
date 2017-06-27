@@ -11,31 +11,31 @@ struct shotType
 	float spriteY;
 	bool foe;
 	float damage;
-	GLuint *texture;
+	GLuint *m_texture;
 	bool falling;
 };
 
 class physics
 {
 	private:
-		unsigned char num;//количество тайлов
-		float size;
-		unsigned TiL;//тайлов в строке.
-		float friction;
-		float gravity;
+		unsigned char m_num;//количество тайлов
+		float m_size;
+		unsigned m_lineLenght;//тайлов в строке.
+		float m_friction;
+		float m_gravity;
 		struct 
 		{
 			bool solid;
 			float friction;
 			unsigned char texX;
 			unsigned char texY;
-		} tile[256];
+		} m_tile[256];
 		
-		GLuint texture;
-		static const unsigned mapSX=MAP_LENGTH;
-		static const unsigned mapSY=MAP_HEIGHT;
+		GLuint m_texture;
+		static const unsigned _mapSX=MAP_LENGTH;
+		static const unsigned _mapSY=MAP_HEIGHT;
 		//Map, hardcoded in haste
-		unsigned char map[mapSX*mapSY];
+		unsigned char m_map[_mapSX*_mapSY];
 		
 		struct shotNode
 		{
@@ -63,14 +63,14 @@ class physics
 		void removeShot(shotNode *trash);
 		float hit(float x1,float y1,float x2,float y2,bool foe);
 		bool collide(float x,float y);
-		inline float getGravity(){return gravity;};
-		inline void setGravity(float a_gravity){ gravity= a_gravity; }
+		inline float getGravity(){return m_gravity;};
+		inline void setGravity(float a_gravity){ m_gravity= a_gravity; }
 		bool getFrict(unsigned char i,unsigned char j);
 		void update();
-		void draw(int cx,int cy,unsigned char num);		
+		void draw(int cx,int cy,unsigned char a_num);		
 		void set(unsigned char i,int tx,int ty,bool solid,float fric);
 		void set(unsigned char i,int tx,int ty,bool solid);
-		inline void setGlobalFriction(float a_friction) { friction = a_friction; };
+		inline void setGlobalFriction(float a_friction) { m_friction = a_friction; };
 		void setDefault(unsigned first, unsigned last);
 		void setSolid(unsigned first,unsigned last);
 		void add(int tx,int ty,bool solid,float fric);	
