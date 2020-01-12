@@ -8,7 +8,7 @@ physics::physics(std::string fileName,float TilesInLine)
 	{
 		for(int j=0;j<_mapSY;j++)
 		{
-			int c=(_mapSY-1-j)*_mapSX+i;
+			int c=(_mapSY-1-j) * _mapSX+i;
 			m_map[c] = MAP_ARRAY[c];//
  		};
  	};

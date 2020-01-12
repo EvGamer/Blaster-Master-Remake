@@ -18,9 +18,9 @@ struct shotType
 class physics
 {
 	private:
-		unsigned char m_num;//количество тайлов
+		unsigned char m_num;//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 		float m_size;
-		unsigned m_lineLenght;//тайлов в строке.
+		unsigned m_lineLenght;//пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.
 		float m_friction;
 		float m_gravity;
 		struct 
@@ -64,7 +64,7 @@ class physics
 		float hit(float x1,float y1,float x2,float y2,bool foe);
 		bool collide(float x,float y);
 		inline float getGravity(){return m_gravity;};
-		inline void setGravity(float a_gravity){ m_gravity= a_gravity; }
+		inline void setGravity(float a_gravity){ m_gravity = a_gravity; }
 		bool getFrict(unsigned char i,unsigned char j);
 		void update();
 		void draw(int cx,int cy,unsigned char a_num);		
