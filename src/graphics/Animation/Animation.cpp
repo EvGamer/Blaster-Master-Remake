@@ -1,8 +1,8 @@
 
-#include "animation.h"
+#include "Animation.h"
 
 
-inline void animation::initialize
+inline void Animation::initialize
 (			
 	GLuint *iTexture, 
 	float iSizeX, 
@@ -32,7 +32,7 @@ inline void animation::initialize
 }
 
 
-animation::animation
+Animation::Animation
 (			
 	GLuint *iTexture, 
 	float iSizeX, 
@@ -48,7 +48,7 @@ animation::animation
 	initialize(iTexture,iSizeX,iSizeY,iX0,iY0,iRows,iColums,iDelay,iPlay);
 }
 
-animation :: animation
+Animation :: Animation
 (
 	GLuint *iTexture, 
 	float iSize, 
@@ -63,7 +63,7 @@ animation :: animation
 	initialize(iTexture,iSize,iSize,iX0,iY0,iRows,iColums,iDelay,iPlay);
 }
 
-unsigned animation :: draw(char dir,float x1,float y1,float x2,float y2)
+unsigned Animation :: draw(char dir,float x1,float y1,float x2,float y2)
 {
 	float fx,fx1,fy,fy1;
 	if (dir>0) {fx=(m_x+m_x0)*m_sizeX;fx1=fx+m_sizeX;}

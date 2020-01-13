@@ -1,6 +1,6 @@
-#include "player.h"
+#include "../Player/Player.h"
 
-class enemy 
+class Enemy 
 {
 	private:
 		float m_health;
@@ -15,17 +15,17 @@ class enemy
 		int m_reload;
 		int m_heat;
 		char m_shotLeft=0;
-		animation *m_deathAnim;
-		animation *m_walkAnim;
-		animation *m_shootAnim;
-		animation *m_curAnim;
+		Animation *m_deathAnim;
+		Animation *m_walkAnim;
+		Animation *m_shootAnim;
+		Animation *m_curAnim;
 		GLuint *m_texture;
-		physics *m_world;
+		World *m_world;
 		shotType m_grenade;
 	public:
-		enemy(float x_in,float y_in,char dirrection,GLuint *tex,physics *world_in);	
+		Enemy(float x_in,float y_in,char dirrection,GLuint *tex,World *world_in);	
 		inline bool is_dead(){	return m_deathAnim->is_end();	}
 		void self_destruct();
-		void update(player* p1);
+		void update(Player* p1);
 		void draw();	
 };

@@ -1,9 +1,9 @@
 #include "enemylist.h"
 
-enemyList::enemyList(float x_in,float y_in,char dirrection,GLuint *tex,physics *world_in)
+enemyList::enemyList(float x_in,float y_in,char dirrection,GLuint *tex,World *world_in)
 {
 	_node *buf=new _node;
-	buf->link=new enemy(x_in,y_in,dirrection,tex,world_in);
+	buf->link=new Enemy(x_in,y_in,dirrection,tex,world_in);
 	buf->next=NULL;
 	buf->prev=NULL;
 	m_first=buf;
@@ -16,10 +16,10 @@ enemyList::enemyList()
 	m_last=NULL;
 }
 	
-void enemyList::add(float x_in,float y_in,char dirrection,GLuint *tex,physics *world_in)
+void enemyList::add(float x_in,float y_in,char dirrection,GLuint *tex,World *world_in)
 {
 	_node *buf = new _node;
-	buf->link=new enemy(x_in,y_in,dirrection,tex,world_in);
+	buf->link=new Enemy(x_in,y_in,dirrection,tex,world_in);
 	if (m_last!=NULL)
 	{
 		buf->prev=m_last;
@@ -65,7 +65,7 @@ void enemyList::destroy(_node *trash)
 	}
 }
 	
-void enemyList::update(player *p1)
+void enemyList::update(Player *p1)
 {
 	_node *cur=m_first;
 	_node *trash=NULL;

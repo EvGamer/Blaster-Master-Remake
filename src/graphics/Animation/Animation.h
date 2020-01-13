@@ -1,9 +1,8 @@
-#include "imageOps.h"
-
+#include "../utils.h"
 
 enum playType{ONCE=0x00,LOOP=0x01,REVERSE=0x02};
 
-class animation
+class Animation
 {
 	private:
 		playType m_play;
@@ -21,7 +20,7 @@ class animation
 		bool m_stop;
 		
 	public:
-		animation(
+		Animation(
 			GLuint *iTexture, 
 			float iSizeX, 
 			float iSizeY,
@@ -34,7 +33,7 @@ class animation
 		);
 		
 		
-		animation(
+		Animation(
 			GLuint *iTexture, 
 			float iSize, 
 			uint8_t iX0, 

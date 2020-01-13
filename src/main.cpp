@@ -4,7 +4,7 @@
  **************************/
 //
 
-#include "enemylist.h"
+#include "utils/enemylist.h"
 
 unsigned int key;
 
@@ -20,7 +20,7 @@ unsigned char n = 0;
  *
  **************************/
 
-void spawnEnemies(enemyList *jerks, GLuint *texEnemy, physics *Area)
+void spawnEnemies(enemyList *jerks, GLuint *texEnemy, World *Area)
 {
   jerks->add(22, 11, -1, texEnemy, Area);
   jerks->add(24, 16, 1, texEnemy, Area);
@@ -88,7 +88,7 @@ int WINAPI WinMain(
 
   /* enable OpenGL for the window */
   EnableOpenGL(hWnd, &hDC, &hRC);
-  physics Area3("Sprites\\A3a.tga", 16);
+  World Area3("Sprites\\A3a.tga", 16);
   Area3.setGlobalFriction(1);
   Area3.setGravity(1);
   Area3.setDefault(1, 255);
@@ -109,7 +109,7 @@ int WINAPI WinMain(
   GLuint texBack = loadTextureL("Sprites\\Background.bmp"); //
   enemyList jerks;
   spawnEnemies(&jerks, &texEnemy, &Area3);
-  player sophia(10, 12, &texSophia, &texBlaster, &Area3);
+  Player sophia(10, 12, &texSophia, &texBlaster, &Area3);
 
   //testdraw();
   //DrawTile(0,1,0,0,Area3.get_texture());r//

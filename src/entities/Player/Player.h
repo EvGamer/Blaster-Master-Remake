@@ -1,8 +1,8 @@
 
 
-#include "physics.h"
+#include "../../engine/World/World.h"
 
-class player
+class Player
 {
 protected:
 	GLuint *m_texture;
@@ -29,19 +29,19 @@ protected:
 	float m_jumpLimit;
 	int m_weaponHeat = 0;
 	unsigned m_curFrame;
-	animation *m_standAnim;
-	animation *m_walkAnim;
-	animation *m_jumpAnim;
-	animation *m_fallAnim;
-	animation *curAnim;
-	animation *m_deathAnim;
+	Animation *m_standAnim;
+	Animation *m_walkAnim;
+	Animation *m_jumpAnim;
+	Animation *m_fallAnim;
+	Animation *curAnim;
+	Animation *m_deathAnim;
 	shotType m_blaster;
 	//unsigned char ca;
 	//shotType m_blaster;
-	physics *m_world;
+	World *m_world;
 
 public:
-	player(float x_in, float y_in, GLuint *textank, GLuint *texshoot, physics *world_link);
+	Player(float x_in, float y_in, GLuint *textank, GLuint *texshoot, World *world_link);
 
 	void move(int dirrection);
 	void jump();
@@ -64,7 +64,7 @@ public:
 		return 0;
 	}
 
-	~player()
+	~Player()
 	{
 		delete m_standAnim;
 		delete m_walkAnim;

@@ -1,7 +1,8 @@
-#include "stdafx.h"
-#include "imageOps.h"
+#include "utils.h"
+
+#include "../stdafx.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "OpenLibs/stb_image.h"
+#include "../libs/stb_image.h"
 
 void drawSprite(GLuint *texture,float x1,float y1,float x2,float y2,float tx1,float ty1,float tx2,float ty2)
 {

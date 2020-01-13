@@ -1,7 +1,7 @@
 
-#include "physics.h"
+#include "World.h"
 
-physics::physics(std::string fileName,float TilesInLine)
+World::World(std::string fileName,float TilesInLine)
 {
 	//dont ask.
 	for(int i=0;i<=_mapSY;i++)
@@ -26,24 +26,24 @@ physics::physics(std::string fileName,float TilesInLine)
 }
 
 
-void physics::addShot(float x,float y,float speedX,float speedY,shotType *wpn)
+void World::addShot(float x,float y,float speedX,float speedY,shotType *wpn)
 {
 	shotNode *buf;
 	buf=new shotNode;
-	//Заполняем информацию о выстреле
+
 	buf->x=x;
 	buf->y=y;
 	buf->speedX=speedX;
 	buf->speedY=speedY;
 	buf->spriteX=wpn->spriteX;
 	buf->spriteY=wpn->spriteY;
-	buf->burstAnim = new animation(*wpn->burstAnim);
-	buf->flyAnim= new animation(*wpn->flyAnim);
+	buf->burstAnim = new Animation(*wpn->burstAnim);
+	buf->flyAnim= new Animation(*wpn->flyAnim);
 	buf->damage=wpn->damage;
 	buf->foe=wpn->foe;
 	buf->falling=wpn->falling;
 	buf->hit=false;
-	//Встраиваем узел.
+
 	if(shotFirst==NULL)
 	{
 		buf->next=NULL;
@@ -60,7 +60,7 @@ void physics::addShot(float x,float y,float speedX,float speedY,shotType *wpn)
 	}
 };
 
-void physics::removeShot(shotNode *trash)
+void World::removeShot(shotNode *trash)
 {
 	if(trash!=NULL)	
 	{
@@ -89,7 +89,7 @@ void physics::removeShot(shotNode *trash)
 	}
 };
 
-float physics::hit(float x1,float y1,float x2,float y2,bool foe)
+float World::hit(float x1,float y1,float x2,float y2,bool foe)
 {
 	float damage=0;
 	shotNode *cur=shotFirst;
@@ -111,19 +111,19 @@ float physics::hit(float x1,float y1,float x2,float y2,bool foe)
 	return damage;
 };
 
-bool physics::collide(float x,float y)
+bool World::collide(float x,float y)
 {
 	unsigned i=floor(x);
 	unsigned j=floor(y);
 	return m_tile[m_map[(_mapSY-1-j)*_mapSX+i]-1].solid;
 };
 
-bool physics::getFrict(unsigned char i,unsigned char j)
+bool World::getFrict(unsigned char i,unsigned char j)
 {
 	return m_tile[m_map[(_mapSY-1-j)*_mapSX+i]-1].friction;
 }
 
-void physics::update()
+void World::update()
 {
 	shotNode *cur;
 	shotNode *trash;
@@ -143,7 +143,7 @@ void physics::update()
 	}
 }
 
-void physics::draw(int cx,int cy,unsigned char a_num)
+void World::draw(int cx,int cy,unsigned char a_num)
 {
 	
 	float tx=m_tile[a_num].texX*m_size;
@@ -153,7 +153,7 @@ void physics::draw(int cx,int cy,unsigned char a_num)
 	drawSprite(&m_texture,cx,cy,cx+1,cy+1,tx+b,ty+b,tx+m_size-b,ty+m_size-b);
 };
 
-void physics::set(unsigned char i,int tx,int ty,bool solid,float fric)
+void World::set(unsigned char i,int tx,int ty,bool solid,float fric)
 {
 	m_tile[i].solid=solid;
 	m_tile[i].texX=tx;
@@ -162,7 +162,7 @@ void physics::set(unsigned char i,int tx,int ty,bool solid,float fric)
 }
 
 
-void physics::set(unsigned char i,int tx,int ty,bool solid)
+void World::set(unsigned char i,int tx,int ty,bool solid)
 {
 	m_tile[i].solid=solid;
 			m_tile[i].texX=tx;
@@ -175,29 +175,29 @@ void physics::set(unsigned char i,int tx,int ty,bool solid)
 	//set(i,tx,ty,solid,tileFriction);
 }
 
-void physics::setDefault(unsigned first, unsigned last)
+void World::setDefault(unsigned first, unsigned last)
 {
 	for(unsigned i=first-1;i<last;i++) set(i,(i)%m_lineLenght,(i)/m_lineLenght,false);
 }
 
-void physics::setSolid(unsigned first,unsigned last)
+void World::setSolid(unsigned first,unsigned last)
 {
 	for(unsigned i=first;i<=last;i++) m_tile[i-1].solid=true;
 }
 
-void physics::add(int tx,int ty,bool solid,float fric)
+void World::add(int tx,int ty,bool solid,float fric)
 {
 	set(m_num,tx,ty,solid,fric);
 	m_num++;
 }
 
-void physics::add(int tx,int ty,bool solid)
+void World::add(int tx,int ty,bool solid)
 {
 	set(m_num,tx,ty,solid);
 	m_num++;
 }
 
-void physics::drawLevel(float scrX,float scrY)
+void World::drawLevel(float scrX,float scrY)
 {
 	unsigned tX0=floor(scrX);
 	unsigned tY0=floor(scrY);

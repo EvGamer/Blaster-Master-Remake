@@ -1,12 +1,12 @@
 
-#include "animation.h"
+#include "../../graphics/Animation/Animation.h"
 #include "mapArray.h"
 
 
 struct shotType
 {
-	animation *burstAnim;
-	animation *flyAnim;
+	Animation *burstAnim;
+	Animation *flyAnim;
 	float spriteX;
 	float spriteY;
 	bool foe;
@@ -15,7 +15,7 @@ struct shotType
 	bool falling;
 };
 
-class physics
+class World
 {
 	private:
 		unsigned char m_num;//���������� ������
@@ -39,8 +39,8 @@ class physics
 		
 		struct shotNode
 		{
-			animation *burstAnim;
-			animation *flyAnim;
+			Animation *burstAnim;
+			Animation *flyAnim;
 			float spriteX;
 			float spriteY;
 			float x;
@@ -76,6 +76,6 @@ class physics
 		void add(int tx,int ty,bool solid,float fric);	
 		void add(int tx,int ty,bool solid);
 		void drawLevel(float scrX,float scrY);
-		physics(std::string fileName,float TilesInLine);
+		World(std::string fileName,float TilesInLine);
 
 };
