@@ -20,8 +20,7 @@ unsigned char n = 0;
  *
  **************************/
 
-void spawnEnemies(enemyList *jerks, GLuint *texEnemy, World *Area)
-{
+void spawnEnemies(enemyList *jerks, GLuint *texEnemy, World *Area) {
   jerks->add(22, 11, -1, texEnemy, Area);
   jerks->add(24, 16, 1, texEnemy, Area);
   jerks->add(30, 16, 1, texEnemy, Area);
@@ -46,18 +45,15 @@ void spawnEnemies(enemyList *jerks, GLuint *texEnemy, World *Area)
   jerks->add(61, 20, -1, texEnemy, Area);
 }
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam); //
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam,
+                         LPARAM lParam);  //
 void EnableOpenGL(HWND hWnd, HDC *hDC, HGLRC *hRC);
 void DisableOpenGL(HWND hWnd, HDC hDC, HGLRC hRC);
 
 //��
-int WINAPI WinMain(
-  HINSTANCE hInstance,
-  HINSTANCE hPrevInstance,
-  LPSTR lpCmdLine,
-  int iCmdShow
-)
-{ //
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine,
+                   int iCmdShow) {  //
   WNDCLASS wc;
   HWND hWnd;
   HDC hDC;
@@ -79,12 +75,9 @@ int WINAPI WinMain(
   RegisterClass(&wc);
 
   /* create main window */
-  hWnd = CreateWindow(
-    "GLSample", "Blaster Master",
-    WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE,
-    0, 0, 1024, 768,
-    NULL, NULL, hInstance, NULL
-  );
+  hWnd = CreateWindow("GLSample", "Blaster Master",
+                      WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE, 0, 0, 1024, 768,
+                      NULL, NULL, hInstance, NULL);
 
   /* enable OpenGL for the window */
   EnableOpenGL(hWnd, &hDC, &hRC);
@@ -106,33 +99,27 @@ int WINAPI WinMain(
   GLuint texHealthBar = loadTexture("Sprites\\HealthBar.tga");
   GLuint texMessage = loadTexture("Sprites\\Message.tga");
   GLuint texVictory = loadTexture("Sprites\\Victory.tga");
-  GLuint texBack = loadTextureL("Sprites\\Background.bmp"); //
+  GLuint texBack = loadTextureL("Sprites\\Background.bmp");  //
   enemyList jerks;
   spawnEnemies(&jerks, &texEnemy, &Area3);
   Player sophia(10, 12, &texSophia, &texBlaster, &Area3);
 
-  //testdraw();
-  //DrawTile(0,1,0,0,Area3.get_texture());r//
+  // testdraw();
+  // DrawTile(0,1,0,0,Area3.get_texture());r//
 
   /* program main loop */
-  while (!bQuit) //
+  while (!bQuit)  //
   {
     /* check for messages */
-    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-    {
+    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
       /* handle or dispatch messages */
-      if (msg.message == WM_QUIT)
-      {
+      if (msg.message == WM_QUIT) {
         bQuit = TRUE;
-      }
-      else
-      {
+      } else {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
       }
-    }
-    else
-    {
+    } else {
       /* OpenGL animation code goes here */
       float sx, sy;
       sx = sophia.getX();
@@ -142,69 +129,60 @@ int WINAPI WinMain(
       float camN = camY + 16 - sy;
       float camW = camX + 10 - sx;
       float camE = camX + 20 - sx;
-      if ((camS > 0) && (camY > 5))
-      {
+      if ((camS > 0) && (camY > 5)) {
         camY -= camS;
       }
-      if ((camN < 0) && (camY < 51))
-      {
+      if ((camN < 0) && (camY < 51)) {
         camY -= camN;
       }
-      if ((camW > 0) && (camX > 4))
-      {
+      if ((camW > 0) && (camX > 4)) {
         camX -= camW;
       }
-      if ((camE < 0) && (camX < 38))
-      {
+      if ((camE < 0) && (camX < 38)) {
         camX -= camE;
       }
       glLoadIdentity();
-      drawSprite(&texBack, 0, 0, 32, 32, camX / 64, -camY / 64, camX / 64 + 1, -camY / 64 + 1);
+      drawSprite(&texBack, 0, 0, 32, 32, camX / 64, -camY / 64, camX / 64 + 1,
+                 -camY / 64 + 1);
       glTranslatef(-camX / 16, -camY / 12, 0);
-      if (keyMove)
-      {
+      if (keyMove) {
         sophia.move(dir);
       }
-      if (keyJump)
-        sophia.jump();
-      if (keyShoot)
-        sophia.shoot();
-      Area3.update(); //
+      if (keyJump) sophia.jump();
+      if (keyShoot) sophia.shoot();
+      Area3.update();  //
       Area3.drawLevel(camX, camY);
-      //sophia.drawGizmo();
+      // sophia.drawGizmo();
       sophia.update();
       jerks.update(&sophia);
       jerks.draw();
       sophia.draw();
-      //drawing healthBar
+      // drawing healthBar
       const float HBx = 0;
       const float HBy = 5;
       const float HBx1 = HBx + 2;
       const float HBy1 = HBy + 4;
       const float bl = 25 / 64;
-      float rate = (1 - bl) * ceil(sophia.hull() + 8) * 0.0625 - 0.125; //
+      float rate = (1 - bl) * ceil(sophia.hull() + 8) * 0.0625 - 0.125;  //
       glLoadIdentity();
       drawSprite(&texHealthBar, HBx, HBy, HBx1, HBy1, 0, 0, 0.5, 1);
-      drawSprite(&texHealthBar, HBx, HBy, HBx1, HBy + 4 * rate, 0.5, 1 - rate, 1, 1);
-      if (sophia.is_dead())
-      {
+      drawSprite(&texHealthBar, HBx, HBy, HBx1, HBy + 4 * rate, 0.5, 1 - rate,
+                 1, 1);
+      if (sophia.is_dead()) {
         jerks.self_destruct();
         glColor3f(1, 1, 1);
         drawSprite(&texMessage, 15, 15, 23, 23, 0, 0, 1, 1);
         glColor3f(1, 0, 0);
-        if (keyRestart)
-        {
+        if (keyRestart) {
           sophia.revive();
 
           spawnEnemies(&jerks, &texEnemy, &Area3);
         }
       }
-      if ((sx >= 53) && (sx <= 56) && (sy >= 7) && (sy <= 9))
-      {
+      if ((sx >= 53) && (sx <= 56) && (sy >= 7) && (sy <= 9)) {
         drawSprite(&texVictory, 15, 15, 23, 23, 0, 0, 1, 1);
         ;
-        if (keyRestart)
-        {
+        if (keyRestart) {
           jerks.self_destruct();
           sophia.revive();
           spawnEnemies(&jerks, &texEnemy, &Area3);
@@ -230,96 +208,92 @@ int WINAPI WinMain(
  *
  ********************/
 ///
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
-                         WPARAM wParam, LPARAM lParam)
-{
-
-  switch (message)
-  {
-  case WM_CREATE:
-    return 0;
-  case WM_CLOSE:
-    PostQuitMessage(0);
-    return 0;
-
-  case WM_DESTROY:
-    return 0;
-
-  case WM_KEYUP:
-    switch (wParam)
-    {
-      //case 0x41
-    case VK_LEFT:
-      keyMove = false;
-      dir = -1;
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam,
+                         LPARAM lParam) {
+  switch (message) {
+    case WM_CREATE:
       return 0;
-      //case 0x44:
-    case VK_RIGHT: //
-      keyMove = false;
-      dir = 1;
-      return 0;
-    case VK_UP:
-      keyJump = false;
-      return 0;
-    case VK_NUMPAD0:
-      keyShoot = false;
-      return 0;
-    case VK_RETURN:
-      keyRestart = false;
-      return 0;
-    };
-  case WM_KEYDOWN:
-    switch (wParam) //
-    {
-    case VK_ESCAPE:
+    case WM_CLOSE:
       PostQuitMessage(0);
       return 0;
-    case VK_LEFT:
-      keyMove = true;
-      dir = -1;
-      return 0;
-      //case 0x44:..
-    case VK_RIGHT: //
-      keyMove = true;
-      dir = 1;
-      return 0;
-    case VK_UP:
-      keyJump = true;
-      return 0;
-    case VK_NUMPAD0: //
-      keyShoot = true;
-      return 0;
-    case VK_RETURN:
-      keyRestart = true;
-      return 0;
-    }
-    return 0; //
 
-  default:
-    return DefWindowProc(hWnd, message, wParam, lParam);
+    case WM_DESTROY:
+      return 0;
+
+    case WM_KEYUP:
+      switch (wParam) {
+          // case 0x41
+        case VK_LEFT:
+          keyMove = false;
+          dir = -1;
+          return 0;
+          // case 0x44:
+        case VK_RIGHT:  //
+          keyMove = false;
+          dir = 1;
+          return 0;
+        case VK_UP:
+          keyJump = false;
+          return 0;
+        case VK_NUMPAD0:
+          keyShoot = false;
+          return 0;
+        case VK_RETURN:
+          keyRestart = false;
+          return 0;
+      };
+    case WM_KEYDOWN:
+      switch (wParam)  //
+      {
+        case VK_ESCAPE:
+          PostQuitMessage(0);
+          return 0;
+        case VK_LEFT:
+          keyMove = true;
+          dir = -1;
+          return 0;
+          // case 0x44:..
+        case VK_RIGHT:  //
+          keyMove = true;
+          dir = 1;
+          return 0;
+        case VK_UP:
+          keyJump = true;
+          return 0;
+        case VK_NUMPAD0:  //
+          keyShoot = true;
+          return 0;
+        case VK_RETURN:
+          keyRestart = true;
+          return 0;
+      }
+      return 0;  //
+
+    default:
+      return DefWindowProc(hWnd, message, wParam, lParam);
   }
 }
 //
 
 /*******************
  * Enable OpenGL
- 
+
  *******************/
 //
 
-void EnableOpenGL(HWND hWnd, HDC *hDC, HGLRC *hRC)
-{
+void EnableOpenGL(HWND hWnd, HDC *hDC, HGLRC *hRC) {
   PIXELFORMATDESCRIPTOR pixelFormat;
   int iFormat;
 
   /* get the device context (DC) */
   *hDC = GetDC(hWnd);
 
-  /* set the pixel format for the DC */ //
+  /* set the pixel format for the DC */  //
   ZeroMemory(&pixelFormat, sizeof(pixelFormat));
   pixelFormat.nSize = sizeof(pixelFormat);
   pixelFormat.nVersion = 1;
-  pixelFormat.dwFlags = (PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER | PFD_DEPTH_DONTCARE);
+  pixelFormat.dwFlags = (PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL |
+                         PFD_DOUBLEBUFFER | PFD_DEPTH_DONTCARE);
   pixelFormat.iPixelType = PFD_TYPE_RGBA;
   pixelFormat.cColorBits = 24;
   pixelFormat.cDepthBits = 16;
@@ -342,8 +316,7 @@ void EnableOpenGL(HWND hWnd, HDC *hDC, HGLRC *hRC)
  *
  ******************/
 
-void DisableOpenGL(HWND hWnd, HDC hDC, HGLRC hRC)
-{
+void DisableOpenGL(HWND hWnd, HDC hDC, HGLRC hRC) {
   wglMakeCurrent(NULL, NULL);
   wglDeleteContext(hRC);
   ReleaseDC(hWnd, hDC);
