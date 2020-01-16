@@ -19,6 +19,8 @@ class Animation {
   bool m_stop;
 
  public:
+  bool isValid = true;
+
   Animation(GLuint *iTexture, float iSizeX, float iSizeY, uint8_t iX0,
             uint8_t iY0, uint8_t iRows, uint8_t iColums, unsigned iDelay,
             playType iPlay);

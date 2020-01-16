@@ -34,7 +34,7 @@ class Player {
   Animation *m_fallAnim;
   Animation *curAnim;
   Animation *m_deathAnim;
-  shotType m_blaster;
+  MissleType m_blaster;
   // unsigned char ca;
   // shotType m_blaster;
   World *m_world;

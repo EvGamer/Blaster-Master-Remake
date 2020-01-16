@@ -42,7 +42,7 @@ void Player::hurt(float damage) {
 
 void Player::shoot() {  // if(m_control)
   if (m_weaponHeat <= 0) {
-    m_world->addShot(m_cannonX, m_y + m_cannonY, 0.3 * m_dir, 0, &m_blaster);
+    m_world->addMissle(m_cannonX, m_y + m_cannonY, 0.3 * m_dir, 0, &m_blaster);
     m_weaponHeat = 15;
   }
 }
@@ -208,11 +208,11 @@ Player::Player(float a_x, float a_y, GLuint *a_textureId,
   m_curFrame = 0;
 
   // Weapon
-  m_blaster.m_texture = a_missleTextureId;
+  m_blaster.texture = a_missleTextureId;
   m_blaster.burstAnim =
-      new Animation(m_blaster.m_texture, 0.25f, 3, 0, 4, 1, 2, ONCE);
+      new Animation(m_blaster.texture, 0.25f, 3, 0, 4, 1, 2, ONCE);
   m_blaster.flyAnim =
-      new Animation(m_blaster.m_texture, 0.5f, 0.25f, 0, 0, 1, 1, 0, LOOP);
+      new Animation(m_blaster.texture, 0.5f, 0.25f, 0, 0, 1, 1, 0, LOOP);
   m_blaster.damage = 1.5;
   m_blaster.foe = false;
   m_blaster.spriteX = -1.5;

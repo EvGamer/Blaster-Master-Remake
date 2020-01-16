@@ -151,7 +151,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       if (keyJump) sophia.jump();
       if (keyShoot) sophia.shoot();
       Area3.update();  //
-      Area3.drawLevel(camX, camY);
+      Area3.drawLevel(floor(camX), floor(camY));
       // sophia.drawGizmo();
       sophia.update();
       jerks.update(&sophia);

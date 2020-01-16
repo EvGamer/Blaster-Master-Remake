@@ -20,7 +20,7 @@ class Enemy {
   Animation *m_curAnim;
   GLuint *m_texture;
   World *m_world;
-  shotType m_grenade;
+  MissleType m_grenade;
 
  public:
   Enemy(float x_in, float y_in, char dirrection, GLuint *tex, World *world_in);

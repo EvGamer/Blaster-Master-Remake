@@ -55,8 +55,8 @@ void Enemy::update(Player *p1) {
       m_curAnim = m_shootAnim;
       if (m_heat <= 0) {
         m_heat = 10;
-        m_world->addShot(m_x + m_sizeX * 0.5, m_y + m_sizeY - 0.4, 0.4 * m_dir,
-                         0.4f, &m_grenade);
+        m_world->addMissle(m_x + m_sizeX * 0.5, m_y + m_sizeY - 0.4,
+                           0.4 * m_dir, 0.4f, &m_grenade);
         m_shotLeft--;
       } else
         m_heat--;

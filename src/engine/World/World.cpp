@@ -17,7 +17,7 @@ World::World(std::string fileName, float TilesInLine) {
   _gravity = 1;
   _friction = 0;
   _texture = loadTexture(fileName);
-//  _missles = std::list<Missle>();
+  _missles = new std::list<Missle>();
 }
 
 void World::addMissle(float x, float y, float speedX, float speedY,
@@ -37,7 +37,9 @@ void World::addMissle(float x, float y, float speedX, float speedY,
       wpn->damage,
   };
 
-  _missles.push_front(missle);
+  std::list<Missle> temp;
+
+  _missles->push_front(missle);
 };
 
 float World::hit(float x1, float y1, float x2, float y2, bool foe) {
