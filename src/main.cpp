@@ -20,7 +20,7 @@ unsigned char n = 0;
  *
  **************************/
 
-void spawnEnemies(enemyList *jerks, GLuint *texEnemy, World *Area) {
+void spawnEnemies(enemyList *jerks, GLuint texEnemy, World *Area) {
   jerks->add(22, 11, -1, texEnemy, Area);
   jerks->add(24, 16, 1, texEnemy, Area);
   jerks->add(30, 16, 1, texEnemy, Area);
@@ -101,8 +101,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
   GLuint texVictory = loadTexture("Sprites\\Victory.tga");
   GLuint texBack = loadTextureL("Sprites\\Background.bmp");  //
   enemyList jerks;
-  spawnEnemies(&jerks, &texEnemy, &Area3);
-  Player sophia(10, 12, &texSophia, &texBlaster, &Area3);
+  spawnEnemies(&jerks, texEnemy, &Area3);
+  Player sophia(10, 12, texSophia, texBlaster, &Area3);
 
   // testdraw();
   // DrawTile(0,1,0,0,Area3.get_texture());r//
@@ -142,7 +142,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         camX -= camE;
       }
       glLoadIdentity();
-      drawSprite(&texBack, 0, 0, 32, 32, camX / 64, -camY / 64, camX / 64 + 1,
+      drawSprite(texBack, 0, 0, 32, 32, camX / 64, -camY / 64, camX / 64 + 1,
                  -camY / 64 + 1);
       glTranslatef(-camX / 16, -camY / 12, 0);
       if (keyMove) {
@@ -165,27 +165,27 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       const float bl = 25 / 64;
       float rate = (1 - bl) * ceil(sophia.hull() + 8) * 0.0625 - 0.125;  //
       glLoadIdentity();
-      drawSprite(&texHealthBar, HBx, HBy, HBx1, HBy1, 0, 0, 0.5, 1);
-      drawSprite(&texHealthBar, HBx, HBy, HBx1, HBy + 4 * rate, 0.5, 1 - rate,
+      drawSprite(texHealthBar, HBx, HBy, HBx1, HBy1, 0, 0, 0.5, 1);
+      drawSprite(texHealthBar, HBx, HBy, HBx1, HBy + 4 * rate, 0.5, 1 - rate,
                  1, 1);
       if (sophia.is_dead()) {
         jerks.self_destruct();
         glColor3f(1, 1, 1);
-        drawSprite(&texMessage, 15, 15, 23, 23, 0, 0, 1, 1);
+        drawSprite(texMessage, 15, 15, 23, 23, 0, 0, 1, 1);
         glColor3f(1, 0, 0);
         if (keyRestart) {
           sophia.revive();
 
-          spawnEnemies(&jerks, &texEnemy, &Area3);
+          spawnEnemies(&jerks, texEnemy, &Area3);
         }
       }
       if ((sx >= 53) && (sx <= 56) && (sy >= 7) && (sy <= 9)) {
-        drawSprite(&texVictory, 15, 15, 23, 23, 0, 0, 1, 1);
+        drawSprite(texVictory, 15, 15, 23, 23, 0, 0, 1, 1);
         ;
         if (keyRestart) {
           jerks.self_destruct();
           sophia.revive();
-          spawnEnemies(&jerks, &texEnemy, &Area3);
+          spawnEnemies(&jerks, texEnemy, &Area3);
         }
       }
       SwapBuffers(hDC);

@@ -3,11 +3,11 @@
 
 const int RELOAD_TIME = 60;
 
-Enemy::Enemy(float a_x, float a_y, char a_dirrection, GLuint *a_texture_id,
+Enemy::Enemy(float a_x, float a_y, char a_dirrection, GLuint a_textureId,
              World *a_world) {
   m_reload = 0;
   m_heat = 0;
-  m_texture = a_texture_id;
+  m_texture = a_textureId;
   m_dir = a_dirrection;
   m_health = 6;
   m_speedY = 0;
@@ -22,14 +22,16 @@ Enemy::Enemy(float a_x, float a_y, char a_dirrection, GLuint *a_texture_id,
   m_walkAnim = new Animation(m_texture, 0.25, 0, 0, 1, 4, 5, LOOP);
   m_curAnim = m_walkAnim;
   m_shootAnim = new Animation(m_texture, 0.25, 0, 1, 1, 4, 3, ONCE);
-  m_grenade.burstAnim = new Animation(m_texture, 0.125, 0, 7, 1, 4, 2, ONCE);
-  m_grenade.flyAnim =
-      new Animation(m_texture, 0.25, 0.125, 0, 6, 1, 1, 2, ONCE);
-  m_grenade.damage = 1;
-  m_grenade.falling = true;
-  m_grenade.spriteX = -0.75;
-  m_grenade.spriteY = -0.5;
-  m_grenade.foe = true;
+  m_grenade = {
+      /*burstAnim*/ Animation(m_texture, 0.125, 0, 7, 1, 4, 2, ONCE),
+      /*flyAnim*/ Animation(m_texture, 0.25, 0.125, 0, 6, 1, 1, 2, ONCE),
+      /*spriteX*/ -0.75,
+      /*spriteY*/ -0.5,
+      /*foe*/ true,
+      /*damage*/ 1,
+      /*textureId*/ m_texture,
+      /*falling*/ true,
+  };
 }
 
 inline void Enemy::self_destruct() {
@@ -55,8 +57,8 @@ void Enemy::update(Player *p1) {
       m_curAnim = m_shootAnim;
       if (m_heat <= 0) {
         m_heat = 10;
-        m_world->addShot(m_x + m_sizeX * 0.5, m_y + m_sizeY - 0.4, 0.4 * m_dir,
-                         0.4f, &m_grenade);
+        m_world->addMissle(m_x + m_sizeX * 0.5, m_y + m_sizeY - 0.4,
+                           0.4 * m_dir, 0.4f, &m_grenade);
         m_shotLeft--;
       } else
         m_heat--;

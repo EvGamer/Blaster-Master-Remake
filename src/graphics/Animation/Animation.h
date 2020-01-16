@@ -5,7 +5,7 @@ enum playType { ONCE = 0x00, LOOP = 0x01, REVERSE = 0x02 };
 class Animation {
  private:
   playType m_play;
-  GLuint *m_texture;
+  GLuint m_texture;
   unsigned m_timer;
   unsigned m_delay;
   unsigned char m_x;
@@ -19,14 +19,18 @@ class Animation {
   bool m_stop;
 
  public:
-  Animation(GLuint *iTexture, float iSizeX, float iSizeY, uint8_t iX0,
+  bool isValid = true;
+
+  Animation();
+
+  Animation(GLuint iTexture, float iSizeX, float iSizeY, uint8_t iX0,
             uint8_t iY0, uint8_t iRows, uint8_t iColums, unsigned iDelay,
             playType iPlay);
 
-  Animation(GLuint *iTexture, float iSize, uint8_t iX0, uint8_t iY0,
+  Animation(GLuint iTexture, float iSize, uint8_t iX0, uint8_t iY0,
             uint8_t iRows, uint8_t iColums, unsigned iDelay, playType iPlay);
 
-  inline void initialize(GLuint *iTexture, float iSizeX, float iSizeY,
+  inline void initialize(GLuint iTexture, float iSizeX, float iSizeY,
                          uint8_t iX0, uint8_t iY0, uint8_t iRows,
                          uint8_t iColums, unsigned iDelay, playType iPlay);
 

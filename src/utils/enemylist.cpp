@@ -1,6 +1,6 @@
 #include "enemylist.h"
 
-enemyList::enemyList(float x_in, float y_in, char dirrection, GLuint *tex,
+enemyList::enemyList(float x_in, float y_in, char dirrection, GLuint tex,
                      World *world_in) {
   _node *buf = new _node;
   buf->link = new Enemy(x_in, y_in, dirrection, tex, world_in);
@@ -15,10 +15,10 @@ enemyList::enemyList() {
   m_last = NULL;
 }
 
-void enemyList::add(float x_in, float y_in, char dirrection, GLuint *tex,
+void enemyList::add(float a_x, float a_y, char a_dirrection, GLuint a_textureId,
                     World *world_in) {
   _node *buf = new _node;
-  buf->link = new Enemy(x_in, y_in, dirrection, tex, world_in);
+  buf->link = new Enemy(a_x, a_y, a_dirrection, a_textureId, world_in);
   if (m_last != NULL) {
     buf->prev = m_last;
     buf->next = NULL;

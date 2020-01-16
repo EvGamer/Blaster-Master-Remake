@@ -12,10 +12,10 @@ class enemyList {
   _node *m_last;
 
  public:
-  enemyList(float x_in, float y_in, char dirrection, GLuint *tex,
+  enemyList(float x_in, float y_in, char dirrection, GLuint tex,
             World *world_in);
   enemyList();
-  void add(float x_in, float y_in, char dirrection, GLuint *tex,
+  void add(float x_in, float y_in, char dirrection, GLuint tex,
            World *world_in);
   void destroy(_node *trash);
   void update(Player *p1);
