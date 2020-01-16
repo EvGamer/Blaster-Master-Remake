@@ -20,11 +20,15 @@ World::World(std::string fileName, float TilesInLine) {
   _missles = new std::list<Missle>();
 }
 
+World::~World() {
+  delete _missles;
+}
+
 void World::addMissle(float x, float y, float speedX, float speedY,
                     MissleType *wpn) {
-  Missle missle = {
-//      new Animation(*wpn->burstAnim),
-//      new Animation(*wpn->flyAnim),
+  _missles->push_front({
+      wpn->burstAnim,
+      wpn->flyAnim,
       wpn->spriteX,
       wpn->spriteY,
       x,
@@ -35,27 +39,23 @@ void World::addMissle(float x, float y, float speedX, float speedY,
       wpn->foe,
       wpn->falling,
       wpn->damage,
-  };
-
-  std::list<Missle> temp;
-
-  _missles->push_front(missle);
+  });
 };
 
 float World::hit(float x1, float y1, float x2, float y2, bool foe) {
   float damage = 0;
 
-//  for (auto missle : _missles) {
-//    bool isInsideWidth = (missle.x >= x1) && (missle.x <= x2);
-//    bool isInsideHeight = (missle.y >= y1) && (missle.y <= y2);
-//    bool isInside = isInsideWidth && isInsideHeight;
-//
-//    if (isInside && (foe == missle.foe) && (!missle.hit)) {
-//      if (missle.damage > damage) damage = missle.damage;
-//      missle.hit = true;
-//      missle.burstAnim->freeze();
-//    }
-//  }
+  for (auto &missle : *_missles) {
+    bool isInsideWidth = (missle.x >= x1) && (missle.x <= x2);
+    bool isInsideHeight = (missle.y >= y1) && (missle.y <= y2);
+    bool isInside = isInsideWidth && isInsideHeight;
+
+    if (isInside && (foe == missle.foe) && (!missle.hit)) {
+      if (missle.damage > damage) damage = missle.damage;
+      missle.hit = true;
+      missle.burstAnim.freeze();
+    }
+  }
   return damage;
 };
 
@@ -68,29 +68,29 @@ bool World::collide(float x, float y) {
 bool World::getFrict(unsigned char i, unsigned char j) {
   return _tile[m_map[(_MAP_SY - 1 - j) * _MAP_SX + i] - 1].friction;
 }
-//
-//bool isMissleExploded(const Missle &value) {
-//  return value.burstAnim != NULL && value.burstAnim->is_end();
-//}
+
+bool isMissleExploded(Missle &value) {
+  return value.burstAnim.is_end();
+}
 
 void World::update() {
-//  for (auto missle : _missles) {
-//    if (!missle.hit) {
-//      missle.x += missle.speedX;
-//      missle.y += missle.speedY;
-//      if (missle.falling) missle.speedY -= 0.1 * _gravity;
-//      missle.hit = collide(missle.x, missle.y);
-//    }
-//  }
-  //_missles.remove_if(isMissleExploded);
+  for (auto &missle : *_missles) {
+    if (!missle.hit) {
+      missle.x += missle.speedX;
+      missle.y += missle.speedY;
+      if (missle.falling) missle.speedY -= 0.1 * _gravity;
+      missle.hit = collide(missle.x, missle.y);
+    }
+  }
+  _missles->remove_if(isMissleExploded);
 }
 
 void World::draw(int cx, int cy, unsigned char a_num) {
   float tx = _tile[a_num].texX * _size;
   float ty = _tile[a_num].texY * _size;
-  float b = 0;
+  float b = 0.001; // ToDo improve tile rendering and remove this crutch
   // cy=m_lineLenght-1-cy;
-  drawSprite(&_texture, cx, cy, cx + 1, cy + 1, tx + b, ty + b,
+  drawSprite(_texture, cx, cy, cx + 1, cy + 1, tx + b, ty + b,
              tx + _size - b, ty + _size - b);
 };
 
@@ -149,22 +149,22 @@ void World::drawLevel(float scrX, float scrY) {
   float x0;
   float x1, x2;
   float y0;
-//  for (auto missle : _missles) {
-//    if (missle.speedX < 0) {
-//      dir = -1;
-//      x1 = missle.x - missle.spriteX;
-//      x0 = x1 - 2;
-//      x2 = x0;
-//    } else {
-//      dir = 1;
-//      x0 = missle.x + missle.spriteX;
-//      x1 = x0 + 2;
-//      x2 = x1 - 1;
-//    }
-//    y0 = missle.y;
-//    if (!missle.hit)
-//      missle.flyAnim->draw(dir, x0, y0, x1, y0 + 1);
-//    else
-//      missle.burstAnim->draw(1, x2, y0, x2 + 1, y0 + 1);
-//  }
+  for (auto &missle : *_missles) {
+    if (missle.speedX < 0) {
+      dir = -1;
+      x1 = missle.x - missle.spriteX;
+      x0 = x1 - 2;
+      x2 = x0;
+    } else {
+      dir = 1;
+      x0 = missle.x + missle.spriteX;
+      x1 = x0 + 2;
+      x2 = x1 - 1;
+    }
+    y0 = missle.y;
+    if (!missle.hit)
+      missle.flyAnim.draw(dir, x0, y0, x1, y0 + 1);
+    else
+      missle.burstAnim.draw(1, x2, y0, x2 + 1, y0 + 1);
+  }
 }

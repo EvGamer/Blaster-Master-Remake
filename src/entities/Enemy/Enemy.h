@@ -18,12 +18,12 @@ class Enemy {
   Animation *m_walkAnim;
   Animation *m_shootAnim;
   Animation *m_curAnim;
-  GLuint *m_texture;
+  GLuint m_texture;
   World *m_world;
   MissleType m_grenade;
 
  public:
-  Enemy(float x_in, float y_in, char dirrection, GLuint *tex, World *world_in);
+  Enemy(float a_x, float a_y, char a_dirrection, GLuint a_textureId, World *a_world);
   inline bool is_dead() { return m_deathAnim->is_end(); }
   void self_destruct();
   void update(Player *p1);

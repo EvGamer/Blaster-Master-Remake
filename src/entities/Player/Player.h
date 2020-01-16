@@ -4,7 +4,8 @@
 
 class Player {
  protected:
-  GLuint *m_texture;
+  GLuint m_missleTextureId;
+  GLuint m_textureId;
   float m_health = 8;
   bool m_control;
   bool m_roll;
@@ -40,7 +41,7 @@ class Player {
   World *m_world;
 
  public:
-  Player(float x_in, float y_in, GLuint *textank, GLuint *texshoot,
+  Player(float x_in, float y_in, GLuint a_textureId, GLuint a_missleTextureId,
          World *world_link);
 
   void move(int dirrection);
@@ -65,12 +66,5 @@ class Player {
     return 0;
   }
 
-  ~Player() {
-    delete m_standAnim;
-    delete m_walkAnim;
-    delete m_jumpAnim;
-    delete m_fallAnim;
-    delete m_blaster.burstAnim;
-    delete m_blaster.flyAnim;
-  }
+  ~Player();
 };

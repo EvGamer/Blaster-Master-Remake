@@ -177,8 +177,8 @@ void Player::draw() {
     curAnim->draw(-1, x1 - 0.5, m_y, x1 + 3.5, m_y + 4);
 }
 
-Player::Player(float a_x, float a_y, GLuint *a_textureId,
-               GLuint *a_missleTextureId, World *a_world) {
+Player::Player(float a_x, float a_y, GLuint a_textureId,
+               GLuint a_missleTextureId, World *a_world) {
   m_x = a_x;
   m_y = a_y;
   m_dir = 1;
@@ -198,24 +198,32 @@ Player::Player(float a_x, float a_y, GLuint *a_textureId,
   m_control = true;
 
   // Animation
-  m_texture = a_textureId;
-  m_standAnim = new Animation(m_texture, 0.125, 0, 0, 1, 4, 1, LOOP);
-  m_walkAnim = new Animation(m_texture, 0.125, 0, 0, 3, 4, 3, LOOP);
-  m_jumpAnim = new Animation(m_texture, 0.125, 0, 3, 1, 4, 2, LOOP);
-  m_fallAnim = new Animation(m_texture, 0.125, 0, 2, 1, 4, 2, LOOP);
-  m_deathAnim = new Animation(m_texture, 0.25, 0, 2, 1, 3, 3, ONCE);
+  m_textureId = a_textureId;
+  m_missleTextureId = a_missleTextureId;
+  m_standAnim = new Animation(m_textureId, 0.125, 0, 0, 1, 4, 1, LOOP);
+  m_walkAnim = new Animation(m_textureId, 0.125, 0, 0, 3, 4, 3, LOOP);
+  m_jumpAnim = new Animation(m_textureId, 0.125, 0, 3, 1, 4, 2, LOOP);
+  m_fallAnim = new Animation(m_textureId, 0.125, 0, 2, 1, 4, 2, LOOP);
+  m_deathAnim = new Animation(m_textureId, 0.25, 0, 2, 1, 3, 3, ONCE);
   curAnim = m_standAnim;
   m_curFrame = 0;
 
   // Weapon
-  m_blaster.texture = a_missleTextureId;
-  m_blaster.burstAnim =
-      new Animation(m_blaster.texture, 0.25f, 3, 0, 4, 1, 2, ONCE);
-  m_blaster.flyAnim =
-      new Animation(m_blaster.texture, 0.5f, 0.25f, 0, 0, 1, 1, 0, LOOP);
-  m_blaster.damage = 1.5;
-  m_blaster.foe = false;
-  m_blaster.spriteX = -1.5;
-  m_blaster.spriteY = -0.4;
-  m_blaster.falling = false;
+  m_blaster = {
+    /*burstAnim*/ Animation(a_missleTextureId, 0.25f, 3, 0, 4, 1, 2, ONCE),
+    /*flyAnim*/ Animation(a_missleTextureId, 0.5f, 0.25f, 0, 0, 1, 1, 0, LOOP),
+    /*spriteX*/ -1.5,
+    /*spriteY*/ -0.4,
+    /*foe*/ false,
+    /*damage*/ 1.5,
+    /*textureId*/ a_missleTextureId,
+    /*falling*/ false,
+  };
+}
+
+Player::~Player() {
+  delete m_standAnim;
+  delete m_walkAnim;
+  delete m_jumpAnim;
+  delete m_fallAnim;
 }

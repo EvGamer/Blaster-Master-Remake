@@ -5,13 +5,13 @@
 #include "mapArray.h"
 
 struct MissleType {
-  Animation *burstAnim;
-  Animation *flyAnim;
+  Animation burstAnim;
+  Animation flyAnim;
   float spriteX;
   float spriteY;
   bool foe;
   float damage;
-  GLuint *texture;
+  GLuint textureId;
   bool falling;
 };
 
@@ -23,8 +23,8 @@ struct TileType {
 };
 
 struct Missle {
-//  Animation *burstAnim;
-//  Animation *flyAnim;
+  Animation burstAnim;
+  Animation flyAnim;
   float spriteX;
   float spriteY;
   float x;
@@ -35,10 +35,6 @@ struct Missle {
   bool foe;
   bool falling;
   float damage;
-//  ~Missle() {
-//    delete burstAnim;
-//    delete flyAnim;
-//  }
 };
 
 class World {
@@ -82,4 +78,5 @@ class World {
   void add(int tx, int ty, bool solid);
   void drawLevel(float scrX, float scrY);
   World(std::string fileName, float TilesInLine);
+  ~World();
 };
