@@ -1,8 +1,7 @@
-
+#include <windows.h>
 #include <gl/gl.h>
 #include <gl/glu.h>
 #include <math.h>
-#include <windows.h>
 
 #include <string>
 

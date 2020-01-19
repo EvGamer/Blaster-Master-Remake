@@ -16,7 +16,7 @@
 					<folderInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.410800042." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.mingw.exe.debug.102615901" name="MinGW GCC" superClass="cdt.managedbuild.toolchain.gnu.mingw.exe.debug">
 							<targetPlatform binaryParser="org.eclipse.cdt.core.PE" id="cdt.managedbuild.target.gnu.platform.mingw.exe.debug.568185011" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.mingw.exe.debug"/>
-							<builder buildPath="${workspace_loc:/Blaster-Master-Remake}/Debug" id="cdt.managedbuild.tool.gnu.builder.mingw.base.1908481700" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="cdt.managedbuild.tool.gnu.builder.mingw.base"/>
+							<builder buildPath="${workspace_loc:/Blaster-Master-Remake}/Debug" id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder.2106539612" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder"/>
 							<tool id="cdt.managedbuild.tool.gnu.assembler.mingw.exe.debug.501589126" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.mingw.exe.debug">
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1887086789" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>

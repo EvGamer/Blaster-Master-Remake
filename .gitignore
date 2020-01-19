@@ -1,6 +1,8 @@
 .o
 .exe
-
+CMakeFiles
+CMakeCache.txt
 Debug
 Release
 .metadata
+.vs

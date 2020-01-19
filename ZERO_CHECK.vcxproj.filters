@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\Projects\eclipse\Blaster-Master-Remake\CMakeFiles\cfce4a3cd925cbe21cfc1138a286b27d\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{EC4E1E1F-5EC0-345C-8C4A-1CAB091641AA}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
