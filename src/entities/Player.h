@@ -1,6 +1,5 @@
-
-
-#include "../../engine/World/World.h"
+#include "../engine/World.h"
+#pragma once
 
 class Player {
  protected:

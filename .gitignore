@@ -6,3 +6,5 @@ Debug
 Release
 .metadata
 .vs
+.vsxproj*
+.sln

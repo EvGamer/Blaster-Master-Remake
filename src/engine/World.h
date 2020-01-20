@@ -1,7 +1,7 @@
 #pragma once
 #include <list>
 
-#include "../../graphics/Animation/Animation.h"
+#include "../graphics/Animation.h"
 #include "mapArray.h"
 
 struct MissleType {
