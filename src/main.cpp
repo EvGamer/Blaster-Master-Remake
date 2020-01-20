@@ -4,7 +4,9 @@
  **************************/
 //
 
-#include "utils/enemylist.h"
+#include "entities/Enemy.h"
+#include "entities/EnemyFactory.h"
+#include <list>
 
 unsigned int key;
 
@@ -20,29 +22,34 @@ unsigned char n = 0;
  *
  **************************/
 
-void spawnEnemies(enemyList *jerks, GLuint texEnemy, World *Area) {
-  jerks->add(22, 11, -1, texEnemy, Area);
-  jerks->add(24, 16, 1, texEnemy, Area);
-  jerks->add(30, 16, 1, texEnemy, Area);
-  jerks->add(12, 24, -1, texEnemy, Area);
-  jerks->add(18, 20, -1, texEnemy, Area);
-  jerks->add(19, 28, 1, texEnemy, Area);
-  jerks->add(27, 32, 1, texEnemy, Area);
-  jerks->add(35, 36, 1, texEnemy, Area);
-  jerks->add(43, 43, -1, texEnemy, Area);
-  jerks->add(22, 44, -1, texEnemy, Area);
-  jerks->add(9, 49, 1, texEnemy, Area);
-  jerks->add(15, 53, -1, texEnemy, Area);
-  jerks->add(29, 49, -1, texEnemy, Area);
-  jerks->add(36, 53, -1, texEnemy, Area);
-  jerks->add(46, 49, -1, texEnemy, Area);
-  jerks->add(52, 40, 1, texEnemy, Area);
-  jerks->add(52, 32, -1, texEnemy, Area);
-  jerks->add(52, 24, -1, texEnemy, Area);
-  jerks->add(52, 16, -1, texEnemy, Area);
-  jerks->add(61, 36, -1, texEnemy, Area);
-  jerks->add(61, 28, -1, texEnemy, Area);
-  jerks->add(61, 20, -1, texEnemy, Area);
+std::list<Enemy> spawnEnemies(GLuint texEnemy, World &world) {
+  EnemyFactory factory(texEnemy, &world);
+
+  return std::list<Enemy> {
+    factory.create(22, 11, -1),
+    factory.create(22, 11, -1),
+    factory.create(24, 16, 1),
+    factory.create(30, 16, 1),
+    factory.create(12, 24, -1),
+    factory.create(18, 20, -1),
+    factory.create(19, 28, 1),
+    factory.create(27, 32, 1),
+    factory.create(35, 36, 1),
+    factory.create(43, 43, -1),
+    factory.create(22, 44, -1),
+    factory.create(9, 49, 1),
+    factory.create(15, 53, -1),
+    factory.create(29, 49, -1),
+    factory.create(36, 53, -1),
+    factory.create(46, 49, -1),
+    factory.create(52, 40, 1),
+    factory.create(52, 32, -1),
+    factory.create(52, 24, -1),
+    factory.create(52, 16, -1),
+    factory.create(61, 36, -1),
+    factory.create(61, 28, -1),
+    factory.create(61, 20, -1),
+  };
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam,
@@ -100,8 +107,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
   GLuint texMessage = loadTexture("Sprites\\Message.tga");
   GLuint texVictory = loadTexture("Sprites\\Victory.tga");
   GLuint texBack = loadTextureL("Sprites\\Background.bmp");  //
-  enemyList jerks;
-  spawnEnemies(&jerks, texEnemy, &Area3);
+  std::list<Enemy> jerks = spawnEnemies(texEnemy, Area3);
+  
   Player sophia(10, 12, texSophia, texBlaster, &Area3);
 
   // testdraw();
@@ -154,8 +161,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       Area3.drawLevel(camX, camY);
       // sophia.drawGizmo();
       sophia.update();
-      jerks.update(&sophia);
-      jerks.draw();
+      
+      for (auto& enemy : jerks) {
+        enemy.update(&sophia);
+        enemy.draw();
+      }
+      jerks.remove_if([](Enemy &e){
+        return e.is_dead();
+      });
       sophia.draw();
       // drawing healthBar
       const float HBx = 0;
@@ -169,23 +182,20 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       drawSprite(texHealthBar, HBx, HBy, HBx1, HBy + 4 * rate, 0.5, 1 - rate,
                  1, 1);
       if (sophia.is_dead()) {
-        jerks.self_destruct();
         glColor3f(1, 1, 1);
         drawSprite(texMessage, 15, 15, 23, 23, 0, 0, 1, 1);
         glColor3f(1, 0, 0);
         if (keyRestart) {
           sophia.revive();
 
-          spawnEnemies(&jerks, texEnemy, &Area3);
+          jerks = spawnEnemies(texEnemy, Area3);
         }
       }
       if ((sx >= 53) && (sx <= 56) && (sy >= 7) && (sy <= 9)) {
         drawSprite(texVictory, 15, 15, 23, 23, 0, 0, 1, 1);
-        ;
         if (keyRestart) {
-          jerks.self_destruct();
           sophia.revive();
-          spawnEnemies(&jerks, texEnemy, &Area3);
+          jerks = spawnEnemies(texEnemy, Area3);
         }
       }
       SwapBuffers(hDC);
