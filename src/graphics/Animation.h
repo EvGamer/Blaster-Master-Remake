@@ -1,4 +1,5 @@
-#include "../utils.h"
+#include "utils.h"
+#pragma once
 
 enum playType { ONCE = 0x00, LOOP = 0x01, REVERSE = 0x02 };
 

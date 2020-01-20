@@ -6,3 +6,7 @@ Debug
 Release
 .metadata
 .vs
+.vcxproj
+.vcxproj.*
+.sln
+.vcxproj.filters

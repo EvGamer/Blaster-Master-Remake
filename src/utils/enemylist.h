@@ -1,4 +1,4 @@
-#include "../entities/Enemy/Enemy.h"
+#include "../entities/Enemy.h"
 
 class enemyList {
  private:

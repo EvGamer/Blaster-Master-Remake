@@ -1,4 +1,5 @@
-#include "../Player/Player.h"
+#include "Player.h"
+#pragma once
 
 class Enemy {
  private:

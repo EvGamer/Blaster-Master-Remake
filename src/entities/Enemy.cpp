@@ -1,5 +1,4 @@
-
-#include "../../entities/Enemy/Enemy.h"
+#include "Enemy.h"
 
 const int RELOAD_TIME = 60;
 
