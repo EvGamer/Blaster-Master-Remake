@@ -6,15 +6,15 @@ inline void Animation::initialize(GLuint iTexture, float iSizeX, float iSizeY,
                                   uint8_t iColums, unsigned iDelay,
                                   playType iPlay) {
   m_play = iPlay;
-  m_texture = iTexture;
+  _textureId = iTexture;
   m_timer = iDelay;
   m_delay = iDelay;
   m_x0 = iX0;
   m_y0 = iY0;
-  m_x = 0;
-  m_y = 0;
+  _x = 0;
+  _y = 0;
   m_sizeX = iSizeX;
-  m_sizeY = iSizeY;
+  _height = iSizeY;
   m_rows = iRows;
   m_colums = iColums;
   if (m_delay != 0) {
@@ -42,26 +42,26 @@ Animation::Animation(GLuint iTexture, float iSize, uint8_t iX0, uint8_t iY0,
 unsigned Animation ::draw(char dir, float x1, float y1, float x2, float y2) {
   float fx, fx1, fy, fy1;
   if (dir > 0) {
-    fx = (m_x + m_x0) * m_sizeX;
+    fx = (_x + m_x0) * m_sizeX;
     fx1 = fx + m_sizeX;
   } else {
-    fx1 = (m_x + m_x0) * m_sizeX, fx = fx1 + m_sizeX;
+    fx1 = (_x + m_x0) * m_sizeX, fx = fx1 + m_sizeX;
   }
-  fy = (m_y + m_y0) * m_sizeY;
-  fy1 = fy + m_sizeY;
+  fy = (_y + m_y0) * _height;
+  fy1 = fy + _height;
   const float by = 0.003;
   float bx = by * dir;
 
-  drawSprite(m_texture, x1, y1, x2, y2, fx, fy + by, fx1 - bx, fy1);
+  drawSprite(_textureId, x1, y1, x2, y2, fx, fy + by, fx1 - bx, fy1);
 
   if (!m_stop) {
     if (m_timer == 0) {
       m_timer = m_delay;
-      m_x++;
-      m_y++;
-      m_x = m_x % m_colums;
-      m_y = m_y % m_rows;
-      if ((m_play != LOOP) && (m_x == 0) && (m_y == 0)) {
+      _x++;
+      _y++;
+      _x = _x % m_colums;
+      _y = _y % m_rows;
+      if ((m_play != LOOP) && (_x == 0) && (_y == 0)) {
         m_stop = true;
       }
     } else {
@@ -69,5 +69,5 @@ unsigned Animation ::draw(char dir, float x1, float y1, float x2, float y2) {
     };
   }
   glColor3f(1, 1, 1);
-  return m_x;
+  return _x;
 }

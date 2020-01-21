@@ -70,7 +70,7 @@ bool World::getFrict(unsigned char i, unsigned char j) {
 }
 
 bool isMissleExploded(Missle &value) {
-  return value.burstAnim.is_end();
+  return value.burstAnim.isEnded();
 }
 
 void World::update() {

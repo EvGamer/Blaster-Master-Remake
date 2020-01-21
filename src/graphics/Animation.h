@@ -6,17 +6,17 @@ enum playType { ONCE = 0x00, LOOP = 0x01, REVERSE = 0x02 };
 class Animation {
  private:
   playType m_play;
-  GLuint m_texture;
+  GLuint _textureId;
   unsigned m_timer;
   unsigned m_delay;
-  unsigned char m_x;
-  unsigned char m_y;
+  unsigned char _x;
+  unsigned char _y;
   unsigned char m_rows;
   unsigned char m_colums;
   unsigned char m_x0;
   unsigned char m_y0;
   float m_sizeX;
-  float m_sizeY;
+  float _height;
   bool m_stop;
 
  public:
@@ -36,9 +36,9 @@ class Animation {
                          uint8_t iColums, unsigned iDelay, playType iPlay);
 
   unsigned draw(char dir, float x1, float y1, float x2, float y2);
-  inline void setCol(unsigned col) { m_x = col; }
-  inline void setRow(unsigned rou) { m_y = rou; }
+  inline void setCol(unsigned col) { _x = col; }
+  inline void setRow(unsigned rou) { _y = rou; }
   inline void freeze() { m_stop = true; }
   inline void unfreeze() { m_stop = false; }
-  inline bool is_end() { return m_stop; }
+  inline bool isEnded() { return m_stop; }
 };

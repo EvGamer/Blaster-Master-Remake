@@ -1,162 +1,161 @@
 #include "Player.h"
 
-const float CANNON_Y = 0.6;
-const float CANNON_Y_FALLING = 0.4;
-const float CANNON_Y_JUMPING = 0.6;
-const float JUMP_HEIGHT = 3;
+using namespace PlayerConstants;
 
 void Player::move(int dirrection) {
-  if (m_control) {
-    m_dir = dirrection;
-    if (m_speedX < 1) m_speedX += 0.1;
-    if (curAnim == m_standAnim) curAnim = m_walkAnim;
-    curAnim->unfreeze();
+  if (_isControlable) {
+    _dirrection = dirrection;
+    if (_speedX < 1) _speedX += 0.1;
+    if (_currentAnimation == &_standAnimation) {
+      _currentAnimation = &_walkAnimation;
+    }
+    _currentAnimation->unfreeze();
   }
 }
 
 void Player::jump() {
-  if (m_control) {
-    m_timeJumpPressed--;
-    if (m_ground) {
-      m_speedY = m_jumpHeight;
-      m_timeJumpPressed = 20;
-      m_ground = false;
-      m_jumpLimit = m_y + JUMP_HEIGHT;
-      curAnim = (m_jumpAnim);
-      m_cannonY = CANNON_Y;
+  if (_isControlable) {
+    _jumpBeingPressedDuration--;
+    if (_isOnGround) {
+      _speedY = _maxJumpHeight;
+      _jumpBeingPressedDuration = 20;
+      _isOnGround = false;
+      _halfJumpMaxY = _y + JUMP_HEIGHT;
+      _currentAnimation = &_jumpAnimation;
+      _missleInitialY = CANNON_Y;
     } else {
-      m_timeJumpPressed--;
+      _jumpBeingPressedDuration--;
     }
   }
 }
 
 void Player::hurt(float damage) {
-  if (m_deathClock <= 0) {
-    m_deathClock = 45;
-    m_speedX *= 0.5;
-    m_speedY += 1;
-    m_health -= damage;
+  if (_timeToLiveWithoutHealth <= 0) {
+    _timeToLiveWithoutHealth = 45;
+    _speedX *= 0.5;
+    _speedY += 1;
+    _health -= damage;
     damage = 0;
   }
 }
 
-void Player::shoot() {  // if(m_control)
-  if (m_weaponHeat <= 0) {
-    m_world->addMissle(m_cannonX, m_y + m_cannonY, 0.3 * m_dir, 0, &m_blaster);
-    m_weaponHeat = 15;
+void Player::shoot() {  // if(_isControlable)
+  if (_weaponCooldown <= 0) {
+    _world->addMissle(_missleInitialX, _y + _missleInitialY, 0.3 * _dirrection, 0, &_missleType);
+    _weaponCooldown = 15;
   }
 }
 
 void Player::continueFalling() {
-  if (m_world->collide(m_x + 0.05, m_y) ||
-      m_world->collide(m_x + m_sizeX - 0.05, m_y)) {
-    m_y = floor(m_y + 1);
-    m_speedY = 0;
-    m_ground = true;
-    curAnim = m_standAnim;
-    m_cannonY = CANNON_Y_FALLING;
+  if (_world->collide(_x + 0.05, _y) ||
+      _world->collide(_x + _width - 0.05, _y)) {
+    _y = floor(_y + 1);
+    _speedY = 0;
+    _isOnGround = true;
+    _currentAnimation = &_standAnimation;
+    _missleInitialY = CANNON_Y_FALLING;
   } else {
-    m_ground = false;
-    curAnim = m_fallAnim;
+    _isOnGround = false;
+    _currentAnimation = &_fallAnimation;
   }
 }
 
 void Player::update() {
-  if (curAnim != m_deathAnim) {
-    m_world->hit(m_x, m_y, m_x + m_sizeX, m_y + m_sizeY, true);
-    if (m_deathClock > 0) m_deathClock--;
-    if (m_weaponHeat > 0) m_weaponHeat--;
-    m_y += m_JumpSpeed * m_speedY;
+  if (_currentAnimation != &_deathAnimation) {
+    _world->hit(_x, _y, _x + _width, _y + _height, true);
+    if (_timeToLiveWithoutHealth > 0) _timeToLiveWithoutHealth--;
+    if (_weaponCooldown > 0) _weaponCooldown--;
+    _y += _jumpSpeed * _speedY;
 
-    if ((m_y > m_jumpLimit) && m_timeJumpPressed > 0) {
-      m_speedY = 0;
-      m_timeJumpPressed = 0;
+    if ((_y > _halfJumpMaxY) && _jumpBeingPressedDuration > 0) {
+      _speedY = 0;
+      _jumpBeingPressedDuration = 0;
     }
-    if (m_speedY <= 0) continueFalling();
+    if (_speedY <= 0) continueFalling();
 
-    m_x += m_dir * m_speedX * 0.11;
+    _x += _dirrection * _speedX * 0.11;
     // if
-    // (!(m_world->collide(m_x,m_y-1)&&m_world->collide(m_x+m_sizeX,m_y-1))){m_ground=false;}
-    m_speedY -= m_JumpSpeed * m_jumpHeight * 0.5 / m_world->getGravity();
-    m_speedX -= 0.05;
+    // (!(_world->collide(_x,_y-1)&&_world->collide(_x+_width,_y-1))){_isOnGround=false;}
+    _speedY -= _jumpSpeed * _maxJumpHeight * 0.5 / _world->getGravity();
+    _speedX -= 0.05;
 
-    if (m_speedX < 0) {
-      m_speedX = 0;
+    if (_speedX < 0) {
+      _speedX = 0;
     };
-    if (m_dir > 0) {
-      if (m_world->collide(m_x + m_sizeX, m_y)) {
-        m_x = floor(m_x + 2) - m_sizeX;
-        m_speedX = 0;
+    if (_dirrection > 0) {
+      if (_world->collide(_x + _width, _y)) {
+        _x = floor(_x + 2) - _width;
+        _speedX = 0;
       }
-      m_cannonX = m_x + m_sizeX;
+      _missleInitialX = _x + _width;
     } else {
-      if (m_world->collide(m_x, m_y)) {
-        m_x = floor(m_x + 1);
-        m_speedX = 0;
+      if (_world->collide(_x, _y)) {
+        _x = floor(_x + 1);
+        _speedX = 0;
       }
-      m_cannonX = m_x;
+      _missleInitialX = _x;
     }
 
-    if (m_speedY > 0) {
-      if ((m_world->collide(m_x, m_y + m_sizeY)) ||
-          (m_world->collide(m_x + m_sizeX - 0.1f, m_y + m_sizeY)))  //
+    if (_speedY > 0) {
+      if ((_world->collide(_x, _y + _height)) ||
+          (_world->collide(_x + _width - 0.1f, _y + _height)))  //
       {
-        m_y = floor(m_y + m_sizeY) - m_sizeY;
-        m_speedY = 0;
+        _y = floor(_y + _height) - _height;
+        _speedY = 0;
       };
     };
 
-    if ((m_speedX > 0.3) && m_ground) {
-      curAnim = m_walkAnim;
-      curAnim->unfreeze();
+    if ((_speedX > 0.3) && _isOnGround) {
+      _currentAnimation = &_walkAnimation;
+      _currentAnimation->unfreeze();
     }
 
-    m_hitDamage = m_world->hit(m_x - 0.5, m_y, m_x + m_sizeX + 0.5,
-                               m_y + m_sizeY + 0.5, true);
-    if (m_hitDamage != 0) hurt(m_hitDamage);
-    if (m_health <= 0) {
-      if (m_ground) {
-        curAnim = m_deathAnim;
-        m_control = false;
-        m_speedX = 0;
+    _hitDamage = _world->hit(_x - 0.5, _y, _x + _width + 0.5,
+                               _y + _height + 0.5, true);
+    if (_hitDamage != 0) hurt(_hitDamage);
+    if (_health <= 0) {
+      if (_isOnGround) {
+        _currentAnimation = &_deathAnimation;
+        _isControlable = false;
+        _speedX = 0;
       } else {
-        m_deathClock = 2;
+        _timeToLiveWithoutHealth = 2;
       }
     }
   }
 }
 
 void Player::revive() {
-  m_deathAnim->unfreeze();
-  curAnim = m_standAnim;
-  m_health = 8;
-  m_x = m_startX;
-  m_y = m_startY;
-  m_control = true;
+  _deathAnimation.unfreeze();
+  _currentAnimation = &_standAnimation;
+  _health = 8;
+  _x = _initialX;
+  _y = _initialY;
+  _isControlable = true;
 }
 
 void Player::drawGizmo()  // debug option. Displays collision box.
 {
   glColor3f(0, 1, 1);
   glBegin(GL_QUADS);
-  glVertex2f(floor(m_x), floor(m_y));
-  glVertex2f(floor(m_x), ceil(m_y + m_sizeY));
-  glVertex2f(ceil(m_x + m_sizeX), ceil(m_y + m_sizeY));
-  glVertex2f(ceil(m_x + m_sizeX), floor(m_y));
+  glVertex2f(floor(_x), floor(_y));
+  glVertex2f(floor(_x), ceil(_y + _height));
+  glVertex2f(ceil(_x + _width), ceil(_y + _height));
+  glVertex2f(ceil(_x + _width), floor(_y));
   glEnd();
 }
 
 void Player::draw() {
   float x1, x2;
-  if (m_dir < 0) {
-    x1 = m_x;
-    x2 = m_x + 2;
+  if (_dirrection < 0) {
+    x1 = _x;
+    x2 = _x + 2;
   } else {
-    x2 = m_x + m_sizeX;
+    x2 = _x + _width;
     x1 = x2 - 2;
   };
-  if (curAnim != m_deathAnim) {
-    switch (m_deathClock % 3) {
+  if (_currentAnimation != &_deathAnimation) {
+    switch (_timeToLiveWithoutHealth % 3) {
       case 0:
         glColor3f(1, 1, 1);
         break;
@@ -168,48 +167,47 @@ void Player::draw() {
         break;
     }
 
-    curAnim->setCol(m_curFrame);
+    _currentAnimation->setCol(_currentAnimationFrameIndex);
     // Preserving wheel position between animations
 
-    m_curFrame = curAnim->draw(-m_dir, x1, m_y, x2, m_y + 2);
-    curAnim->freeze();
+    _currentAnimationFrameIndex = _currentAnimation->draw(-_dirrection, x1, _y, x2, _y + 2);
+    _currentAnimation->freeze();
   } else
-    curAnim->draw(-1, x1 - 0.5, m_y, x1 + 3.5, m_y + 4);
+    _currentAnimation->draw(-1, x1 - 0.5, _y, x1 + 3.5, _y + 4);
 }
 
 Player::Player(float a_x, float a_y, GLuint a_textureId,
                GLuint a_missleTextureId, World *a_world) {
-  m_x = a_x;
-  m_y = a_y;
-  m_dir = 1;
-  m_cannonY = CANNON_Y;
-  m_cannonX = m_x;
-  m_hitDamage = 0;
-  m_jumpLimit = m_y + JUMP_HEIGHT;
-  m_timeJumpPressed = 0;
-  m_roll = false;
-  m_world = a_world;
-  m_startX = m_x;
-  m_startY = m_y;
-  m_speedX = 0;
-  m_speedY = 0;
-  m_sizeX = 26.0 / 16.0;
-  m_sizeY = 18.0 / 16.0;
-  m_control = true;
+  _x = a_x;
+  _y = a_y;
+  _dirrection = 1;
+  _missleInitialY = CANNON_Y;
+  _missleInitialX = _x;
+  _hitDamage = 0;
+  _halfJumpMaxY = _y + JUMP_HEIGHT;
+  _jumpBeingPressedDuration = 0;
+  _world = a_world;
+  _initialX = _x;
+  _initialY = _y;
+  _speedX = 0;
+  _speedY = 0;
+  _width = 26.0 / 16.0;
+  _height = 18.0 / 16.0;
+  _isControlable = true;
 
   // Animation
-  m_textureId = a_textureId;
-  m_missleTextureId = a_missleTextureId;
-  m_standAnim = new Animation(m_textureId, 0.125, 0, 0, 1, 4, 1, LOOP);
-  m_walkAnim = new Animation(m_textureId, 0.125, 0, 0, 3, 4, 3, LOOP);
-  m_jumpAnim = new Animation(m_textureId, 0.125, 0, 3, 1, 4, 2, LOOP);
-  m_fallAnim = new Animation(m_textureId, 0.125, 0, 2, 1, 4, 2, LOOP);
-  m_deathAnim = new Animation(m_textureId, 0.25, 0, 2, 1, 3, 3, ONCE);
-  curAnim = m_standAnim;
-  m_curFrame = 0;
+  _textureId = a_textureId;
+  _missleTextureId = a_missleTextureId;
+  _standAnimation = Animation(_textureId, 0.125, 0, 0, 1, 4, 1, LOOP);
+  _walkAnimation = Animation(_textureId, 0.125, 0, 0, 3, 4, 3, LOOP);
+  _jumpAnimation = Animation(_textureId, 0.125, 0, 3, 1, 4, 2, LOOP);
+  _fallAnimation = Animation(_textureId, 0.125, 0, 2, 1, 4, 2, LOOP);
+  _deathAnimation = Animation(_textureId, 0.25, 0, 2, 1, 3, 3, ONCE);
+  _currentAnimation = &_standAnimation;
+  _currentAnimationFrameIndex = 0;
 
   // Weapon
-  m_blaster = {
+  _missleType = {
     /*burstAnim*/ Animation(a_missleTextureId, 0.25f, 3, 0, 4, 1, 2, ONCE),
     /*flyAnim*/ Animation(a_missleTextureId, 0.5f, 0.25f, 0, 0, 1, 1, 0, LOOP),
     /*spriteX*/ -1.5,
@@ -219,11 +217,4 @@ Player::Player(float a_x, float a_y, GLuint a_textureId,
     /*textureId*/ a_missleTextureId,
     /*falling*/ false,
   };
-}
-
-Player::~Player() {
-  delete m_standAnim;
-  delete m_walkAnim;
-  delete m_jumpAnim;
-  delete m_fallAnim;
 }

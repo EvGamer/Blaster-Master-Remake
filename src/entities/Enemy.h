@@ -1,32 +1,40 @@
 #include "Player.h"
 #pragma once
 
+namespace EnemyConstants {
+  const float SPEED_X = 1;
+}
+
+using namespace EnemyConstants;
+
 class Enemy {
  private:
-  float m_health;
-  bool m_hit;
-  float m_x;
-  float m_y;
-  float m_sizeX;
-  float m_sizeY;
-  float m_speedX = 1;
-  float m_speedY;
-  char m_dir;
-  int m_reload;
-  int m_heat;
-  char m_shotLeft = 0;
-  Animation *m_deathAnim;
-  Animation *m_walkAnim;
-  Animation *m_shootAnim;
-  Animation *m_curAnim;
-  GLuint m_texture;
-  World *m_world;
-  MissleType m_grenade;
+  float _health;
+  bool _isHit;
+  float _x;
+  float _y;
+  float _width;
+  float _height;
+  float _speedX = SPEED_X;
+  float _speedY;
+  char _dirrection;
+  Animation _deathAnimation;
+  Animation _walkAnimation;
+  Animation _shootAnimation;
+  Animation *_currentAnimation;
+  GLuint _textureId;
+  World *_world;
+
+  //ToDo replace by weapon class
+  int _weaponCooldown;
+  char _weaponMagazine = 0;
+  int _weaponReloadCooldown;
+  MissleType _missleType;
 
  public:
   Enemy(float a_x, float a_y, char a_dirrection, GLuint a_textureId, World *a_world);
-  inline bool is_dead() { return m_deathAnim->is_end(); }
-  void self_destruct();
+  inline bool isDead() { return _deathAnimation.isEnded(); }
+  void kill();
   void update(Player *p1);
   void draw();
 };

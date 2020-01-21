@@ -167,7 +167,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         enemy.draw();
       }
       jerks.remove_if([](Enemy &e){
-        return e.is_dead();
+        return e.isDead();
       });
       sophia.draw();
       // drawing healthBar
@@ -181,7 +181,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       drawSprite(texHealthBar, HBx, HBy, HBx1, HBy1, 0, 0, 0.5, 1);
       drawSprite(texHealthBar, HBx, HBy, HBx1, HBy + 4 * rate, 0.5, 1 - rate,
                  1, 1);
-      if (sophia.is_dead()) {
+      if (sophia.isDead()) {
         glColor3f(1, 1, 1);
         drawSprite(texMessage, 15, 15, 23, 23, 0, 0, 1, 1);
         glColor3f(1, 0, 0);
