@@ -5,7 +5,7 @@ using namespace PlayerConstants;
 void Player::move(int dirrection) {
   if (_isControlable) {
     _dirrection = dirrection;
-    if (_speedX < 1) _speedX += 0.1;
+    if (_speedX < MAX_SPEED_X) _speedX += WALK_ACCELERATION;
     if (_currentAnimation == &_standAnimation) {
       _currentAnimation = &_walkAnimation;
     }
@@ -18,11 +18,11 @@ void Player::jump() {
     _jumpBeingPressedDuration--;
     if (_isOnGround) {
       _speedY = _maxJumpHeight;
-      _jumpBeingPressedDuration = 20;
+      _jumpBeingPressedDuration = REQUIRED_FULL_JUMP_PRESSING_DURATION;
       _isOnGround = false;
       _halfJumpMaxY = _y + JUMP_HEIGHT;
       _currentAnimation = &_jumpAnimation;
-      _missleInitialY = CANNON_Y;
+      _missleRelativeInitialY = MISSLE_RELATIVE_Y;
     } else {
       _jumpBeingPressedDuration--;
     }
@@ -31,9 +31,9 @@ void Player::jump() {
 
 void Player::hurt(float damage) {
   if (_timeToLiveWithoutHealth <= 0) {
-    _timeToLiveWithoutHealth = 45;
-    _speedX *= 0.5;
-    _speedY += 1;
+    _timeToLiveWithoutHealth = LIFE_WITHOUT_HEALTH_DURATION;
+    _speedX *= HIT_SPEED_COEFFICIENT;
+    _speedY += HIT_ACCELERATION_Y;
     _health -= damage;
     damage = 0;
   }
@@ -41,19 +41,28 @@ void Player::hurt(float damage) {
 
 void Player::shoot() {  // if(_isControlable)
   if (_weaponCooldown <= 0) {
-    _world->addMissle(_missleInitialX, _y + _missleInitialY, 0.3 * _dirrection, 0, &_missleType);
+    _world->addMissle(
+      _missleInitialX,
+      _y + _missleRelativeInitialY,
+      MISSLE_SPEED * _dirrection,
+      0,
+      &_missleType
+    );
     _weaponCooldown = 15;
   }
 }
 
-void Player::continueFalling() {
-  if (_world->collide(_x + 0.05, _y) ||
-      _world->collide(_x + _width - 0.05, _y)) {
+void Player::tryHittingGround() {
+  bool isHitGround = (
+    _world->collide(_x + COLLISION_MARGIN, _y)
+    || _world->collide(_x + _width - COLLISION_MARGIN, _y)
+  ); 
+  if (isHitGround) {
     _y = floor(_y + 1);
     _speedY = 0;
     _isOnGround = true;
     _currentAnimation = &_standAnimation;
-    _missleInitialY = CANNON_Y_FALLING;
+    _missleRelativeInitialY = MISSLE_RELATIVE_Y_FALLING;
   } else {
     _isOnGround = false;
     _currentAnimation = &_fallAnimation;
@@ -71,20 +80,20 @@ void Player::update() {
       _speedY = 0;
       _jumpBeingPressedDuration = 0;
     }
-    if (_speedY <= 0) continueFalling();
+    if (_speedY <= 0) tryHittingGround();
 
-    _x += _dirrection * _speedX * 0.11;
+    _x += _dirrection * _speedX * SPEED_X_SCALE;
     // if
     // (!(_world->collide(_x,_y-1)&&_world->collide(_x+_width,_y-1))){_isOnGround=false;}
-    _speedY -= _jumpSpeed * _maxJumpHeight * 0.5 / _world->getGravity();
-    _speedX -= 0.05;
+    _speedY -= _jumpSpeed * _maxJumpHeight * JUMP_SPEED_COEFFICIENT / _world->getGravity();
+    _speedX -= DRAG_DECELLERATION_X;
 
     if (_speedX < 0) {
       _speedX = 0;
     };
     if (_dirrection > 0) {
       if (_world->collide(_x + _width, _y)) {
-        _x = floor(_x + 2) - _width;
+        _x = floor(_x + _width) - _width;
         _speedX = 0;
       }
       _missleInitialX = _x + _width;
@@ -97,15 +106,18 @@ void Player::update() {
     }
 
     if (_speedY > 0) {
-      if ((_world->collide(_x, _y + _height)) ||
-          (_world->collide(_x + _width - 0.1f, _y + _height)))  //
-      {
+      bool isCollidedWithTile = (
+        _world->collide(_x, _y + _height)
+        || _world->collide(_x + _width - COLLISION_FORWARD_MARGIN, _y + _height)
+        // this hack used to avoid between block collision
+      );
+      if (isCollidedWithTile) {
         _y = floor(_y + _height) - _height;
         _speedY = 0;
       };
     };
 
-    if ((_speedX > 0.3) && _isOnGround) {
+    if (_isOnGround && _speedX > WALKING_ANIMATION_SPEED_THRESHOLD) {
       _currentAnimation = &_walkAnimation;
       _currentAnimation->unfreeze();
     }
@@ -119,7 +131,7 @@ void Player::update() {
         _isControlable = false;
         _speedX = 0;
       } else {
-        _timeToLiveWithoutHealth = 2;
+        _timeToLiveWithoutHealth = LIFE_WITHOUT_HEALTH_AFTER_LANDING_DURATION;
       }
     }
   }
@@ -128,7 +140,7 @@ void Player::update() {
 void Player::revive() {
   _deathAnimation.unfreeze();
   _currentAnimation = &_standAnimation;
-  _health = 8;
+  _health = MAX_HEALTH;
   _x = _initialX;
   _y = _initialY;
   _isControlable = true;
@@ -181,7 +193,7 @@ Player::Player(float a_x, float a_y, GLuint a_textureId,
   _x = a_x;
   _y = a_y;
   _dirrection = 1;
-  _missleInitialY = CANNON_Y;
+  _missleRelativeInitialY = MISSLE_RELATIVE_Y;
   _missleInitialX = _x;
   _hitDamage = 0;
   _halfJumpMaxY = _y + JUMP_HEIGHT;
@@ -198,11 +210,11 @@ Player::Player(float a_x, float a_y, GLuint a_textureId,
   // Animation
   _textureId = a_textureId;
   _missleTextureId = a_missleTextureId;
-  _standAnimation = Animation(_textureId, 0.125, 0, 0, 1, 4, 1, LOOP);
-  _walkAnimation = Animation(_textureId, 0.125, 0, 0, 3, 4, 3, LOOP);
-  _jumpAnimation = Animation(_textureId, 0.125, 0, 3, 1, 4, 2, LOOP);
-  _fallAnimation = Animation(_textureId, 0.125, 0, 2, 1, 4, 2, LOOP);
-  _deathAnimation = Animation(_textureId, 0.25, 0, 2, 1, 3, 3, ONCE);
+  _standAnimation = Animation(_textureId, ANIMATION_FRAME_SIZE, 0, 0, 1, 4, 1, LOOP);
+  _walkAnimation = Animation(_textureId, ANIMATION_FRAME_SIZE, 0, 0, 3, 4, 3, LOOP);
+  _jumpAnimation = Animation(_textureId, ANIMATION_FRAME_SIZE, 0, 3, 1, 4, 2, LOOP);
+  _fallAnimation = Animation(_textureId, ANIMATION_FRAME_SIZE, 0, 2, 1, 4, 2, LOOP);
+  _deathAnimation = Animation(_textureId, DEATH_ANIMATION_FRAME_SIZE, 0, 2, 1, 3, 3, ONCE);
   _currentAnimation = &_standAnimation;
   _currentAnimationFrameIndex = 0;
 
