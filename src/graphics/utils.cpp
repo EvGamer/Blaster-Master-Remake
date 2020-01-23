@@ -2,7 +2,7 @@
 
 #include "../stdafx.h"
 #define STB_IMAGE_IMPLEMENTATION
-#include "../3rdParty/stb/stb_image.h"
+#include "../../thirdParty/stb/stb_image.h"
 
 void drawSprite(GLuint textureId, float x1, float y1, float x2, float y2,
                 float tx1, float ty1, float tx2, float ty2) {

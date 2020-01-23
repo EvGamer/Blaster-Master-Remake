@@ -11,3 +11,5 @@ Release
 *.sln
 *.vcxproj.filters
 *.cmake
+thirdParty/tinyxml2
+build
