@@ -1,8 +1,9 @@
 
 #include "World.h"
+#include "Map.h"
+#include "../typeAliases.h"
 
-
-World::World(std::string fileName, float TilesInLine) {
+World::World(String textureFileName, float TilesInLine) {
   // don't ask.
   for (int i = 0; i <= _MAP_SY; i++) {
     for (int j = 0; j < _MAP_SY; j++) {
@@ -11,12 +12,14 @@ World::World(std::string fileName, float TilesInLine) {
     };
   };
 
+  Map map("maps/Test.tmx");
+
   _num = 0;
   _size = 1 / TilesInLine;
   _lineLenght = TilesInLine;
   _gravity = 1;
   _friction = 0;
-  _texture = loadTexture(fileName);
+  _texture = loadTexture(textureFileName);
   _missles = new std::list<Missle>();
 }
 
@@ -62,11 +65,11 @@ float World::hit(float x1, float y1, float x2, float y2, bool foe) {
 bool World::collide(float x, float y) {
   unsigned i = floor(x);
   unsigned j = floor(y);
-  return _tile[m_map[(_MAP_SY - 1 - j) * _MAP_SX + i] - 1].solid;
+  return _tileSet[m_map[(_MAP_SY - 1 - j) * _MAP_SX + i] - 1].isSolid;
 };
 
 bool World::getFrict(unsigned char i, unsigned char j) {
-  return _tile[m_map[(_MAP_SY - 1 - j) * _MAP_SX + i] - 1].friction;
+  return _tileSet[m_map[(_MAP_SY - 1 - j) * _MAP_SX + i] - 1].friction;
 }
 
 bool isMissleExploded(Missle &value) {
@@ -86,34 +89,34 @@ void World::update() {
 }
 
 void World::draw(int cx, int cy, unsigned char a_num) {
-  float tx = _tile[a_num].texX * _size;
-  float ty = _tile[a_num].texY * _size;
+  float tx = _tileSet[a_num].texX * _size;
+  float ty = _tileSet[a_num].texY * _size;
   float b = 0.001; // ToDo improve tile rendering and remove this crutch
   // cy=m_lineLenght-1-cy;
   drawSprite(_texture, cx, cy, cx + 1, cy + 1, tx + b, ty + b,
              tx + _size - b, ty + _size - b);
 };
 
-void World::set(unsigned char i, int tx, int ty, bool solid, float fric) {
-  _tile[i].solid = solid;
-  _tile[i].texX = tx;
-  _tile[i].texY = _lineLenght - ty;
-  _tile[i].friction = fric;
+void World::set(unsigned char i, int tx, int ty, bool isSolid, float fric) {
+  _tileSet[i].isSolid = isSolid;
+  _tileSet[i].texX = tx;
+  _tileSet[i].texY = _lineLenght - ty;
+  _tileSet[i].friction = fric;
 }
 
-void World::set(unsigned char i, int tx, int ty, bool solid) {
-  _tile[i].solid = solid;
-  _tile[i].texX = tx;
-  _tile[i].texY = ty;
-  if (solid) {
-    _tile[i].friction = _friction;
+void World::set(unsigned char i, int tx, int ty, bool isSolid) {
+  _tileSet[i].isSolid = isSolid;
+  _tileSet[i].texX = tx;
+  _tileSet[i].texY = ty;
+  if (isSolid) {
+    _tileSet[i].friction = _friction;
   } else {
-    _tile[i].friction = 0;
+    _tileSet[i].friction = 0;
   };
 
   /// float tileFriction = 0;
-  // if (solid) tileFriction = friction;
-  // set(i,tx,ty,solid,tileFriction);
+  // if (isSolid) tileFriction = friction;
+  // set(i,tx,ty,isSolid,tileFriction);
 }
 
 void World::setDefault(unsigned first, unsigned last) {
@@ -122,16 +125,16 @@ void World::setDefault(unsigned first, unsigned last) {
 }
 
 void World::setSolid(unsigned first, unsigned last) {
-  for (unsigned i = first; i <= last; i++) _tile[i - 1].solid = true;
+  for (unsigned i = first; i <= last; i++) _tileSet[i - 1].isSolid = true;
 }
 
-void World::add(int tx, int ty, bool solid, float fric) {
-  set(_num, tx, ty, solid, fric);
+void World::add(int tx, int ty, bool isSolid, float fric) {
+  set(_num, tx, ty, isSolid, fric);
   _num++;
 }
 
-void World::add(int tx, int ty, bool solid) {
-  set(_num, tx, ty, solid);
+void World::add(int tx, int ty, bool isSolid) {
+  set(_num, tx, ty, isSolid);
   _num++;
 }
 
