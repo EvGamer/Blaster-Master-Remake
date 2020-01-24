@@ -29,7 +29,7 @@ class Enemy {
   int _weaponCooldown;
   char _weaponMagazine = 0;
   int _weaponReloadCooldown;
-  MissleType _missleType;
+  MissleTraits _missleType;
 
  public:
   Enemy(float a_x, float a_y, char a_dirrection, GLuint a_textureId, World *a_world);

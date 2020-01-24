@@ -3,9 +3,10 @@
 typedef unsigned int UInt;
 typedef unsigned char Byte;
 typedef unsigned long ULong;
+typedef unsigned long long ULLong;
 typedef std::string String;
-typedef Byte TileTypeIndex;
-typedef ULong IntID;
+typedef Byte TileTraitsIndex;
+typedef ULLong IntID;
 
 template <typename T>
 struct Point2D {

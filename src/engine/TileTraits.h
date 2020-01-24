@@ -2,7 +2,7 @@
 #include <string>
 #include "../typeAliases.h"
 
-class TileType {
+class TileTraits {
   public:
     IntID id;
     String type;
@@ -12,8 +12,8 @@ class TileType {
     UInt texX;
     UInt texY;
 
-    TileType();
-    TileType(
+    TileTraits();
+    TileTraits(
       IntID id,
       UInt texX, UInt texY,
       String type,

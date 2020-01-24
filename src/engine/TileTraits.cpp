@@ -1,6 +1,6 @@
-#include "TileType.h"
+#include "TileTraits.h"
 
-TileType::TileType() {
+TileTraits::TileTraits() {
   id = 0;
   texX = 0;
   texY = 0;
@@ -8,7 +8,7 @@ TileType::TileType() {
   isSolid = false;
 }
 
-TileType::TileType(
+TileTraits::TileTraits(
   IntID a_id,
   UInt a_texX, UInt a_texY,
   String a_type,

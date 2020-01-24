@@ -88,10 +88,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   /* enable OpenGL for the window */
   EnableOpenGL(hWnd, &hDC, &hRC);
-  World Area3("Sprites\\A3a.tga", 16);
+  World Area3("Sprites\\A3a.tga");
   Area3.setGlobalFriction(1);
   Area3.setGravity(1);
-  Area3.setDefault(1, 255);
   Area3.setSolid(6, 8);
   Area3.setSolid(6 + 16, 8 + 16);
   Area3.setSolid(6 + 16 * 5, 8 + 16 * 5);

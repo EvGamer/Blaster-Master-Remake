@@ -1,11 +1,15 @@
 #pragma once
 #include <list>
+#include <array>
 
 #include "../graphics/Animation.h"
+#include "../typeAliases.h"
 #include "mapArray.h"
-#include "TileType.h"
+#include "TileTraits.h"
+#include "Map.h"
 
-struct MissleType {
+
+struct MissleTraits {
   Animation burstAnim;
   Animation flyAnim;
   float spriteX;
@@ -33,23 +37,18 @@ struct Missle {
 
 class World {
  private:
-  unsigned char _num;  //���������� ������
-  float _size;
-  unsigned _lineLenght;  //������ � ������.
   float _friction;
   float _gravity;
-  TileType _tileSet[256];
+
+  Map _map;
 
   GLuint _texture;
-  static const unsigned _MAP_SX = MAP_LENGTH;
-  static const unsigned _MAP_SY = MAP_HEIGHT;
   // Map, hardcoded in haste
-  unsigned char m_map[_MAP_SX * _MAP_SY];
 
-  std::list<Missle> *_missles;
+  std::list<Missle> _missles;
 
  public:
-  void addMissle(float x, float y, float speedX, float speedY, MissleType *wpn);
+  void addMissle(float x, float y, float speedX, float speedY, MissleTraits *wpn);
   float hit(float x1, float y1, float x2, float y2, bool foe);
   bool collide(float x, float y);
   inline float getGravity() {
@@ -60,17 +59,11 @@ class World {
   };
   bool getFrict(unsigned char i, unsigned char j);
   void update();
-  void draw(int cx, int cy, unsigned char a_num);
-  void set(unsigned char i, int tx, int ty, bool isSolid, float fric);
-  void set(unsigned char i, int tx, int ty, bool isSolid);
   inline void setGlobalFriction(float a_friction) {
     _friction = a_friction;
   };
-  void setDefault(unsigned first, unsigned last);
   void setSolid(unsigned first, unsigned last);
-  void add(int tx, int ty, bool isSolid, float fric);
-  void add(int tx, int ty, bool isSolid);
   void drawLevel(float scrX, float scrY);
-  World(std::string fileName, float TilesInLine);
+  World(String fileName);
   ~World();
 };

@@ -72,7 +72,7 @@ class Player {
   int _weaponCooldown = 0;
   float _missleRelativeInitialY;
   float _missleInitialX;
-  MissleType _missleType;
+  MissleTraits _missleType;
 
  public:
   Player(float x_in, float y_in, GLuint a_textureId, GLuint a_missleTextureId,
