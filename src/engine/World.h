@@ -1,45 +1,29 @@
 #pragma once
 #include <list>
 #include <array>
+#include <memory>
 
-#include "../graphics/Animation.h"
+#include "../entities/Player.h"
+#include "../entities/Enemy.h"
 #include "../typeAliases.h"
+#include "IWorld.h"
 #include "mapArray.h"
 #include "TileTraits.h"
 #include "Map.h"
 
 
-struct MissleTraits {
-  Animation burstAnim;
-  Animation flyAnim;
-  float spriteX;
-  float spriteY;
-  bool foe;
-  float damage;
-  GLuint textureId;
-  bool falling;
-};
 
-struct Missle {
-  Animation burstAnim;
-  Animation flyAnim;
-  float spriteX;
-  float spriteY;
-  float x;
-  float y;
-  float speedX;
-  float speedY;
-  bool hit;
-  bool foe;
-  bool falling;
-  float damage;
-};
 
-class World {
+
+class World: public IWorld{
  private:
   float _friction;
   float _gravity;
-
+  
+  //ToDo make singletones in classes what use them
+  GLuint _playerTextureId;
+  GLuint _playerMissleTextureId;
+  GLuint _enemyTextureId;
   Map _map;
 
   GLuint _texture;
@@ -47,11 +31,16 @@ class World {
 
   std::list<Missle> _missles;
 
+
  public:
+  std::list<Enemy> enemies;
+  Player* player;
+
+  void init();
   void addMissle(float x, float y, float speedX, float speedY, MissleTraits *wpn);
   float hit(float x1, float y1, float x2, float y2, bool foe);
   bool collide(float x, float y);
-  inline float getGravity() {
+  float getGravity() override {
     return _gravity;
   };
   inline void setGravity(float a_gravity) {

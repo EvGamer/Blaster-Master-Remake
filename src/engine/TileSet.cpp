@@ -19,7 +19,7 @@ void TileSet::addTileTraits(
   tileTraits.push_back(TileTraits(id, getTileTexX(id), getTileTexY(id), type, isSolid, isBreakable));
 }
 
-TileTraits TileSet::operator[](TileTraitsIndex index) {
+TileTraits& TileSet::operator[](TileTraitsIndex index) {
   return tileTraits[index];
 }
 

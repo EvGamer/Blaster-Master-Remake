@@ -1,6 +1,6 @@
 #include "EnemyFactory.h"
 
-EnemyFactory::EnemyFactory(GLuint textureId, World* world) {
+EnemyFactory::EnemyFactory(GLuint textureId, IWorld* world) {
   _textureId = textureId;
   _world = world;
 };

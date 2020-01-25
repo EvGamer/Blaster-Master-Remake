@@ -6,6 +6,7 @@
 
 #include "entities/Enemy.h"
 #include "entities/EnemyFactory.h"
+#include "engine/World.h"
 #include <list>
 
 unsigned int key;
@@ -21,36 +22,6 @@ unsigned char n = 0;
  * Function Decl
  *
  **************************/
-
-std::list<Enemy> spawnEnemies(GLuint texEnemy, World &world) {
-  EnemyFactory factory(texEnemy, &world);
-
-  return std::list<Enemy> {
-    factory.create(22, 11, -1),
-    factory.create(22, 11, -1),
-    factory.create(24, 16, 1),
-    factory.create(30, 16, 1),
-    factory.create(12, 24, -1),
-    factory.create(18, 20, -1),
-    factory.create(19, 28, 1),
-    factory.create(27, 32, 1),
-    factory.create(35, 36, 1),
-    factory.create(43, 43, -1),
-    factory.create(22, 44, -1),
-    factory.create(9, 49, 1),
-    factory.create(15, 53, -1),
-    factory.create(29, 49, -1),
-    factory.create(36, 53, -1),
-    factory.create(46, 49, -1),
-    factory.create(52, 40, 1),
-    factory.create(52, 32, -1),
-    factory.create(52, 24, -1),
-    factory.create(52, 16, -1),
-    factory.create(61, 36, -1),
-    factory.create(61, 28, -1),
-    factory.create(61, 20, -1),
-  };
-}
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam,
                          LPARAM lParam);  //
@@ -88,30 +59,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   /* enable OpenGL for the window */
   EnableOpenGL(hWnd, &hDC, &hRC);
-  World Area3("Sprites\\A3a.tga");
-  Area3.setGlobalFriction(1);
-  Area3.setGravity(1);
-  Area3.setSolid(6, 8);
-  Area3.setSolid(6 + 16, 8 + 16);
-  Area3.setSolid(6 + 16 * 5, 8 + 16 * 5);
-  Area3.setSolid(4 + 16 * 9, 5 + 16 * 9);
-  Area3.setSolid(4 + 16 * 10, 5 + 16 * 10);
+  World world("Sprites\\A3a.tga");
+  world.setGlobalFriction(1);
+  world.setGravity(1);
+  world.setSolid(6, 8);
+  world.setSolid(6 + 16, 8 + 16);
+  world.setSolid(6 + 16 * 5, 8 + 16 * 5);
+  world.setSolid(4 + 16 * 9, 5 + 16 * 9);
+  world.setSolid(4 + 16 * 10, 5 + 16 * 10);
+  world.init();
   float camX = 8;
   float camY = 7;
 
-  GLuint texSophia = loadTexture("Sprites\\SOPHIA.tga");
-  GLuint texBlaster = loadTexture("Sprites\\Shot.tga");
-  GLuint texEnemy = loadTexture("Sprites\\enemy.tga");
   GLuint texHealthBar = loadTexture("Sprites\\HealthBar.tga");
   GLuint texMessage = loadTexture("Sprites\\Message.tga");
   GLuint texVictory = loadTexture("Sprites\\Victory.tga");
   GLuint texBack = loadTextureL("Sprites\\Background.bmp");  //
-  std::list<Enemy> jerks = spawnEnemies(texEnemy, Area3);
-  
-  Player sophia(10, 12, texSophia, texBlaster, &Area3);
 
   // testdraw();
-  // DrawTile(0,1,0,0,Area3.get_texture());r//
+  // DrawTile(0,1,0,0,world.get_texture());r//
 
   /* program main loop */
   while (!bQuit)  //
@@ -128,8 +94,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     } else {
       /* OpenGL animation code goes here */
       float sx, sy;
-      sx = sophia.getX();
-      sy = sophia.getY();
+      sx = world.player->getX();
+      sy = world.player->getY();
       // if(m>0)m-=0.05*m;
       float camS = camY + 8 - sy;
       float camN = camY + 16 - sy;
@@ -153,49 +119,46 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       glTranslatef(floor(-camX * 16) / (16 * 16), floor(-camY * 16) / (12 * 16), 0);
       // attempt to make camera move by whole pixels
       if (keyMove) {
-        sophia.move(dir);
+        world.player->move(dir);
       }
-      if (keyJump) sophia.jump();
-      if (keyShoot) sophia.shoot();
-      Area3.update();  //
-      Area3.drawLevel(camX, camY);
-      // sophia.drawGizmo();
-      sophia.update();
+      if (keyJump) world.player->jump();
+      if (keyShoot) world.player->shoot();
+      world.update();  //
+      world.drawLevel(camX, camY);
+      // world.player->drawGizmo();
+      world.player->update();
       
-      for (auto& enemy : jerks) {
-        enemy.update(&sophia);
+      for (auto& enemy : world.enemies) {
+        enemy.update(*world.player);
         enemy.draw();
       }
-      jerks.remove_if([](Enemy &e){
+      world.enemies.remove_if([](Enemy &e){
         return e.isDead();
       });
-      sophia.draw();
+      world.player->draw();
       // drawing healthBar
       const float HBx = 0;
       const float HBy = 5;
       const float HBx1 = HBx + 2;
       const float HBy1 = HBy + 4;
       const float bl = 25 / 64;
-      float rate = (1 - bl) * ceil(sophia.hull() + 8) * 0.0625 - 0.125;  //
+      float rate = (1 - bl) * ceil(world.player->hull() + 8) * 0.0625 - 0.125;  //
       glLoadIdentity();
       drawSprite(texHealthBar, HBx, HBy, HBx1, HBy1, 0, 0, 0.5, 1);
       drawSprite(texHealthBar, HBx, HBy, HBx1, HBy + 4 * rate, 0.5, 1 - rate,
                  1, 1);
-      if (sophia.isDead()) {
+      if (world.player->isDead()) {
         glColor3f(1, 1, 1);
         drawSprite(texMessage, 15, 15, 23, 23, 0, 0, 1, 1);
         glColor3f(1, 0, 0);
         if (keyRestart) {
-          sophia.revive();
-
-          jerks = spawnEnemies(texEnemy, Area3);
+          world.init();
         }
       }
       if ((sx >= 53) && (sx <= 56) && (sy >= 7) && (sy <= 9)) {
         drawSprite(texVictory, 15, 15, 23, 23, 0, 0, 1, 1);
         if (keyRestart) {
-          sophia.revive();
-          jerks = spawnEnemies(texEnemy, Area3);
+          world.init();
         }
       }
       SwapBuffers(hDC);

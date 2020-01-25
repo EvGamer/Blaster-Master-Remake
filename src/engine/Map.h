@@ -32,6 +32,13 @@ class Map {
     };
     inline long tileToPixelX(float x) { return round((double)x * tileSet.tileWidth); }
     inline long tileToPixelY(float y) { return round((double)y * tileSet.tileHeight); }
+    inline Point pixelToTileCoord(PixelPoint p) {
+      return {
+        (float)p.x / tileSet.tileWidth,
+        (float)p.y / tileSet.tileHeight,
+      };
+    }
+    inline float pixelToTileY(long y) { return y / tileSet.tileHeight; }
     TileTraits getTileTraits(ULong x, ULong y);
     void drawTile(ULong x, ULong y);
 };

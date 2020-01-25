@@ -10,9 +10,39 @@ World::World(String textureFileName) {
 
   _gravity = 1;
   _friction = 0;
+  _playerTextureId = loadTexture("Sprites\\SOPHIA.tga");
+  _playerMissleTextureId = loadTexture("Sprites\\Shot.tga");
+  _enemyTextureId = loadTexture("Sprites\\enemy.tga");
 }
 
 World::~World() {
+}
+
+void World::init() {
+  enemies = std::list<Enemy>();
+  player = nullptr;
+
+  for (EntityDescription entity : _map.entities) {
+    Point pos = _map.pixelToTileCoord(entity.pixelCoord);
+    if (entity.type == "Player") {
+      if (player == nullptr) {
+        player = new Player(
+          pos.x, pos.y,
+          _playerTextureId,
+          _playerMissleTextureId,
+          *this
+        );
+      }
+    }
+    else if (entity.type == "Enemy") {
+      enemies.emplace_back(
+        pos.x, pos.y,
+        entity.isFacingRight ? 1 : -1,
+        _enemyTextureId,
+        this
+      );
+    }
+  }
 }
 
 void World::addMissle(float x, float y, float speedX, float speedY,
@@ -76,7 +106,7 @@ void World::update() {
 }
 
 void World::setSolid(unsigned first, unsigned last) {
-  for (unsigned i = first; i <= last; i++) _map.tileSet.tileTraits[i - 1].isSolid = true;
+  for (unsigned i = first; i <= last; i++) _map.tileSet[i - 1].isSolid = true;
 }
 
 void World::drawLevel(float scrX, float scrY) {

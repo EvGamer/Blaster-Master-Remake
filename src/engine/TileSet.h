@@ -28,6 +28,6 @@ class TileSet {
     inline UInt getTileTexY(TileTraitsIndex index) { return index / columns; };
     void addTileTraits(IntID id, String type, bool isSolid = false, bool isBreakable = false);
 
-    TileTraits operator[](TileTraitsIndex index);
+    TileTraits& operator[](TileTraitsIndex index);
     void drawTile(ULong x, ULong y, TileTraitsIndex index);
 };

@@ -3,6 +3,7 @@
 
 Map::Map() {
   entities = std::list<EntityDescription>({
+    { 1, "Player", "Player", {tileToPixelX(10), tileToPixelY(12)}, true },
     { 2, "Enemy 1", "Enemy", {tileToPixelX(22), tileToPixelY(11)}, false },
     { 3, "Enemy 2", "Enemy", {tileToPixelX(22), tileToPixelY(11)}, false },
     { 4, "Enemy 3", "Enemy", {tileToPixelX(24), tileToPixelY(16)}, true },
