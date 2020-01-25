@@ -21,7 +21,7 @@ class Map {
     ULong width = 0;
     ULong height = 0;
 
-    Map() {};
+    Map();
     Map(String filename);
 
     inline bool coordOutOfRange(long x, long y) {
@@ -30,6 +30,8 @@ class Map {
     inline TileTraitsIndex getTileTraitsIndex(ULong x, ULong y) {
       return tiles[((ULLong)(height - 1l - y) * width) + x] - 1;
     };
+    inline long tileToPixelX(float x) { return round((double)x * tileSet.tileWidth); }
+    inline long tileToPixelY(float y) { return round((double)y * tileSet.tileHeight); }
     TileTraits getTileTraits(ULong x, ULong y);
     void drawTile(ULong x, ULong y);
 };

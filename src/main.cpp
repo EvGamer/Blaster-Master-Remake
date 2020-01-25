@@ -150,7 +150,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       glLoadIdentity();
       drawSprite(texBack, 0, 0, 32, 32, camX / 64, -camY / 64, camX / 64 + 1,
                  -camY / 64 + 1);
-      glTranslatef(-camX / 16, -camY / 12, 0);
+      glTranslatef(floor(-camX * 16) / (16 * 16), floor(-camY * 16) / (12 * 16), 0);
+      // attempt to make camera move by whole pixels
       if (keyMove) {
         sophia.move(dir);
       }

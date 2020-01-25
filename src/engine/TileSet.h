@@ -7,7 +7,7 @@
 #include "../typeAliases.h"
 
 namespace TileSetConstants {
-  const GLfloat TILE_TEXTURE_SIDES_CUTOFF = 0.001; // ToDo improve tile rendering and remove this crutch
+  const GLfloat TILE_TEXTURE_SIDES_CUTOFF = 0; // ToDo improve tile rendering and remove this crutch
 };
 
 class TileSet {
