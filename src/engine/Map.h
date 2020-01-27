@@ -14,6 +14,8 @@ struct EntityDescription {
 };
 
 class Map {
+  private:
+    void _parseTilesFromCsv(const char* tilesCsv);
   public:
     std::list<EntityDescription> entities;
     std::vector<TileTraitsIndex> tiles;

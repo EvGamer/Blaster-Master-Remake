@@ -3,6 +3,7 @@
 #include "World.h"
 
 World::World(String textureFileName) {
+  _map = Map("maps/Test1.tmx");
   _map.tiles = std::vector<TileTraitsIndex>(MAP_ARRAY.begin(), MAP_ARRAY.end());
   _map.width = MAP_LENGTH;
   _map.height = MAP_HEIGHT;

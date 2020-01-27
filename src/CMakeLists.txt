@@ -7,11 +7,12 @@ file(
 	RELATIVE ${PROJECT_SOURCE_DIR}
 	*.cpp *.h
 )
+list(REMOVE_ITEM ALL_SRC "thirdParty/tinyxml2/xmltest.cpp")
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${ALL_SRC})
 add_executable(BlasterMasterRemake WIN32 ${ALL_SRC})
 set_property(TARGET BlasterMasterRemake PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_BINARY_DIR}/assets")
-add_subdirectory("${PROJECT_BINARY_DIR}/thirdParty/tinyxml2" "${PROJECT_BINARY_DIR}/thirdParty/tinyxml2/build")
 
 ##################################################
 
@@ -27,5 +28,3 @@ else()
 endif()
 
 ###################################################
-
-include_directories("${PROJECT_SOURCE_DIR}/../libs")
