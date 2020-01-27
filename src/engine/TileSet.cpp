@@ -1,5 +1,7 @@
 #include "TileSet.h"
 #include "../graphics/utils.h"
+#include "../typeAliases.h"
+#include "../thirdParty/tinyxml2/tinyxml2.h"
 
 using namespace TileSetConstants;
 
@@ -10,7 +12,52 @@ TileSet::TileSet() {
 }
 
 TileSet::TileSet(String filename) {
+  typedef tinyxml2::XMLElement Tag;
 
+  tinyxml2::XMLDocument doc;
+  doc.LoadFile(filename.c_str());
+
+  Tag* tileSetTag = doc.FirstChildElement("tileset");
+  tileHeight = tileSetTag->UnsignedAttribute("tileheight");
+  tileWidth = tileSetTag->UnsignedAttribute("tilewidth");
+  count = tileSetTag->UnsignedAttribute("tilecount");
+  columns = tileSetTag->UnsignedAttribute("columns");
+  rows = count / columns;
+  tileTraits = std::vector<TileTraits>(count);
+
+  Tag* imageTag = tileSetTag->FirstChildElement("image");
+  textureId = loadTexture(imageTag->Attribute("source"));
+
+  Tag* tileTag = tileSetTag->FirstChildElement("tile");
+  
+  while (tileTag != nullptr) {
+    bool isBreakable = false;
+    bool isSolid = false;
+
+    UInt id = tileTag->UnsignedAttribute("id");
+    UInt index = id + 1;
+    tileTraits[index].texX = getTileTexX(id);
+    tileTraits[index].texY = getTileTexY(id);
+
+    Tag* propTag = tileTag->FirstChildElement("properties");
+    if (propTag != nullptr) propTag = propTag->FirstChildElement("property");
+    
+    while (propTag != nullptr) {
+      if (String(propTag->Attribute("name")) == "isBreakable") {
+        tileTraits[index].isBreakable = propTag->BoolAttribute("value");
+      }
+      else if (String(propTag->Attribute("name")) == "isSolid") {
+        tileTraits[index].isSolid = propTag->BoolAttribute("value");
+      }
+
+      propTag = propTag->NextSiblingElement("property");
+    }
+
+    auto typeName = tileTag->Attribute("type");
+    if (typeName != nullptr) tileTraits[id].type = typeName;
+
+    tileTag = tileTag->NextSiblingElement("tile");
+  }
 }
 
 void TileSet::addTileTraits(

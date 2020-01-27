@@ -62,11 +62,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
   World world("Sprites\\A3a.tga");
   world.setGlobalFriction(1);
   world.setGravity(1);
-  world.setSolid(6, 8);
-  world.setSolid(6 + 16, 8 + 16);
-  world.setSolid(6 + 16 * 5, 8 + 16 * 5);
-  world.setSolid(4 + 16 * 9, 5 + 16 * 9);
-  world.setSolid(4 + 16 * 10, 5 + 16 * 10);
   world.init();
   float camX = 8;
   float camY = 7;
@@ -96,23 +91,25 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       float sx, sy;
       sx = world.player->getX();
       sy = world.player->getY();
-      // if(m>0)m-=0.05*m;
-      float camS = camY + 8 - sy;
-      float camN = camY + 16 - sy;
-      float camW = camX + 10 - sx;
-      float camE = camX + 20 - sx;
-      if ((camS > 0) && (camY > 5)) {
-        camY -= camS;
-      }
-      if ((camN < 0) && (camY < 51)) {
-        camY -= camN;
-      }
-      if ((camW > 0) && (camX > 4)) {
-        camX -= camW;
-      }
-      if ((camE < 0) && (camX < 38)) {
-        camX -= camE;
-      }
+      //// if(m>0)m-=0.05*m;
+      //float camS = camY + 8 - sy;
+      //float camN = camY + 16 - sy;
+      //float camW = camX + 10 - sx;
+      //float camE = camX + 20 - sx;
+      //if ((camS > 0) && (camY > 5)) {
+      //  camY -= camS;
+      //}
+      //if ((camN < 0) && (camY < 51)) {
+      //  camY -= camN;
+      //}
+      //if ((camW > 0) && (camX > 4)) {
+      //  camX -= camW;
+      //}
+      //if ((camE < 0) && (camX < 38)) {
+      //  camX -= camE;
+      //}
+      camX = sx - 16;
+      camY = sy - 10;
       glLoadIdentity();
       drawSprite(texBack, 0, 0, 32, 32, camX / 64, -camY / 64, camX / 64 + 1,
                  -camY / 64 + 1);

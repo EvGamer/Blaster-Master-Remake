@@ -4,10 +4,6 @@
 
 World::World(String textureFileName) {
   _map = Map("maps/Test1.tmx");
-  _map.tiles = std::vector<TileTraitsIndex>(MAP_ARRAY.begin(), MAP_ARRAY.end());
-  _map.width = MAP_LENGTH;
-  _map.height = MAP_HEIGHT;
-  _map.tileSet.textureId = loadTexture(textureFileName);
 
   _gravity = 1;
   _friction = 0;
@@ -111,12 +107,12 @@ void World::setSolid(unsigned first, unsigned last) {
 }
 
 void World::drawLevel(float scrX, float scrY) {
-  UInt tX0 = floor(scrX);
-  unsigned tY0 = floor(scrY);
-  unsigned tXn = ceil(scrX + 32);
-  unsigned tYn = ceil(scrY + 24);
+  UInt tX0 = max(floor(scrX), 0);
+  unsigned tY0 = max(floor(scrY), 0);
+  unsigned tXn = max(ceil(scrX + 32), 0);
+  unsigned tYn = max(ceil(scrY + 24), 0);
   for (int i = tX0; i <= tXn; i++) {
-    for (int j = tY0; j < tYn; j++) {
+    for (int j = tY0; j <= tYn; j++) {
       _map.drawTile(i, j);
     };
   };

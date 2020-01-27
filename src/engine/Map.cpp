@@ -36,8 +36,7 @@ void Map::_parseTilesFromCsv(const char* tilesCsv) {
 
   while (rawTileIndex) {
     unsigned tileIndex;
-
-    sscanf(rawTileIndex, "%u", &tileIndex);
+    std::sscanf(rawTileIndex, "%u", &tileIndex);
     tiles.push_back(tileIndex);
     rawTileIndex = strtok(NULL, ",");
   }
@@ -58,7 +57,8 @@ Map::Map(String filename) {
   Tag* layerTag = mapTag->FirstChildElement("layer");
 
   Tag* dataTag = layerTag->FirstChildElement("data");
-  if (dataTag->Attribute("encoding") != "csv") {
+  String encoding = String(dataTag->Attribute("encoding"));
+  if (encoding != "csv") {
     throw "Map data encoding type is not csv";
   };
 
@@ -68,6 +68,34 @@ Map::Map(String filename) {
   tileSet = TileSet(String(tileSetTag->Attribute("source")));
 
   Tag* objGroupTag = mapTag->FirstChildElement("objectgroup");
+  
+  Tag* objTag = objGroupTag->FirstChildElement("object");
+  while (objTag != nullptr) {
+
+    bool isFacingRight = false;
+
+    Tag* propTag = objTag->FirstChildElement("properties");
+    if (propTag != nullptr) propTag = propTag->FirstChildElement("property");
+    while (propTag != nullptr) {
+      if (String(propTag->Attribute("name")) == "isFacingRight") {
+        isFacingRight = propTag->BoolAttribute("value");
+      }
+      propTag = propTag->NextSiblingElement("property");
+    }
+
+    entities.push_back({
+      objTag->UnsignedAttribute("id"),
+      String(objTag->Attribute("name")),
+      String(objTag->Attribute("type")),
+      {
+        (long)objTag->IntAttribute("x"),
+        (long)objTag->IntAttribute("y")
+      },
+      isFacingRight,
+    });
+
+    objTag = objTag->NextSiblingElement("object");
+  }
 }
 
 TileTraits Map::getTileTraits(ULong x, ULong y) {
@@ -75,5 +103,8 @@ TileTraits Map::getTileTraits(ULong x, ULong y) {
 }
 
 void Map::drawTile(ULong x, ULong y){
-  tileSet.drawTile(x, y, getTileTraitsIndex(x, y));
+  if (x >= width || y >= height) return;
+  TileTraitsIndex index = getTileTraitsIndex(x, y);
+  if (index == 0) return;
+  tileSet.drawTile(x, y, index);
 };

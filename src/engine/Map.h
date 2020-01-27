@@ -30,7 +30,7 @@ class Map {
       return x < 0 || y < 0 || x >= width || y >= height;
     }
     inline TileTraitsIndex getTileTraitsIndex(ULong x, ULong y) {
-      return tiles[((ULLong)(height - 1l - y) * width) + x] - 1;
+      return tiles[(ULLong)((height - y - 1) * width) + x];
     };
     inline long tileToPixelX(float x) { return round((double)x * tileSet.tileWidth); }
     inline long tileToPixelY(float y) { return round((double)y * tileSet.tileHeight); }
