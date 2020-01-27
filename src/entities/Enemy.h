@@ -1,5 +1,5 @@
-#include "Player.h"
 #pragma once
+#include "Player.h"
 
 namespace EnemyConstants {
   const float SPEED_X = 1;
@@ -23,18 +23,18 @@ class Enemy {
   Animation _shootAnimation;
   Animation *_currentAnimation;
   GLuint _textureId;
-  World *_world;
+  IWorld *_world;
 
   //ToDo replace by weapon class
   int _weaponCooldown;
   char _weaponMagazine = 0;
   int _weaponReloadCooldown;
-  MissleType _missleType;
+  MissleTraits _missleType;
 
  public:
-  Enemy(float a_x, float a_y, char a_dirrection, GLuint a_textureId, World *a_world);
+  Enemy(float a_x, float a_y, char a_dirrection, GLuint a_textureId, IWorld *a_world);
   inline bool isDead() { return _deathAnimation.isEnded(); }
   void kill();
-  void update(Player *p1);
+  void update(Player &p1);
   void draw();
 };

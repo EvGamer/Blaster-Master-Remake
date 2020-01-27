@@ -11,3 +11,4 @@ Release
 *.sln
 *.vcxproj.filters
 *.cmake
+build

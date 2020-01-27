@@ -189,7 +189,7 @@ void Player::draw() {
 }
 
 Player::Player(float a_x, float a_y, GLuint a_textureId,
-               GLuint a_missleTextureId, World *a_world) {
+               GLuint a_missleTextureId, IWorld &a_world) {
   _x = a_x;
   _y = a_y;
   _dirrection = 1;
@@ -198,7 +198,7 @@ Player::Player(float a_x, float a_y, GLuint a_textureId,
   _hitDamage = 0;
   _halfJumpMaxY = _y + JUMP_HEIGHT;
   _jumpBeingPressedDuration = 0;
-  _world = a_world;
+  _world = &a_world;
   _initialX = _x;
   _initialY = _y;
   _speedX = 0;

@@ -1,32 +1,50 @@
 
+#include <vector>
 #include "World.h"
 
+World::World(String textureFileName) {
+  _map = Map("maps/Test1.tmx");
 
-World::World(std::string fileName, float TilesInLine) {
-  // don't ask.
-  for (int i = 0; i <= _MAP_SY; i++) {
-    for (int j = 0; j < _MAP_SY; j++) {
-      int c = (_MAP_SY - 1 - j) * _MAP_SX + i;
-      m_map[c] = MAP_ARRAY[c];  //
-    };
-  };
-
-  _num = 0;
-  _size = 1 / TilesInLine;
-  _lineLenght = TilesInLine;
   _gravity = 1;
   _friction = 0;
-  _texture = loadTexture(fileName);
-  _missles = new std::list<Missle>();
+  _playerTextureId = loadTexture("Sprites\\SOPHIA.tga");
+  _playerMissleTextureId = loadTexture("Sprites\\Shot.tga");
+  _enemyTextureId = loadTexture("Sprites\\enemy.tga");
 }
 
 World::~World() {
-  delete _missles;
+}
+
+void World::init() {
+  enemies = std::list<Enemy>();
+  player = nullptr;
+
+  for (EntityDescription entity : _map.entities) {
+    Point pos = _map.pixelToTileCoord(entity.pixelCoord);
+    if (entity.type == "Player") {
+      if (player == nullptr) {
+        player = new Player(
+          pos.x, pos.y,
+          _playerTextureId,
+          _playerMissleTextureId,
+          *this
+        );
+      }
+    }
+    else if (entity.type == "Enemy") {
+      enemies.emplace_back(
+        pos.x, pos.y,
+        entity.isFacingRight ? 1 : -1,
+        _enemyTextureId,
+        this
+      );
+    }
+  }
 }
 
 void World::addMissle(float x, float y, float speedX, float speedY,
-                    MissleType *wpn) {
-  _missles->push_front({
+                    MissleTraits *wpn) {
+  _missles.push_back({
       wpn->burstAnim,
       wpn->flyAnim,
       wpn->spriteX,
@@ -45,7 +63,7 @@ void World::addMissle(float x, float y, float speedX, float speedY,
 float World::hit(float x1, float y1, float x2, float y2, bool foe) {
   float damage = 0;
 
-  for (auto &missle : *_missles) {
+  for (auto &missle : _missles) {
     bool isInsideWidth = (missle.x >= x1) && (missle.x <= x2);
     bool isInsideHeight = (missle.y >= y1) && (missle.y <= y2);
     bool isInside = isInsideWidth && isInsideHeight;
@@ -60,13 +78,12 @@ float World::hit(float x1, float y1, float x2, float y2, bool foe) {
 };
 
 bool World::collide(float x, float y) {
-  unsigned i = floor(x);
-  unsigned j = floor(y);
-  return _tile[m_map[(_MAP_SY - 1 - j) * _MAP_SX + i] - 1].solid;
+  if (_map.coordOutOfRange(x, y)) return false;
+  return !_map.coordOutOfRange(x, y) && _map.getTileTraits(floor(x), floor(y)).isSolid;
 };
 
 bool World::getFrict(unsigned char i, unsigned char j) {
-  return _tile[m_map[(_MAP_SY - 1 - j) * _MAP_SX + i] - 1].friction;
+  return !_map.coordOutOfRange(i, j) && _map.getTileTraits(i, j).isSolid ? _friction : 0;
 }
 
 bool isMissleExploded(Missle &value) {
@@ -74,7 +91,7 @@ bool isMissleExploded(Missle &value) {
 }
 
 void World::update() {
-  for (auto &missle : *_missles) {
+  for (auto &missle : _missles) {
     if (!missle.hit) {
       missle.x += missle.speedX;
       missle.y += missle.speedY;
@@ -82,74 +99,28 @@ void World::update() {
       missle.hit = collide(missle.x, missle.y);
     }
   }
-  _missles->remove_if(isMissleExploded);
-}
-
-void World::draw(int cx, int cy, unsigned char a_num) {
-  float tx = _tile[a_num].texX * _size;
-  float ty = _tile[a_num].texY * _size;
-  float b = 0.001; // ToDo improve tile rendering and remove this crutch
-  // cy=m_lineLenght-1-cy;
-  drawSprite(_texture, cx, cy, cx + 1, cy + 1, tx + b, ty + b,
-             tx + _size - b, ty + _size - b);
-};
-
-void World::set(unsigned char i, int tx, int ty, bool solid, float fric) {
-  _tile[i].solid = solid;
-  _tile[i].texX = tx;
-  _tile[i].texY = _lineLenght - ty;
-  _tile[i].friction = fric;
-}
-
-void World::set(unsigned char i, int tx, int ty, bool solid) {
-  _tile[i].solid = solid;
-  _tile[i].texX = tx;
-  _tile[i].texY = ty;
-  if (solid) {
-    _tile[i].friction = _friction;
-  } else {
-    _tile[i].friction = 0;
-  };
-
-  /// float tileFriction = 0;
-  // if (solid) tileFriction = friction;
-  // set(i,tx,ty,solid,tileFriction);
-}
-
-void World::setDefault(unsigned first, unsigned last) {
-  for (unsigned i = first - 1; i < last; i++)
-    set(i, (i) % _lineLenght, (i) / _lineLenght, false);
+  _missles.remove_if(isMissleExploded);
 }
 
 void World::setSolid(unsigned first, unsigned last) {
-  for (unsigned i = first; i <= last; i++) _tile[i - 1].solid = true;
-}
-
-void World::add(int tx, int ty, bool solid, float fric) {
-  set(_num, tx, ty, solid, fric);
-  _num++;
-}
-
-void World::add(int tx, int ty, bool solid) {
-  set(_num, tx, ty, solid);
-  _num++;
+  for (unsigned i = first; i <= last; i++) _map.tileSet[i - 1].isSolid = true;
 }
 
 void World::drawLevel(float scrX, float scrY) {
-  unsigned tX0 = floor(scrX);
-  unsigned tY0 = floor(scrY);
-  unsigned tXn = ceil(scrX + 32);
-  unsigned tYn = ceil(scrY + 24);
+  UInt tX0 = max(floor(scrX), 0);
+  unsigned tY0 = max(floor(scrY), 0);
+  unsigned tXn = max(ceil(scrX + 32), 0);
+  unsigned tYn = max(ceil(scrY + 24), 0);
   for (int i = tX0; i <= tXn; i++) {
-    for (int j = tY0; j < tYn; j++) {
-      draw(i, j, m_map[(_MAP_SY - 1 - j) * _MAP_SX + i] - 1);  //
+    for (int j = tY0; j <= tYn; j++) {
+      _map.drawTile(i, j);
     };
   };
   char dir;
   float x0;
   float x1, x2;
   float y0;
-  for (auto &missle : *_missles) {
+  for (auto &missle : _missles) {
     if (missle.speedX < 0) {
       dir = -1;
       x1 = missle.x - missle.spriteX;

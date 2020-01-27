@@ -1,64 +1,46 @@
 #pragma once
 #include <list>
+#include <array>
+#include <memory>
 
-#include "../graphics/Animation.h"
+#include "../entities/Player.h"
+#include "../entities/Enemy.h"
+#include "../typeAliases.h"
+#include "IWorld.h"
 #include "mapArray.h"
+#include "TileTraits.h"
+#include "Map.h"
 
-struct MissleType {
-  Animation burstAnim;
-  Animation flyAnim;
-  float spriteX;
-  float spriteY;
-  bool foe;
-  float damage;
-  GLuint textureId;
-  bool falling;
-};
 
-struct TileType {
-  bool solid;
-  float friction;
-  unsigned char texX;
-  unsigned char texY;
-};
 
-struct Missle {
-  Animation burstAnim;
-  Animation flyAnim;
-  float spriteX;
-  float spriteY;
-  float x;
-  float y;
-  float speedX;
-  float speedY;
-  bool hit;
-  bool foe;
-  bool falling;
-  float damage;
-};
 
-class World {
+
+class World: public IWorld{
  private:
-  unsigned char _num;  //���������� ������
-  float _size;
-  unsigned _lineLenght;  //������ � ������.
   float _friction;
   float _gravity;
-  TileType _tile[256];
+  
+  //ToDo make singletones in classes what use them
+  GLuint _playerTextureId;
+  GLuint _playerMissleTextureId;
+  GLuint _enemyTextureId;
+  Map _map;
 
   GLuint _texture;
-  static const unsigned _MAP_SX = MAP_LENGTH;
-  static const unsigned _MAP_SY = MAP_HEIGHT;
   // Map, hardcoded in haste
-  unsigned char m_map[_MAP_SX * _MAP_SY];
 
-  std::list<Missle> *_missles;
+  std::list<Missle> _missles;
+
 
  public:
-  void addMissle(float x, float y, float speedX, float speedY, MissleType *wpn);
+  std::list<Enemy> enemies;
+  Player* player;
+
+  void init();
+  void addMissle(float x, float y, float speedX, float speedY, MissleTraits *wpn);
   float hit(float x1, float y1, float x2, float y2, bool foe);
   bool collide(float x, float y);
-  inline float getGravity() {
+  float getGravity() override {
     return _gravity;
   };
   inline void setGravity(float a_gravity) {
@@ -66,17 +48,11 @@ class World {
   };
   bool getFrict(unsigned char i, unsigned char j);
   void update();
-  void draw(int cx, int cy, unsigned char a_num);
-  void set(unsigned char i, int tx, int ty, bool solid, float fric);
-  void set(unsigned char i, int tx, int ty, bool solid);
   inline void setGlobalFriction(float a_friction) {
     _friction = a_friction;
   };
-  void setDefault(unsigned first, unsigned last);
   void setSolid(unsigned first, unsigned last);
-  void add(int tx, int ty, bool solid, float fric);
-  void add(int tx, int ty, bool solid);
   void drawLevel(float scrX, float scrY);
-  World(std::string fileName, float TilesInLine);
+  World(String fileName);
   ~World();
 };

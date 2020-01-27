@@ -3,7 +3,7 @@
 const int RELOAD_TIME = 60;
 
 Enemy::Enemy(float a_x, float a_y, char a_dirrection, GLuint a_textureId,
-             World *a_world) {
+             IWorld *a_world) {
   _weaponReloadCooldown = 0;
   _weaponCooldown = 0;
   _textureId = a_textureId;
@@ -43,7 +43,7 @@ inline void Enemy::kill() {
   }
 }
 
-void Enemy::update(Player *p1) {
+void Enemy::update(Player &p1) {
   if (_health > 0) {
     if (_speedY <= 0) {
       if (_world->collide(_x + 0.05, _y) ||
@@ -78,10 +78,10 @@ void Enemy::update(Player *p1) {
     if (_health <= 0) kill();
     float y1 = _y + _height * 0.5;
 
-    if (p1->collide(_x + 0.1, y1) || p1->collide(_x + _width - 0.1, y1))
-      p1->hurt(0.7f);
-    if ((floor(p1->getY()) == floor(_y)) &&
-        (floor(p1->getFrontX() - _x) == 3 * _dirrection) && (_weaponReloadCooldown <= 0)) {
+    if (p1.collide(_x + 0.1, y1) || p1.collide(_x + _width - 0.1, y1))
+      p1.hurt(0.7f);
+    if ((floor(p1.getY()) == floor(_y)) &&
+        (floor(p1.getFrontX() - _x) == 3 * _dirrection) && (_weaponReloadCooldown <= 0)) {
       _weaponReloadCooldown = RELOAD_TIME;
       _weaponMagazine = 4;
     }

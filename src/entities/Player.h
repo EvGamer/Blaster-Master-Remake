@@ -1,5 +1,5 @@
-#include "../engine/World.h"
 #pragma once
+#include "../engine/IWorld.h"
 
 namespace PlayerConstants {
   const float MAX_HEALTH = 8;
@@ -66,17 +66,17 @@ class Player {
   Animation _deathAnimation;
   // unsigned char ca;
   // shotType _missleType;
-  World *_world;
+  IWorld *_world;
 
   // ToDo create weapon class
   int _weaponCooldown = 0;
   float _missleRelativeInitialY;
   float _missleInitialX;
-  MissleType _missleType;
+  MissleTraits _missleType;
 
  public:
-  Player(float x_in, float y_in, GLuint a_textureId, GLuint a_missleTextureId,
-         World *world_link);
+  Player(float x, float y, GLuint textureId, GLuint missleTextureId,
+         IWorld &world);
 
   void move(int dirrection);
   void jump();
