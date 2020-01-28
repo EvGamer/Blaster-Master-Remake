@@ -7,7 +7,6 @@
 #include "../entities/Enemy.h"
 #include "../typeAliases.h"
 #include "IWorld.h"
-#include "mapArray.h"
 #include "TileTraits.h"
 #include "Map.h"
 
