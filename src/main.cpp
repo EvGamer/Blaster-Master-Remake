@@ -59,7 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   /* enable OpenGL for the window */
   EnableOpenGL(hWnd, &hDC, &hRC);
-  World world("Sprites\\A3a.tga");
+  World world("maps/Test1.tmx");
   world.setGlobalFriction(1);
   world.setGravity(1);
   world.init();

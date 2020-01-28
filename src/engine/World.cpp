@@ -2,8 +2,8 @@
 #include <vector>
 #include "World.h"
 
-World::World(String textureFileName) {
-  _map = Map("maps/Test1.tmx");
+World::World(String filename) {
+  _map = Map(filename);
 
   _gravity = 1;
   _friction = 0;
