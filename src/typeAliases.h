@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 typedef unsigned int UInt;
 typedef unsigned char Byte;

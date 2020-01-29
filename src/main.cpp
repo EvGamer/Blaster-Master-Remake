@@ -59,7 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   /* enable OpenGL for the window */
   EnableOpenGL(hWnd, &hDC, &hRC);
-  World world("maps/Test1.tmx");
+  World world("maps/Area3.tmx");
   world.setGlobalFriction(1);
   world.setGravity(1);
   world.init();
@@ -108,11 +108,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       //if ((camE < 0) && (camX < 38)) {
       //  camX -= camE;
       //}
-      camX = sx - 16;
-      camY = sy - 10;
+      camX = sx - 8;
+      camY = sy - 6;
       glLoadIdentity();
-      drawSprite(texBack, 0, 0, 32, 32, camX / 64, -camY / 64, camX / 64 + 1,
-                 -camY / 64 + 1);
       glTranslatef(floor(-camX * 16) / (16 * 16), floor(-camY * 16) / (12 * 16), 0);
       // attempt to make camera move by whole pixels
       if (keyMove) {
