@@ -59,7 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   /* enable OpenGL for the window */
   EnableOpenGL(hWnd, &hDC, &hRC);
-  World world("maps/Test1.tmx");
+  World world("maps/Area3.tmx");
   world.setGlobalFriction(1);
   world.setGravity(1);
   world.init();
@@ -88,32 +88,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       }
     } else {
       /* OpenGL animation code goes here */
-      float sx, sy;
-      sx = world.player->getX();
-      sy = world.player->getY();
-      //// if(m>0)m-=0.05*m;
-      //float camS = camY + 8 - sy;
-      //float camN = camY + 16 - sy;
-      //float camW = camX + 10 - sx;
-      //float camE = camX + 20 - sx;
-      //if ((camS > 0) && (camY > 5)) {
-      //  camY -= camS;
-      //}
-      //if ((camN < 0) && (camY < 51)) {
-      //  camY -= camN;
-      //}
-      //if ((camW > 0) && (camX > 4)) {
-      //  camX -= camW;
-      //}
-      //if ((camE < 0) && (camX < 38)) {
-      //  camX -= camE;
-      //}
-      camX = sx - 16;
-      camY = sy - 10;
-      glLoadIdentity();
-      drawSprite(texBack, 0, 0, 32, 32, camX / 64, -camY / 64, camX / 64 + 1,
-                 -camY / 64 + 1);
-      glTranslatef(floor(-camX * 16) / (16 * 16), floor(-camY * 16) / (12 * 16), 0);
+      world.applyCamera();
       // attempt to make camera move by whole pixels
       if (keyMove) {
         world.player->move(dir);
@@ -121,7 +96,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       if (keyJump) world.player->jump();
       if (keyShoot) world.player->shoot();
       world.update();  //
-      world.drawLevel(camX, camY);
+      world.draw();
       // world.player->drawGizmo();
       world.player->update();
       
@@ -139,7 +114,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       const float HBx1 = HBx + 2;
       const float HBy1 = HBy + 4;
       const float bl = 25 / 64;
-      float rate = (1 - bl) * ceil(world.player->hull() + 8) * 0.0625 - 0.125;  //
+      float rate = (1 - bl) * ceil(world.player->getHealth() + 8) * 0.0625 - 0.125;  //
       glLoadIdentity();
       drawSprite(texHealthBar, HBx, HBy, HBx1, HBy1, 0, 0, 0.5, 1);
       drawSprite(texHealthBar, HBx, HBy, HBx1, HBy + 4 * rate, 0.5, 1 - rate,
@@ -148,12 +123,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         glColor3f(1, 1, 1);
         drawSprite(texMessage, 15, 15, 23, 23, 0, 0, 1, 1);
         glColor3f(1, 0, 0);
-        if (keyRestart) {
-          world.init();
-        }
-      }
-      if ((sx >= 53) && (sx <= 56) && (sy >= 7) && (sy <= 9)) {
-        drawSprite(texVictory, 15, 15, 23, 23, 0, 0, 1, 1);
         if (keyRestart) {
           world.init();
         }

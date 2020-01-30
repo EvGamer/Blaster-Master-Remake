@@ -1,5 +1,5 @@
 #include "Map.h"
-#include "../thirdParty/tinyxml2/tinyxml2.h"
+#include "../utils/Rectangle.h"
 
 Map::Map() {
 };
@@ -16,9 +16,59 @@ void Map::_parseTilesFromCsv(const char* tilesCsv) {
   }
 }
 
-Map::Map(String filename) {
-  typedef tinyxml2::XMLElement Tag;
+void Map::_parseEntityGroup(Tag &objGroupTag) {
+  Tag* objTag = objGroupTag.FirstChildElement("object");
+  while (objTag != nullptr) {
 
+    bool isFacingRight = false;
+
+    Tag* propTag = objTag->FirstChildElement("properties");
+    if (propTag != nullptr) propTag = propTag->FirstChildElement("property");
+    while (propTag != nullptr) {
+      if (String(propTag->Attribute("name")) == "isFacingRight") {
+        isFacingRight = propTag->BoolAttribute("value");
+      }
+      propTag = propTag->NextSiblingElement("property");
+    }
+
+    entities.push_back({
+      objTag->UnsignedAttribute("id"),
+      String(objTag->Attribute("name")),
+      String(objTag->Attribute("type")),
+      {
+        (long)objTag->IntAttribute("x"),
+        (long)objTag->IntAttribute("y"),
+      },
+      isFacingRight,
+    });
+
+    objTag = objTag->NextSiblingElement("object");
+  }
+};
+
+void Map::_parseRoomGroup(Tag &objGroupTag) {
+  Tag* objTag = objGroupTag.FirstChildElement("object");
+  while (objTag != nullptr) {
+
+    bool isFacingRight = false;
+
+    float roomHeight = objTag->UnsignedAttribute("height") / tileSet.tileHeight;
+    float roomWidth = objTag->UnsignedAttribute("width") / tileSet.tileWidth;
+    float roomX = pixelToTileX(objTag->IntAttribute("x"));
+    float roomY = pixelToTileY(objTag->IntAttribute("y")) - roomHeight;
+
+    rooms.emplace_back(
+      objTag->UnsignedAttribute("id"),
+      Rect(roomX, roomY, roomWidth, roomHeight),
+      objTag->Attribute("name"),
+      objTag->Attribute("type")
+    );
+
+    objTag = objTag->NextSiblingElement("object");
+  }
+};
+
+Map::Map(String filename) {
   tinyxml2::XMLDocument doc;
   doc.LoadFile(filename.c_str());
 
@@ -43,35 +93,18 @@ Map::Map(String filename) {
 
   Tag* objGroupTag = mapTag->FirstChildElement("objectgroup");
   
-  Tag* objTag = objGroupTag->FirstChildElement("object");
-  while (objTag != nullptr) {
-
-    bool isFacingRight = false;
-
-    Tag* propTag = objTag->FirstChildElement("properties");
-    if (propTag != nullptr) propTag = propTag->FirstChildElement("property");
-    while (propTag != nullptr) {
-      if (String(propTag->Attribute("name")) == "isFacingRight") {
-        isFacingRight = propTag->BoolAttribute("value");
-      }
-      propTag = propTag->NextSiblingElement("property");
+  while (objGroupTag != nullptr) {
+    String groupName(objGroupTag->Attribute("name"));
+    if (groupName == "Entities") {
+      _parseEntityGroup(*objGroupTag);
+    }
+    else if (groupName == "Rooms") {
+      _parseRoomGroup(*objGroupTag);
     }
 
-    long entityY = height * tileSet.tileWidth - objTag->IntAttribute("y");
-
-    entities.push_back({
-      objTag->UnsignedAttribute("id"),
-      String(objTag->Attribute("name")),
-      String(objTag->Attribute("type")),
-      {
-        (long)objTag->IntAttribute("x"),
-        entityY
-      },
-      isFacingRight,
-    });
-
-    objTag = objTag->NextSiblingElement("object");
+    objGroupTag = objGroupTag->NextSiblingElement("objectgroup");
   }
+
 }
 
 TileTraits Map::getTileTraits(ULong x, ULong y) {

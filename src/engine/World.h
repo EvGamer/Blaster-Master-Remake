@@ -9,15 +9,18 @@
 #include "IWorld.h"
 #include "TileTraits.h"
 #include "Map.h"
-
-
-
+#include "Room.h"
 
 
 class World: public IWorld{
  private:
   float _friction;
   float _gravity;
+  float _halfScreenWidth = 16;
+  float _halfScreenHeight = 12;
+  float _cameraX = 0;
+  float _cameraY = 0;
+  Room _currentRoom;
   
   //ToDo make singletones in classes what use them
   GLuint _playerTextureId;
@@ -50,8 +53,14 @@ class World: public IWorld{
   inline void setGlobalFriction(float a_friction) {
     _friction = a_friction;
   };
-  void setSolid(unsigned first, unsigned last);
-  void drawLevel(float scrX, float scrY);
+  bool isPlayerInRoom(Room& room);
+  void applyCamera();
+  void updateCamera();
+  void updateCurrentRoom();
+  void updateMissles();
+  void drawMap();
+  void drawMissles();
+  void draw();
   World(String fileName);
   ~World();
 };

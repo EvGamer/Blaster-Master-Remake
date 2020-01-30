@@ -90,8 +90,8 @@ bool isMissleExploded(Missle &value) {
   return value.burstAnim.isEnded();
 }
 
-void World::update() {
-  for (auto &missle : _missles) {
+void World::updateMissles() {
+  for (auto& missle : _missles) {
     if (!missle.hit) {
       missle.x += missle.speedX;
       missle.y += missle.speedY;
@@ -102,31 +102,89 @@ void World::update() {
   _missles.remove_if(isMissleExploded);
 }
 
-void World::setSolid(unsigned first, unsigned last) {
-  for (unsigned i = first; i <= last; i++) _map.tileSet[i - 1].isSolid = true;
+bool World::isPlayerInRoom(Room& room) {
+  return room.id != 0 && room.area.isContainRectangle(player->getRect());
+};
+
+void World::updateCamera() {
+  if (player == nullptr) return;
+  _cameraX = player->getX();
+  _cameraY = player->getY();
+  Rect& room = _currentRoom.area;
+
+  if (room.width < _halfScreenWidth * 2) {
+    _cameraX = room.getCenterX();
+  }
+  else if (_cameraX - _halfScreenWidth < room.getWest()) {
+    _cameraX = room.getWest() + _halfScreenWidth;
+  }
+  else if (_cameraX + _halfScreenWidth > room.getEast()) {
+    _cameraX = room.getEast() - _halfScreenWidth;
+  }
+
+  if (room.height < _halfScreenHeight * 2) {
+    _cameraY = room.getCenterY();
+  }
+  else if (_cameraY - _halfScreenHeight < room.getSouth()) {
+    _cameraY = room.getSouth() + _halfScreenHeight;
+  }
+  else if (_cameraY + _halfScreenHeight > room.getNorth()) {
+    _cameraY = room.getNorth() - _halfScreenHeight;
+  }
 }
 
-void World::drawLevel(float scrX, float scrY) {
-  UInt tX0 = max(floor(scrX), 0);
-  unsigned tY0 = max(floor(scrY), 0);
-  unsigned tXn = max(ceil(scrX + 32), 0);
-  unsigned tYn = max(ceil(scrY + 24), 0);
-  for (int i = tX0; i <= tXn; i++) {
-    for (int j = tY0; j <= tYn; j++) {
+void World::applyCamera() {
+  glLoadIdentity();
+  glTranslatef(
+    -_cameraX / _halfScreenWidth + 1,
+    -_cameraY / _halfScreenHeight + 1,
+    0
+  );
+}
+
+void World::updateCurrentRoom() {
+  if (isPlayerInRoom(_currentRoom)) return;
+
+  for (Room& room : _map.rooms) {
+    if (room.id == _currentRoom.id) continue;
+    if (isPlayerInRoom(room)) {
+      _currentRoom = room;
+      return;
+    }
+  }
+}
+
+void World::update() {
+  updateCamera();
+  updateMissles();
+  updateCurrentRoom();
+}
+
+void World::drawMap() {
+  UInt tX0 = max(max(floor(_cameraX - _halfScreenWidth), 0), ceil(_currentRoom.area.getWest()));
+  UInt tY0 = max(max(floor(_cameraY - _halfScreenHeight), 0), ceil(_currentRoom.area.getSouth()));
+  UInt tXn = min(max(ceil(_cameraX + _halfScreenWidth), 0), floor(_currentRoom.area.getEast()));
+  UInt tYn = min(max(ceil(_cameraY + _halfScreenHeight), 0), floor(_currentRoom.area.getNorth()));
+  for (UInt i = tX0; i < tXn; i++) {
+    for (UInt j = tY0; j < tYn; j++) {
       _map.drawTile(i, j);
     };
   };
+}
+
+void World::drawMissles() {
   char dir;
   float x0;
   float x1, x2;
   float y0;
-  for (auto &missle : _missles) {
+  for (auto& missle : _missles) {
     if (missle.speedX < 0) {
       dir = -1;
       x1 = missle.x - missle.spriteX;
       x0 = x1 - 2;
       x2 = x0;
-    } else {
+    }
+    else {
       dir = 1;
       x0 = missle.x + missle.spriteX;
       x1 = x0 + 2;
@@ -138,4 +196,9 @@ void World::drawLevel(float scrX, float scrY) {
     else
       missle.burstAnim.draw(1, x2, y0, x2 + 1, y0 + 1);
   }
+}
+
+void World::draw() {
+  drawMap();
+  drawMissles();
 }

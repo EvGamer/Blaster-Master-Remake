@@ -1,5 +1,6 @@
 #pragma once
 #include "../engine/IWorld.h"
+#include "../utils/Rectangle.h"
 
 namespace PlayerConstants {
   const float MAX_HEALTH = 8;
@@ -77,7 +78,10 @@ class Player {
  public:
   Player(float x, float y, GLuint textureId, GLuint missleTextureId,
          IWorld &world);
-
+  
+  inline Rect getRect() {
+    return Rect(_x, _y, _width, _height);
+  };
   void move(int dirrection);
   void jump();
   void hurt(float damage);
@@ -95,7 +99,7 @@ class Player {
            (oy < _y + _width);
   }
   void draw();
-  inline float hull() {
+  inline float getHealth() {
     if (_health > 0) return _health;
     return 0;
   }

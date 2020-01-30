@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.2" tiledversion="1.3.2" name="Factory" tilewidth="16" tileheight="16" tilecount="256" columns="16">
- <image source="Sprites\\A3a.tga" width="256" height="256"/>
+ <image source="Sprites/A3.tga" width="256" height="256"/>
  <tile id="0" type="AreaExit">
   <properties>
    <property name="isBreakable" type="bool" value="false"/>
@@ -148,31 +148,31 @@
  <tile id="48" type="Gate">
   <properties>
    <property name="isBreakable" type="bool" value="false"/>
-   <property name="isSolid" type="bool" value="true"/>
+   <property name="isSolid" type="bool" value="false"/>
   </properties>
  </tile>
  <tile id="49" type="Gate">
   <properties>
    <property name="isBreakable" type="bool" value="false"/>
-   <property name="isSolid" type="bool" value="true"/>
+   <property name="isSolid" type="bool" value="false"/>
   </properties>
  </tile>
  <tile id="50" type="Gate">
   <properties>
    <property name="isBreakable" type="bool" value="false"/>
-   <property name="isSolid" type="bool" value="true"/>
+   <property name="isSolid" type="bool" value="false"/>
   </properties>
  </tile>
  <tile id="51" type="Gate">
   <properties>
    <property name="isBreakable" type="bool" value="false"/>
-   <property name="isSolid" type="bool" value="true"/>
+   <property name="isSolid" type="bool" value="false"/>
   </properties>
  </tile>
  <tile id="52" type="Gate">
   <properties>
    <property name="isBreakable" type="bool" value="false"/>
-   <property name="isSolid" type="bool" value="true"/>
+   <property name="isSolid" type="bool" value="false"/>
   </properties>
  </tile>
  <tile id="53" type="Platform">
