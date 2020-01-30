@@ -16,6 +16,10 @@ class World: public IWorld{
  private:
   float _friction;
   float _gravity;
+  float _halfScreenWidth = 16;
+  float _halfScreenHeight = 12;
+  float _cameraX = 0;
+  float _cameraY = 0;
   Room _currentRoom;
   
   //ToDo make singletones in classes what use them
@@ -50,11 +54,13 @@ class World: public IWorld{
     _friction = a_friction;
   };
   bool isPlayerInRoom(Room& room);
+  void applyCamera();
+  void updateCamera();
   void updateCurrentRoom();
   void updateMissles();
-  void drawMap(float scrX, float scrY);
+  void drawMap();
   void drawMissles();
-  void draw(float scrX, float scrY);
+  void draw();
   World(String fileName);
   ~World();
 };

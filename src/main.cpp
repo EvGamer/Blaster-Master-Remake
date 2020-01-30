@@ -88,30 +88,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       }
     } else {
       /* OpenGL animation code goes here */
-      float sx, sy;
-      sx = world.player->getX();
-      sy = world.player->getY();
-      //// if(m>0)m-=0.05*m;
-      //float camS = camY + 8 - sy;
-      //float camN = camY + 16 - sy;
-      //float camW = camX + 10 - sx;
-      //float camE = camX + 20 - sx;
-      //if ((camS > 0) && (camY > 5)) {
-      //  camY -= camS;
-      //}
-      //if ((camN < 0) && (camY < 51)) {
-      //  camY -= camN;
-      //}
-      //if ((camW > 0) && (camX > 4)) {
-      //  camX -= camW;
-      //}
-      //if ((camE < 0) && (camX < 38)) {
-      //  camX -= camE;
-      //}
-      camX = sx - 8;
-      camY = sy - 6;
-      glLoadIdentity();
-      glTranslatef(floor(-camX * 16) / (16 * 16), floor(-camY * 16) / (12 * 16), 0);
+      world.applyCamera();
       // attempt to make camera move by whole pixels
       if (keyMove) {
         world.player->move(dir);
@@ -119,7 +96,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       if (keyJump) world.player->jump();
       if (keyShoot) world.player->shoot();
       world.update();  //
-      world.draw(camX, camY);
+      world.draw();
       // world.player->drawGizmo();
       world.player->update();
       
@@ -146,12 +123,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         glColor3f(1, 1, 1);
         drawSprite(texMessage, 15, 15, 23, 23, 0, 0, 1, 1);
         glColor3f(1, 0, 0);
-        if (keyRestart) {
-          world.init();
-        }
-      }
-      if ((sx >= 53) && (sx <= 56) && (sy >= 7) && (sy <= 9)) {
-        drawSprite(texVictory, 15, 15, 23, 23, 0, 0, 1, 1);
         if (keyRestart) {
           world.init();
         }

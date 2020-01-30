@@ -106,6 +106,42 @@ bool World::isPlayerInRoom(Room& room) {
   return room.id != 0 && room.area.isContainRectangle(player->getRect());
 };
 
+void World::updateCamera() {
+  if (player == nullptr) return;
+  _cameraX = player->getX();
+  _cameraY = player->getY();
+  Rect& room = _currentRoom.area;
+
+  if (room.width < _halfScreenWidth * 2) {
+    _cameraX = room.getCenterX();
+  }
+  else if (_cameraX - _halfScreenWidth < room.getWest()) {
+    _cameraX = room.getWest() + _halfScreenWidth;
+  }
+  else if (_cameraX + _halfScreenWidth > room.getEast()) {
+    _cameraX = room.getEast() - _halfScreenWidth;
+  }
+
+  if (room.height < _halfScreenHeight * 2) {
+    _cameraY = room.getCenterY();
+  }
+  else if (_cameraY - _halfScreenHeight < room.getSouth()) {
+    _cameraY = room.getSouth() + _halfScreenHeight;
+  }
+  else if (_cameraY + _halfScreenHeight > room.getNorth()) {
+    _cameraY = room.getNorth() - _halfScreenHeight;
+  }
+}
+
+void World::applyCamera() {
+  glLoadIdentity();
+  glTranslatef(
+    -_cameraX / _halfScreenWidth + 1,
+    -_cameraY / _halfScreenHeight + 1,
+    0
+  );
+}
+
 void World::updateCurrentRoom() {
   if (isPlayerInRoom(_currentRoom)) return;
 
@@ -119,15 +155,16 @@ void World::updateCurrentRoom() {
 }
 
 void World::update() {
+  updateCamera();
   updateMissles();
   updateCurrentRoom();
 }
 
-void World::drawMap(float scrX, float scrY) {
-  UInt tX0 = max(max(floor(scrX), 0), ceil(_currentRoom.area.getWest()));
-  UInt tY0 = max(max(floor(scrY), 0), ceil(_currentRoom.area.getSouth()));
-  UInt tXn = min(max(ceil(scrX + 32), 0), floor(_currentRoom.area.getEast()));
-  UInt tYn = min(max(ceil(scrY + 24), 0), floor(_currentRoom.area.getNorth()));
+void World::drawMap() {
+  UInt tX0 = max(max(floor(_cameraX - _halfScreenWidth), 0), ceil(_currentRoom.area.getWest()));
+  UInt tY0 = max(max(floor(_cameraY - _halfScreenHeight), 0), ceil(_currentRoom.area.getSouth()));
+  UInt tXn = min(max(ceil(_cameraX + _halfScreenWidth), 0), floor(_currentRoom.area.getEast()));
+  UInt tYn = min(max(ceil(_cameraY + _halfScreenHeight), 0), floor(_currentRoom.area.getNorth()));
   for (UInt i = tX0; i < tXn; i++) {
     for (UInt j = tY0; j < tYn; j++) {
       _map.drawTile(i, j);
@@ -161,7 +198,7 @@ void World::drawMissles() {
   }
 }
 
-void World::draw(float scrX, float scrY) {
-  drawMap(scrX, scrY);
+void World::draw() {
+  drawMap();
   drawMissles();
 }

@@ -21,6 +21,12 @@ class Rect {
     inline float getWest() {
       return x;
     };
+    inline float getCenterX() {
+      return x + width / 2;
+    }
+    inline float getCenterY() {
+      return y + height / 2;
+    }
     inline Point getTopRightCorner() {
       return Point({ getEast(), getNorth() });
     };
