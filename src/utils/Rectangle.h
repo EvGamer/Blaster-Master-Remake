@@ -44,8 +44,8 @@ class Rect {
     };
     inline bool isContainRectangle(float a_x, float a_y, float a_width, float a_height) {
       return (
-        x < a_x && a_width < width
-        && y < a_y && a_height < height
+        x < a_x && a_x + a_width < x + width
+        && y < a_y && a_y + a_height < y + height
       );
     };
     inline bool isContainRectangle(Rect &otherRect) {

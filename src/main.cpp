@@ -119,7 +119,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       if (keyJump) world.player->jump();
       if (keyShoot) world.player->shoot();
       world.update();  //
-      world.drawLevel(camX, camY);
+      world.draw(camX, camY);
       // world.player->drawGizmo();
       world.player->update();
       
@@ -137,7 +137,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       const float HBx1 = HBx + 2;
       const float HBy1 = HBy + 4;
       const float bl = 25 / 64;
-      float rate = (1 - bl) * ceil(world.player->hull() + 8) * 0.0625 - 0.125;  //
+      float rate = (1 - bl) * ceil(world.player->getHealth() + 8) * 0.0625 - 0.125;  //
       glLoadIdentity();
       drawSprite(texHealthBar, HBx, HBy, HBx1, HBy1, 0, 0, 0.5, 1);
       drawSprite(texHealthBar, HBx, HBy, HBx1, HBy + 4 * rate, 0.5, 1 - rate,

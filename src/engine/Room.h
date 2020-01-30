@@ -8,6 +8,7 @@ class Room {
     String name;
     String type;
     Rect area;
+    Room() {};
     Room(IntID id, Rect area, const char* name = "Room 0", const char* type = "Room");
     Room(IntID id, Rect area, String name, String type);
 };

@@ -90,8 +90,8 @@ bool isMissleExploded(Missle &value) {
   return value.burstAnim.isEnded();
 }
 
-void World::update() {
-  for (auto &missle : _missles) {
+void World::updateMissles() {
+  for (auto& missle : _missles) {
     if (!missle.hit) {
       missle.x += missle.speedX;
       missle.y += missle.speedY;
@@ -102,11 +102,28 @@ void World::update() {
   _missles.remove_if(isMissleExploded);
 }
 
-void World::setSolid(unsigned first, unsigned last) {
-  for (unsigned i = first; i <= last; i++) _map.tileSet[i - 1].isSolid = true;
+bool World::isPlayerInRoom(Room& room) {
+  return room.id != 0 && room.area.isContainRectangle(player->getRect());
+};
+
+void World::updateCurrentRoom() {
+  if (isPlayerInRoom(_currentRoom)) return;
+
+  for (Room& room : _map.rooms) {
+    if (room.id == _currentRoom.id) continue;
+    if (isPlayerInRoom(room)) {
+      _currentRoom = room;
+      return;
+    }
+  }
 }
 
-void World::drawLevel(float scrX, float scrY) {
+void World::update() {
+  updateMissles();
+  updateCurrentRoom();
+}
+
+void World::drawMap(float scrX, float scrY) {
   UInt tX0 = max(floor(scrX), 0);
   unsigned tY0 = max(floor(scrY), 0);
   unsigned tXn = max(ceil(scrX + 32), 0);
@@ -116,17 +133,21 @@ void World::drawLevel(float scrX, float scrY) {
       _map.drawTile(i, j);
     };
   };
+}
+
+void World::drawMissles() {
   char dir;
   float x0;
   float x1, x2;
   float y0;
-  for (auto &missle : _missles) {
+  for (auto& missle : _missles) {
     if (missle.speedX < 0) {
       dir = -1;
       x1 = missle.x - missle.spriteX;
       x0 = x1 - 2;
       x2 = x0;
-    } else {
+    }
+    else {
       dir = 1;
       x0 = missle.x + missle.spriteX;
       x1 = x0 + 2;
@@ -138,4 +159,9 @@ void World::drawLevel(float scrX, float scrY) {
     else
       missle.burstAnim.draw(1, x2, y0, x2 + 1, y0 + 1);
   }
+}
+
+void World::draw(float scrX, float scrY) {
+  drawMap(scrX, scrY);
+  drawMissles();
 }

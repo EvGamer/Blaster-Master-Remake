@@ -57,12 +57,12 @@ void Map::_parseRoomGroup(Tag &objGroupTag) {
     float roomX = pixelToTileX(objTag->IntAttribute("x"));
     float roomY = pixelToTileY(objTag->IntAttribute("y")) - roomHeight;
 
-    rooms.push_back(Room({
+    rooms.emplace_back(
       objTag->UnsignedAttribute("id"),
       Rect(roomX, roomY, roomWidth, roomHeight),
       objTag->Attribute("name"),
-      objTag->Attribute("type"),
-    }));
+      objTag->Attribute("type")
+    );
 
     objTag = objTag->NextSiblingElement("object");
   }
