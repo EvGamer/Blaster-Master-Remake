@@ -124,12 +124,12 @@ void World::update() {
 }
 
 void World::drawMap(float scrX, float scrY) {
-  UInt tX0 = max(floor(scrX), 0);
-  unsigned tY0 = max(floor(scrY), 0);
-  unsigned tXn = max(ceil(scrX + 32), 0);
-  unsigned tYn = max(ceil(scrY + 24), 0);
-  for (int i = tX0; i <= tXn; i++) {
-    for (int j = tY0; j <= tYn; j++) {
+  UInt tX0 = max(max(floor(scrX), 0), ceil(_currentRoom.area.getWest()));
+  UInt tY0 = max(max(floor(scrY), 0), ceil(_currentRoom.area.getSouth()));
+  UInt tXn = min(max(ceil(scrX + 32), 0), floor(_currentRoom.area.getEast()));
+  UInt tYn = min(max(ceil(scrY + 24), 0), floor(_currentRoom.area.getNorth()));
+  for (UInt i = tX0; i < tXn; i++) {
+    for (UInt j = tY0; j < tYn; j++) {
       _map.drawTile(i, j);
     };
   };
