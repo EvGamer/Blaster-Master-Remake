@@ -9,6 +9,12 @@
 #include "engine/World.h"
 #include <list>
 
+const unsigned COORD_UNIT = 32;
+const unsigned WINDOW_WIDTH = 1024;
+const unsigned WINDOW_HEIGHT = 768;
+constexpr unsigned TILE_COLUMNS = WINDOW_WIDTH / COORD_UNIT;
+constexpr unsigned TILE_ROWS = WINDOW_HEIGHT / COORD_UNIT;
+
 unsigned int key;
 
 bool keyJump = false;
@@ -53,9 +59,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
   RegisterClass(&wc);
 
   /* create main window */
-  hWnd = CreateWindow("GLSample", "Blaster Master",
-                      WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE, 0, 0, 1024, 768,
-                      NULL, NULL, hInstance, NULL);
+  hWnd = CreateWindow(
+    "GLSample", "Blaster Master",
+    WS_CAPTION | WS_POPUPWINDOW | WS_VISIBLE,
+    0, 0, WINDOW_WIDTH, WINDOW_HEIGHT,
+    NULL, NULL, hInstance, NULL
+  );
 
   /* enable OpenGL for the window */
   EnableOpenGL(hWnd, &hDC, &hRC);
@@ -243,7 +252,8 @@ void EnableOpenGL(HWND hWnd, HDC *hDC, HGLRC *hRC) {
   *hRC = wglCreateContext(*hDC);
   wglMakeCurrent(*hDC, *hRC);
   glLoadIdentity();
-  gluOrtho2D(0, 32, 0, 24);
+  gluOrtho2D(0, TILE_COLUMNS, 0, TILE_ROWS);
+  glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
   glMatrixMode(GL_PROJECTION);
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glEnable(GL_BLEND);
