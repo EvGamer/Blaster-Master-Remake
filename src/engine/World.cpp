@@ -77,7 +77,7 @@ float World::hit(float x1, float y1, float x2, float y2, bool foe) {
   return damage;
 };
 
-bool World::collide(float x, float y) {
+bool World::isSolidTileAtCoord(float x, float y) {
   if (_map.coordOutOfRange(x, y)) return false;
   return !_map.coordOutOfRange(x, y) && _map.getTileTraits(floor(x), floor(y)).isSolid;
 };
@@ -96,7 +96,7 @@ void World::updateMissles() {
       missle.x += missle.speedX;
       missle.y += missle.speedY;
       if (missle.falling) missle.speedY -= 0.1 * _gravity;
-      missle.hit = collide(missle.x, missle.y);
+      missle.hit = isSolidTileAtCoord(missle.x, missle.y);
     }
   }
   _missles.remove_if(isMissleExploded);

@@ -32,7 +32,7 @@ class IWorld {
   void init();
   virtual void addMissle(float x, float y, float speedX, float speedY, MissleTraits* wpn) = 0;
   virtual float hit(float x1, float y1, float x2, float y2, bool foe) = 0;
-  virtual bool collide(float x, float y) = 0;
+  virtual bool isSolidTileAtCoord(float x, float y) = 0;
   virtual float getGravity() = 0;
   virtual bool getFrict(unsigned char i, unsigned char j) = 0;
 };

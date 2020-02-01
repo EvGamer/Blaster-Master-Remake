@@ -41,7 +41,7 @@ class World: public IWorld{
   void init();
   void addMissle(float x, float y, float speedX, float speedY, MissleTraits *wpn);
   float hit(float x1, float y1, float x2, float y2, bool foe);
-  bool collide(float x, float y);
+  bool isSolidTileAtCoord(float x, float y);
   float getGravity() override {
     return _gravity;
   };
