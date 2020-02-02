@@ -170,23 +170,44 @@ void World::detectTileCollision(Entity& entity) {
   float rightPush = maxTileX - entity.getEast();
 
   float speedY = entity.getSpeedY();
-  if ((entity.getSpeedY() < 0) && (isBottomRightSolid && isBottomLeftSolid)) {
+  if (isBottomRightSolid && isBottomLeftSolid) {
     correction.y = bottomPush;
   } 
-  else if ((entity.getSpeedY() > 0) && (isTopRightSolid && isTopLeftSolid)) {
+  else if (isTopRightSolid && isTopLeftSolid) {
     correction.y = topPush;
   }
 
   float speedX = entity.getSpeedX();
-  if ((entity.getSpeedX() < 0) && (isBottomLeftSolid && isTopLeftSolid)) {
+  if (isBottomLeftSolid && isTopLeftSolid) {
     correction.x = leftPush;
   }
-  else if ((entity.getSpeedX() > 0) && (isBottomRightSolid && isTopRightSolid)) {
+  else if (isBottomRightSolid && isTopRightSolid) {
     correction.x = rightPush;
   }
-  if (correction.x != 0 && correction.y != 0) {
+  if (correction.x != 0 || correction.y != 0) {
     entity.onTileCollision(correction);
     return;
+  };
+
+  if (isBottomRightSolid) {
+    if (bottomPush < -rightPush) correction.y = bottomPush;
+    else correction.x = rightPush;
+  }
+  else if (isBottomLeftSolid) {
+    if (bottomPush < leftPush) correction.y = bottomPush;
+    else correction.x = leftPush;
+  }
+  else if (isTopRightSolid) {
+    if (-topPush < -rightPush) correction.y = topPush;
+    else correction.x = rightPush;
+  }
+  else if (isTopLeftSolid) {
+    if (-topPush < leftPush) correction.y = topPush;
+    else correction.x = leftPush;
+  }
+
+  if (correction.x != 0 || correction.y != 0) {
+    entity.onTileCollision(correction);
   };
 }
 
