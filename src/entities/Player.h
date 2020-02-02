@@ -1,5 +1,6 @@
 #pragma once
 #include "../engine/IWorld.h"
+#include "../engine/TileTraits.h"
 #include "../utils/Rectangle.h"
 #include "Entity.h"
 
@@ -73,6 +74,9 @@ class Player : public Entity {
   inline Rect getRect() {
     return Rect(_x, _y, _width, _height);
   };
+  inline float getSpeedX() {
+    return _speedX * _dirrection;
+  };
   void move(int dirrection);
   void jump();
   void hurt(float damage);
@@ -85,7 +89,8 @@ class Player : public Entity {
     return _dirrection < 0 ? _x : _x + _width;
   }
   void shoot();
-  void tryHittingGround();
+  void onTileCollision(Point correction);
+  void updatePosition();
   void update();
   inline bool isDead() { return _deathAnimation.isEnded(); }
   void drawGizmo();

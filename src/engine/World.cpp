@@ -154,7 +154,48 @@ void World::updateCurrentRoom() {
   }
 }
 
+void World::detectTileCollision(Entity& entity) {
+  Point correction{0, 0};
+  UInt minTileX = max(0, floor(entity.getWest()));
+  UInt maxTileX = max(0, floor(entity.getEast()));
+  UInt minTileY = max(0, floor(entity.getSouth()));
+  UInt maxTileY = max(0, floor(entity.getNorth()));
+  bool isBottomLeftSolid = _map.getTileTraits(minTileX, minTileY).isSolid;
+  bool isBottomRightSolid = _map.getTileTraits(maxTileX, minTileY).isSolid;
+  bool isTopLeftSolid = _map.getTileTraits(minTileX, maxTileY).isSolid;
+  bool isTopRightSolid = _map.getTileTraits(maxTileX, maxTileY).isSolid;
+  float bottomPush = minTileY - entity.getSouth() + 1;
+  float topPush = maxTileY - entity.getNorth();
+  float leftPush = minTileX - entity.getWest() + 1;
+  float rightPush = maxTileX - entity.getEast();
+
+  float speedY = entity.getSpeedY();
+  if ((entity.getSpeedY() < 0) && (isBottomRightSolid && isBottomLeftSolid)) {
+    correction.y = bottomPush;
+  } 
+  else if ((entity.getSpeedY() > 0) && (isTopRightSolid && isTopLeftSolid)) {
+    correction.y = topPush;
+  }
+
+  float speedX = entity.getSpeedX();
+  if ((entity.getSpeedX() < 0) && (isBottomLeftSolid && isTopLeftSolid)) {
+    correction.x = leftPush;
+  }
+  else if ((entity.getSpeedX() > 0) && (isBottomRightSolid && isTopRightSolid)) {
+    correction.x = rightPush;
+  }
+  if (correction.x != 0 && correction.y != 0) {
+    entity.onTileCollision(correction);
+    return;
+  };
+}
+
 void World::update() {
+  if (player != nullptr) {
+    player->updatePosition();
+    detectTileCollision(*player);
+    player->update();
+  }
   updateCamera();
   updateMissles();
   updateCurrentRoom();
@@ -200,5 +241,6 @@ void World::drawMissles() {
 
 void World::draw() {
   drawMap();
+  player->draw();
   drawMissles();
 }

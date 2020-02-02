@@ -20,8 +20,7 @@ class World: public IWorld{
   float _halfScreenHeight = 12;
   float _cameraX = 0;
   float _cameraY = 0;
-  Room _currentRoom;
-  
+  Room _currentRoom;  
   //ToDo make singletones in classes what use them
   GLuint _playerTextureId;
   GLuint _playerMissleTextureId;
@@ -55,6 +54,7 @@ class World: public IWorld{
   };
   bool isPlayerInRoom(Room& room);
   void applyCamera();
+  void detectTileCollision(Entity& entity);
   void updateCamera();
   void updateCurrentRoom();
   void updateMissles();

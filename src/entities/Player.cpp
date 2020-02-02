@@ -48,60 +48,35 @@ void Player::shoot() {  // if(_isControlable)
   }
 }
 
-void Player::tryHittingGround() {
-  _isOnGround = (
-    _world->isSolidTileAtCoord(_x + COLLISION_MARGIN, _y)
-    || _world->isSolidTileAtCoord(_x + _width - COLLISION_MARGIN, _y)
-  );
+void Player::onTileCollision(Point correction) {
+  _x = _x + correction.x;
+  _y = _y + correction.y;
+  if (correction.x != 0) _speedX = 0;
+  if (correction.y != 0) _speedY = 0;
+  if (correction.y > 0) _isOnGround = true;
+}
 
-  if (_isOnGround) {
-    _y = floor(_y + 1);
-    _speedY = 0;
-  }
+void Player::updatePosition() {
+  _y += _jumpSpeed * _speedY;
+  _x += _dirrection * _speedX * SPEED_X_SCALE;
+  _isOnGround = false;
 }
 
 void Player::update() {
   if (&getCurrentAnimation() != &_deathAnimation) {
-    _y += _jumpSpeed * _speedY;
-    _x += _dirrection * _speedX * SPEED_X_SCALE;
     _world->hit(_x, _y, _x + _width, _y + _height, true);
     if (_timeToLiveWithoutHealth > 0) _timeToLiveWithoutHealth--;
     if (_weaponCooldown > 0) _weaponCooldown--;
-
 
     if ((_y > _halfJumpMaxY) && _jumpBeingPressedDuration > 0) {
       _speedY = 0;
       _jumpBeingPressedDuration = 0;
     }
-    if (_speedY <= 0) tryHittingGround();
     _speedY -= _jumpSpeed * _maxJumpHeight * JUMP_SPEED_COEFFICIENT / _world->getGravity();
     _speedX -= DRAG_DECELLERATION_X;
 
     if (_speedX < 0) {
       _speedX = 0;
-    };
-    if (_dirrection > 0) {
-      if (_world->isSolidTileAtCoord(_x + _width, _y)) {
-        _x = floor(_x + _width) - _width;
-        _speedX = 0;
-      }
-    } else {
-      if (_world->isSolidTileAtCoord(_x, _y)) {
-        _x = floor(_x + 1);
-        _speedX = 0;
-      }
-    }
-
-    if (_speedY > 0) {
-      bool isCollidedWithTile = (
-        _world->isSolidTileAtCoord(_x, _y + _height)
-        || _world->isSolidTileAtCoord(_x + _width - COLLISION_FORWARD_MARGIN, _y + _height)
-        // this hack used to avoid between block collision
-      );
-      if (isCollidedWithTile) {
-        _y = floor(_y + _height) - _height;
-        _speedY = 0;
-      };
     };
 
     _hitDamage = _world->hit(_x - 0.5, _y, _x + _width + 0.5,

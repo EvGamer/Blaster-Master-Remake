@@ -31,4 +31,5 @@ class Enemy : public Entity{
   void kill();
   void update(Player &p1);
   void draw();
+  void onTileCollision(Point correction) {};
 };
