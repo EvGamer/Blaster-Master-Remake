@@ -154,20 +154,31 @@ void World::updateCurrentRoom() {
   }
 }
 
+Point getCollisionCorrection(float depthX, float depthY, float speedX, float speedY) {
+  if (speedX == 0) return { 0, depthY };
+  if (speedY == 0) return { depthX, 0};
+  float slope = speedY / speedX;
+  float intersectY = slope * (depthX);
+  if (abs(intersectY) >= abs(depthY)) {
+    return { 0, depthY };
+  };
+  return { depthX, 0 };
+}
+
 void World::detectTileCollision(Entity& entity) {
   Point correction{0, 0};
-  UInt minTileX = max(0, floor(entity.getWest()));
-  UInt maxTileX = max(0, floor(entity.getEast()));
-  UInt minTileY = max(0, floor(entity.getSouth()));
-  UInt maxTileY = max(0, floor(entity.getNorth()));
-  bool isBottomLeftSolid = _map.getTileTraits(minTileX, minTileY).isSolid;
-  bool isBottomRightSolid = _map.getTileTraits(maxTileX, minTileY).isSolid;
-  bool isTopLeftSolid = _map.getTileTraits(minTileX, maxTileY).isSolid;
-  bool isTopRightSolid = _map.getTileTraits(maxTileX, maxTileY).isSolid;
-  float bottomPush = minTileY - entity.getSouth() + 1;
-  float topPush = maxTileY - entity.getNorth();
-  float leftPush = minTileX - entity.getWest() + 1;
-  float rightPush = maxTileX - entity.getEast();
+  UInt leftTileX = max(0, floor(entity.getWest()));
+  UInt rightTileX = max(0, floor(entity.getEast()));
+  UInt bottomTileY = max(0, floor(entity.getSouth()));
+  UInt topTileY = max(0, floor(entity.getNorth()));
+  bool isBottomLeftSolid = _map.getTileTraits(leftTileX, bottomTileY).isSolid;
+  bool isBottomRightSolid = _map.getTileTraits(rightTileX, bottomTileY).isSolid;
+  bool isTopLeftSolid = _map.getTileTraits(leftTileX, topTileY).isSolid;
+  bool isTopRightSolid = _map.getTileTraits(rightTileX, topTileY).isSolid;
+  float bottomPush = bottomTileY + 1 - entity.getSouth();
+  float topPush = topTileY - entity.getNorth();
+  float leftPush = leftTileX + 1 - entity.getWest();
+  float rightPush = rightTileX - entity.getEast();
 
   float speedY = entity.getSpeedY();
   if (isBottomRightSolid && isBottomLeftSolid) {
@@ -189,22 +200,19 @@ void World::detectTileCollision(Entity& entity) {
     return;
   };
 
-  if (isBottomRightSolid) {
-    if (bottomPush < -rightPush) correction.y = bottomPush;
-    else correction.x = rightPush;
-  }
-  else if (isBottomLeftSolid) {
-    if (bottomPush < leftPush) correction.y = bottomPush;
-    else correction.x = leftPush;
-  }
-  else if (isTopRightSolid) {
-    if (-topPush < -rightPush) correction.y = topPush;
-    else correction.x = rightPush;
-  }
-  else if (isTopLeftSolid) {
-    if (-topPush < leftPush) correction.y = topPush;
-    else correction.x = leftPush;
-  }
+  if (isBottomRightSolid) correction = getCollisionCorrection(
+    rightPush, bottomPush, speedX, speedY
+  );
+  else if (isBottomLeftSolid) correction = getCollisionCorrection(
+    leftPush, bottomPush, speedX, speedY
+  );
+  else if (isTopRightSolid) correction = getCollisionCorrection(
+    rightPush, topPush, speedX, speedY
+  );
+  else if (isTopLeftSolid) correction = getCollisionCorrection(
+    leftPush, topPush, speedX, speedY
+  );
+
 
   if (correction.x != 0 || correction.y != 0) {
     entity.onTileCollision(correction);

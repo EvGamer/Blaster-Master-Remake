@@ -14,12 +14,12 @@ class Entity {
     }
     inline float getX() { return _x; }
     inline float getY() { return _y; }
-    inline float getEast() { return getX(); }
-    inline float getWest() { return _x + _width; }
+    inline float getWest() { return getX(); }
+    inline float getEast() { return _x + _width; }
     inline float getSouth() { return getY(); }
     inline float getNorth() { return _y + _height; }
     inline float getSpeedX() { return _speedX; }
-    inline float getSpeedY() { return _speedY; }
+    virtual float getSpeedY() { return _speedY; }
     virtual void onTileCollision(Point correction) = 0;
     virtual void draw() = 0;
 

@@ -56,9 +56,13 @@ void Player::onTileCollision(Point correction) {
   if (correction.y > 0) _isOnGround = true;
 }
 
+float Player::getSpeedX() {
+  return _speedX * _dirrection * SPEED_X_SCALE;
+}
+
 void Player::updatePosition() {
   _y += _jumpSpeed * _speedY;
-  _x += _dirrection * _speedX * SPEED_X_SCALE;
+  _x += getSpeedX();
   _isOnGround = false;
 }
 

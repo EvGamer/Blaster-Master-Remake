@@ -74,9 +74,7 @@ class Player : public Entity {
   inline Rect getRect() {
     return Rect(_x, _y, _width, _height);
   };
-  inline float getSpeedX() {
-    return _speedX * _dirrection;
-  };
+  float getSpeedX();
   void move(int dirrection);
   void jump();
   void hurt(float damage);
