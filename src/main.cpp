@@ -70,7 +70,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
   EnableOpenGL(hWnd, &hDC, &hRC);
   World world("maps/Area3.tmx");
   world.setGlobalFriction(1);
-  world.setGravity(1);
   world.init();
   float camX = 8;
   float camY = 7;

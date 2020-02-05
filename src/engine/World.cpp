@@ -5,7 +5,7 @@
 World::World(String filename) {
   _map = Map(filename);
 
-  _gravity = 1;
+  _gravity = 0.01;
   _friction = 0;
   _playerTextureId = loadTexture("Sprites\\SOPHIA.tga");
   _playerMissleTextureId = loadTexture("Sprites\\Shot.tga");
@@ -174,14 +174,14 @@ void World::detectTileCollision(Entity& entity) {
     correction.x = tileXLeft + 1 - newBox.x;
   }
   else if (isSolidRightBottom && isSolidRightTop) {
-    correction.x = tileXRight - newBox.x;
+    correction.x = newBox.x - tileXRight;
   }
   
   if (isSolidLeftBottom && isSolidRightBottom) {
     correction.y = tileYBottom + 1 - newBox.y;
   }
   else if (isSolidLeftTop && isSolidRightTop) {
-    correction.y = tileYTop - newBox.y;
+    correction.y = newBox.y - tileYTop;
   }
 
   if (correction.y != 0 || correction.x != 0) {

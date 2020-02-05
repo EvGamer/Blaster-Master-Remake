@@ -9,10 +9,12 @@ namespace PlayerConstants {
   constexpr float HEIGHT = 18.0 / 16;
   const float MAX_HEALTH = 8;
   const float MAX_JUMP_HEIGHT = 4;
-  const float JUMP_SPEED = 0.08;
+  const float JUMP_SPEED = 0.20;
   const float JUMP_HEIGHT = 3;
-  const float JUMP_SPEED_COEFFICIENT = 0.5; //ToDo replace with something more clear
-  const float MAX_SPEED_X = 1;
+  const float JUMP_SPEED_COEFFICIENT = 2;
+  const float JUMP_INITIAL_ACCELERATION = 0.1;
+  const float JUMP_ACCELERATION_LOSS = 0.03;
+  const float MAX_SPEED_X = 0.11;
   const float WALK_ACCELERATION = 0.011;
   const float DRAG_DECELLERATION_X = 0.0055;
   const int REQUIRED_FULL_JUMP_PRESSING_DURATION = 20;
@@ -42,10 +44,10 @@ class Player : public Entity {
  protected:
   GLuint _missleTextureId;
   float _health = MAX_HEALTH;
+  float _accelerationY = 0;
   bool _isControlable;
   bool _isOnGround = true;
   float _maxJumpHeight = MAX_JUMP_HEIGHT;
-  float _jumpSpeed = JUMP_SPEED;
 
   // ToDo move that to what is inflicting damage
   float _hitDamage;

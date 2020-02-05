@@ -5,7 +5,7 @@ using namespace PlayerConstants;
 void Player::move(int dirrection) {
   if (_isControlable) {
     _dirrection = dirrection;
-    if (_speedX < MAX_SPEED_X) _speedX += copysignf(WALK_ACCELERATION, _dirrection);
+    if (abs(_speedX) < MAX_SPEED_X) _speedX += copysignf(WALK_ACCELERATION, _dirrection);
   }
   // wheels should only turn then player presses the button
   getCurrentAnimation().unfreeze();
@@ -15,7 +15,7 @@ void Player::jump() {
   if (_isControlable) {
     _jumpBeingPressedDuration--;
     if (_isOnGround) {
-      _speedY = _maxJumpHeight;
+      _accelerationY = JUMP_INITIAL_ACCELERATION;
       _jumpBeingPressedDuration = REQUIRED_FULL_JUMP_PRESSING_DURATION;
       _isOnGround = false;
       _halfJumpMaxY = _y + JUMP_HEIGHT;
@@ -76,7 +76,8 @@ void Player::update() {
       _speedY = 0;
       _jumpBeingPressedDuration = 0;
     }
-    _speedY -= _jumpSpeed * _maxJumpHeight * JUMP_SPEED_COEFFICIENT / _world->getGravity();
+    _speedY += _accelerationY - _world->getGravity();
+    _accelerationY = max(0, _accelerationY - JUMP_ACCELERATION_LOSS);
     if (_isOnGround) _speedX = decellerate(_speedX, DRAG_DECELLERATION_X);
 
     _hitDamage = _world->hit(_x - 0.5, _y, _x + _width + 0.5,
