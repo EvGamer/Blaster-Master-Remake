@@ -5,7 +5,7 @@ using namespace PlayerConstants;
 void Player::move(int dirrection) {
   if (_isControlable) {
     _dirrection = dirrection;
-    if (_speedX < MAX_SPEED_X) _speedX += WALK_ACCELERATION;
+    if (_speedX < MAX_SPEED_X) _speedX += copysignf(WALK_ACCELERATION, _dirrection);
   }
   // wheels should only turn then player presses the button
   getCurrentAnimation().unfreeze();
@@ -49,24 +49,24 @@ void Player::shoot() {  // if(_isControlable)
 }
 
 void Player::onTileCollision(Point correction) {
-  _x = _x + correction.x;
-  _y = _y + correction.y;
+  _x += _speedX + correction.x;
+  _y += _speedY + correction.y;
   if (correction.x != 0) _speedX = 0;
   if (correction.y != 0) _speedY = 0;
-  if (correction.y > 0) _isOnGround = true;
+  _isOnGround = correction.y > 0;
 }
 
 float Player::getSpeedX() {
-  return _speedX * _dirrection * SPEED_X_SCALE;
+  return _speedX;
 }
 
-void Player::updatePosition() {
-  _y += _jumpSpeed * _speedY;
-  _x += getSpeedX();
-  _isOnGround = false;
+inline float decellerate(const float &speed, const float &decelleration) {
+  return copysignf(max(0, abs(speed) - decelleration), speed);
 }
 
 void Player::update() {
+  _x += _speedX;
+  _y += _speedY;
   if (&getCurrentAnimation() != &_deathAnimation) {
     _world->hit(_x, _y, _x + _width, _y + _height, true);
     if (_timeToLiveWithoutHealth > 0) _timeToLiveWithoutHealth--;
@@ -77,11 +77,7 @@ void Player::update() {
       _jumpBeingPressedDuration = 0;
     }
     _speedY -= _jumpSpeed * _maxJumpHeight * JUMP_SPEED_COEFFICIENT / _world->getGravity();
-    _speedX -= DRAG_DECELLERATION_X;
-
-    if (_speedX < 0) {
-      _speedX = 0;
-    };
+    if (_isOnGround) _speedX = decellerate(_speedX, DRAG_DECELLERATION_X);
 
     _hitDamage = _world->hit(_x - 0.5, _y, _x + _width + 0.5,
                                _y + _height + 0.5, true);

@@ -115,21 +115,21 @@ void World::updateCamera() {
   if (room.width < _halfScreenWidth * 2) {
     _cameraX = room.getCenterX();
   }
-  else if (_cameraX - _halfScreenWidth < room.getWest()) {
-    _cameraX = room.getWest() + _halfScreenWidth;
+  else if (_cameraX - _halfScreenWidth < room.getRight()) {
+    _cameraX = room.getRight() + _halfScreenWidth;
   }
-  else if (_cameraX + _halfScreenWidth > room.getEast()) {
-    _cameraX = room.getEast() - _halfScreenWidth;
+  else if (_cameraX + _halfScreenWidth > room.getLeft()) {
+    _cameraX = room.getLeft() - _halfScreenWidth;
   }
 
   if (room.height < _halfScreenHeight * 2) {
     _cameraY = room.getCenterY();
   }
-  else if (_cameraY - _halfScreenHeight < room.getSouth()) {
-    _cameraY = room.getSouth() + _halfScreenHeight;
+  else if (_cameraY - _halfScreenHeight < room.getBottom()) {
+    _cameraY = room.getBottom() + _halfScreenHeight;
   }
-  else if (_cameraY + _halfScreenHeight > room.getNorth()) {
-    _cameraY = room.getNorth() - _halfScreenHeight;
+  else if (_cameraY + _halfScreenHeight > room.getTop()) {
+    _cameraY = room.getTop() - _halfScreenHeight;
   }
 }
 
@@ -154,74 +154,43 @@ void World::updateCurrentRoom() {
   }
 }
 
-Point getCollisionCorrection(float depthX, float depthY, float speedX, float speedY) {
-  if (speedX == 0) return { 0, depthY };
-  if (speedY == 0) return { depthX, 0};
-  float slope = speedY / speedX;
-  float intersectY = slope * (depthX);
-  if (abs(intersectY) >= abs(depthY)) {
-    return { 0, depthY };
-  };
-  return { depthX, 0 };
-}
-
 void World::detectTileCollision(Entity& entity) {
   Point correction{0, 0};
-  UInt leftTileX = max(0, floor(entity.getWest()));
-  UInt rightTileX = max(0, floor(entity.getEast()));
-  UInt bottomTileY = max(0, floor(entity.getSouth()));
-  UInt topTileY = max(0, floor(entity.getNorth()));
-  bool isBottomLeftSolid = _map.getTileTraits(leftTileX, bottomTileY).isSolid;
-  bool isBottomRightSolid = _map.getTileTraits(rightTileX, bottomTileY).isSolid;
-  bool isTopLeftSolid = _map.getTileTraits(leftTileX, topTileY).isSolid;
-  bool isTopRightSolid = _map.getTileTraits(rightTileX, topTileY).isSolid;
-  float bottomPush = bottomTileY + 1 - entity.getSouth();
-  float topPush = topTileY - entity.getNorth();
-  float leftPush = leftTileX + 1 - entity.getWest();
-  float rightPush = rightTileX - entity.getEast();
-
-  float speedY = entity.getSpeedY();
-  if (isBottomRightSolid && isBottomLeftSolid) {
-    correction.y = bottomPush;
-  } 
-  else if (isTopRightSolid && isTopLeftSolid) {
-    correction.y = topPush;
+  Rect &box = entity.getRect();
+  Rect &newBox = entity.getRect();
+  float dx = entity.getSpeedX();
+  float dy = entity.getSpeedY();
+  newBox.x += dx;
+  newBox.y += dy;
+  UInt tileXLeft = max(0, floor(newBox.x));
+  UInt tileYBottom = max(0, floor(newBox.y));
+  UInt tileXRight = max(0, floor(newBox.getRight()));
+  UInt tileYTop = max(0, floor(newBox.getTop()));
+  bool isSolidLeftBottom = _map.getTileTraits(tileXLeft, tileYBottom).isSolid;
+  bool isSolidLeftTop = _map.getTileTraits(tileXLeft, tileYTop).isSolid;
+  bool isSolidRightBottom = _map.getTileTraits(tileXRight, tileYBottom).isSolid;
+  bool isSolidRightTop = _map.getTileTraits(tileXRight, tileYTop).isSolid;
+  if (isSolidLeftBottom && isSolidLeftTop) {
+    correction.x = tileXLeft + 1 - newBox.x;
+  }
+  else if (isSolidRightBottom && isSolidRightTop) {
+    correction.x = tileXRight - newBox.x;
+  }
+  
+  if (isSolidLeftBottom && isSolidRightBottom) {
+    correction.y = tileYBottom + 1 - newBox.y;
+  }
+  else if (isSolidLeftTop && isSolidRightTop) {
+    correction.y = tileYTop - newBox.y;
   }
 
-  float speedX = entity.getSpeedX();
-  if (isBottomLeftSolid && isTopLeftSolid) {
-    correction.x = leftPush;
-  }
-  else if (isBottomRightSolid && isTopRightSolid) {
-    correction.x = rightPush;
-  }
-  if (correction.x != 0 || correction.y != 0) {
+  if (correction.y != 0 || correction.x != 0) {
     entity.onTileCollision(correction);
-    return;
-  };
-
-  if (isBottomRightSolid) correction = getCollisionCorrection(
-    rightPush, bottomPush, speedX, speedY
-  );
-  else if (isBottomLeftSolid) correction = getCollisionCorrection(
-    leftPush, bottomPush, speedX, speedY
-  );
-  else if (isTopRightSolid) correction = getCollisionCorrection(
-    rightPush, topPush, speedX, speedY
-  );
-  else if (isTopLeftSolid) correction = getCollisionCorrection(
-    leftPush, topPush, speedX, speedY
-  );
-
-
-  if (correction.x != 0 || correction.y != 0) {
-    entity.onTileCollision(correction);
-  };
+  }
 }
 
 void World::update() {
   if (player != nullptr) {
-    player->updatePosition();
     detectTileCollision(*player);
     player->update();
   }
@@ -231,10 +200,10 @@ void World::update() {
 }
 
 void World::drawMap() {
-  UInt tX0 = max(max(floor(_cameraX - _halfScreenWidth), 0), ceil(_currentRoom.area.getWest()));
-  UInt tY0 = max(max(floor(_cameraY - _halfScreenHeight), 0), ceil(_currentRoom.area.getSouth()));
-  UInt tXn = min(max(ceil(_cameraX + _halfScreenWidth), 0), floor(_currentRoom.area.getEast()));
-  UInt tYn = min(max(ceil(_cameraY + _halfScreenHeight), 0), floor(_currentRoom.area.getNorth()));
+  UInt tX0 = max(max(floor(_cameraX - _halfScreenWidth), 0), ceil(_currentRoom.area.getRight()));
+  UInt tY0 = max(max(floor(_cameraY - _halfScreenHeight), 0), ceil(_currentRoom.area.getBottom()));
+  UInt tXn = min(max(ceil(_cameraX + _halfScreenWidth), 0), floor(_currentRoom.area.getLeft()));
+  UInt tYn = min(max(ceil(_cameraY + _halfScreenHeight), 0), floor(_currentRoom.area.getTop()));
   for (UInt i = tX0; i < tXn; i++) {
     for (UInt j = tY0; j < tYn; j++) {
       _map.drawTile(i, j);

@@ -13,9 +13,8 @@ namespace PlayerConstants {
   const float JUMP_HEIGHT = 3;
   const float JUMP_SPEED_COEFFICIENT = 0.5; //ToDo replace with something more clear
   const float MAX_SPEED_X = 1;
-  const float WALK_ACCELERATION = 0.1;
-  const float DRAG_DECELLERATION_X = 0.05;
-  const float SPEED_X_SCALE = 0.11; // ToDo replace with normal speed
+  const float WALK_ACCELERATION = 0.011;
+  const float DRAG_DECELLERATION_X = 0.0055;
   const int REQUIRED_FULL_JUMP_PRESSING_DURATION = 20;
   const int LIFE_WITHOUT_HEALTH_DURATION = 45;
   const int LIFE_WITHOUT_HEALTH_AFTER_LANDING_DURATION = 2;
@@ -88,7 +87,6 @@ class Player : public Entity {
   }
   void shoot();
   void onTileCollision(Point correction);
-  void updatePosition();
   void update();
   inline bool isDead() { return _deathAnimation.isEnded(); }
   void drawGizmo();

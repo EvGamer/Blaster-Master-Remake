@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include "../typeAliases.h"
 
 class Rect {
@@ -9,16 +10,16 @@ class Rect {
     float y = 0;
     float width = 0;
     float height = 0;
-    inline float getNorth() {
+    inline float getTop() {
       return y + height;
     };
-    inline float getSouth() {
+    inline float getBottom() {
       return y;
     };
-    inline float getEast() {
+    inline float getLeft() {
       return x + width;
     };
-    inline float getWest() {
+    inline float getRight() {
       return x;
     };
     inline float getCenterX() {
@@ -28,16 +29,16 @@ class Rect {
       return y + height / 2;
     }
     inline Point getTopRightCorner() {
-      return Point({ getEast(), getNorth() });
+      return Point({ getLeft(), getTop() });
     };
     inline Point getTopLeftCorner() {
-      return Point({ getWest(), getNorth() });
+      return Point({ getRight(), getTop() });
     };
     inline Point getBottomRightCorner() {
-      return Point({ getEast(), getSouth() });
+      return Point({ getLeft(), getBottom() });
     };
     inline Point getBottomLeftCorner() {
-      return Point({ getWest(), getSouth() });
+      return Point({ getRight(), getBottom() });
     };
     inline bool isContainPoint(float a_x, float a_y) {
       return (
@@ -62,21 +63,42 @@ class Rect {
         otherRect.height
       );
     };
-    inline bool isIntersectRectangle(Rect &otherRect) {
-      return (
-        isContainPoint(otherRect.getTopRightCorner())
-        || isContainPoint(otherRect.getTopLeftCorner())
-        || isContainPoint(otherRect.getBottomRightCorner())
-        || isContainPoint(otherRect.getBottomLeftCorner())
-        || (
-          getEast() < otherRect.getEast() && otherRect.getWest() < getWest()
-          && otherRect.getSouth() < getSouth() && getNorth() < otherRect.getNorth()
-        )
-        || (
-          getEast() > otherRect.getEast() && otherRect.getWest() > getWest()
-          && otherRect.getSouth() > getSouth() && getNorth() > otherRect.getNorth()
-        )
+
+    inline Rect getOverlap(
+      const float& a_x,
+      const float& a_y,
+      const float& a_width,
+      const float& a_height
+    ) 
+    {
+      float left = std::max<float>(x, a_x);
+      float right = std::min<float>(x + width, a_x + a_width);
+      float top = std::min<float>(y + height, a_y + a_height);
+      float bottom = std::max<float>(y, a_y);
+      return Rect(left, bottom, right - left, top - bottom);
+    }
+
+    inline Rect getOverlap(Rect& other) {
+      return getOverlap(other.x, other.y, other.width, other.height);
+    }
+
+    inline bool isIntersectRectangle(
+      const float &a_x,
+      const float &a_y,
+      const float &a_width,
+      const float &a_height
+    )
+    {
+      return !(
+        x + width <= a_x
+        || y + height <= a_y
+        || y >= a_y + a_height
+        || y >= a_x + a_width
       );
+    }
+
+    inline bool isIntersectRectangle(Rect &other) {
+      return isIntersectRectangle(other.x, other.y, other.width, other.height);
     };
 };
 
