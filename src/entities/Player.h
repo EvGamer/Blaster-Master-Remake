@@ -16,7 +16,7 @@ namespace PlayerConstants {
   const float JUMP_ACCELERATION_LOSS = 0.03;
   const float MAX_SPEED_X = 0.11;
   const float WALK_ACCELERATION = 0.011;
-  const float DRAG_DECELLERATION_X = 0.0055;
+  const float DRAG_DECELLERATION_X = 0.007;
   const int REQUIRED_FULL_JUMP_PRESSING_DURATION = 20;
   const int LIFE_WITHOUT_HEALTH_DURATION = 45;
   const int LIFE_WITHOUT_HEALTH_AFTER_LANDING_DURATION = 2;

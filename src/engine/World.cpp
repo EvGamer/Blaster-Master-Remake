@@ -154,6 +154,21 @@ void World::updateCurrentRoom() {
   }
 }
 
+Point* getCorrectionFromOverlap(const Rect& overlap, bool shouldPushVertical, float dx, float dy) {
+  return shouldPushVertical 
+    ? new Point{ 0, copysignf(overlap.height, -dy) }
+    : new Point{ copysignf(overlap.width, -dx), 0 };
+}
+
+Point* World::_getSingleTileCollision(Rect &entity, UInt tileX, UInt tileY, float dx, float dy) {
+  if (!_map.getTileTraits(tileX, tileY).isSolid) return nullptr;
+  Rect tile(tileX, tileY, 1, 1);
+  Rect& overlap = entity.getOverlap(tile);
+  return overlap.getTop() == tile.getTop()
+    ? getCorrectionFromOverlap(overlap, dy < 0, dx, dy)
+    : getCorrectionFromOverlap(overlap, dy > 0, dx, dy);
+}
+
 void World::detectTileCollision(Entity& entity) {
   Point correction{0, 0};
   Rect &box = entity.getRect();
@@ -171,21 +186,39 @@ void World::detectTileCollision(Entity& entity) {
   bool isSolidRightBottom = _map.getTileTraits(tileXRight, tileYBottom).isSolid;
   bool isSolidRightTop = _map.getTileTraits(tileXRight, tileYTop).isSolid;
   if (isSolidLeftBottom && isSolidLeftTop) {
-    correction.x = tileXLeft + 1 - newBox.x;
+    correction.x = copysignf(newBox.getOverlap(tileXLeft, tileYBottom, 1, 2).width, -dx);
   }
   else if (isSolidRightBottom && isSolidRightTop) {
-    correction.x = newBox.x - tileXRight;
+    correction.x = copysignf(newBox.getOverlap(tileXRight, tileYBottom, 1, 2).width, -dx);
   }
   
   if (isSolidLeftBottom && isSolidRightBottom) {
-    correction.y = tileYBottom + 1 - newBox.y;
+    correction.y = copysignf(newBox.getOverlap(tileXLeft, tileYBottom, 2, 1).height, -dy);
   }
   else if (isSolidLeftTop && isSolidRightTop) {
-    correction.y = newBox.y - tileYTop;
+    correction.y = copysignf(newBox.getOverlap(tileXLeft, tileYTop, 2, 1).height, -dy);
   }
 
-  if (correction.y != 0 || correction.x != 0) {
+  if (correction.x != 0 || correction.y != 0) {
     entity.onTileCollision(correction);
+    return;
+  }
+
+  struct TileCoord{ UInt x; UInt y; };
+
+  std::array<TileCoord, 4> tilesToCheck{
+    TileCoord{tileXLeft, tileYBottom},
+    TileCoord{tileXLeft, tileYTop},
+    TileCoord{tileXRight, tileYBottom},
+    TileCoord{tileXRight, tileYTop},
+  };
+  
+  for (TileCoord& tile : tilesToCheck) {
+    Point *v = _getSingleTileCollision(newBox, tile.x, tile.y, dx, dy);
+    if (v != nullptr) {
+      entity.onTileCollision(*v);
+      return;
+    };
   }
 }
 

@@ -65,10 +65,10 @@ class Rect {
     };
 
     inline Rect getOverlap(
-      const float& a_x,
-      const float& a_y,
-      const float& a_width,
-      const float& a_height
+      float a_x,
+      float a_y,
+      float a_width,
+      float a_height
     ) 
     {
       float left = std::max<float>(x, a_x);
@@ -83,10 +83,10 @@ class Rect {
     }
 
     inline bool isIntersectRectangle(
-      const float &a_x,
-      const float &a_y,
-      const float &a_width,
-      const float &a_height
+      float a_x,
+      float a_y,
+      float a_width,
+      float a_height
     )
     {
       return !(

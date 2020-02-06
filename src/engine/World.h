@@ -32,6 +32,7 @@ class World: public IWorld{
 
   std::list<Missle> _missles;
 
+  Point* _getSingleTileCollision(Rect &entity, UInt tileX, UInt tileY, float dx, float dy);
 
  public:
   std::list<Enemy> enemies;
