@@ -16,13 +16,13 @@ namespace PlayerConstants {
   const float JUMP_INITIAL_ACCELERATION = 0.1;
   const float JUMP_ACCELERATION_LOSS = 0.03;
   const float MAX_SPEED_X = 0.11;
-  const float WALK_ACCELERATION = 0.011;
-  const float DRAG_DECELLERATION_X = 0.007;
+  const float DRAG_DECELLERATION_X = 0.07 * MAX_SPEED_X;
+  const float WALK_ACCELERATION = 0.05 * MAX_SPEED_X + DRAG_DECELLERATION_X;
   const int REQUIRED_FULL_JUMP_PRESSING_DURATION = 20;
   const int LIFE_WITHOUT_HEALTH_DURATION = 45;
   const int LIFE_WITHOUT_HEALTH_AFTER_LANDING_DURATION = 2;
   const float HIT_SPEED_COEFFICIENT = 0.5;
-  const float HIT_ACCELERATION_Y = 1;
+  const float HIT_ACCELERATION_Y = 0.11;
   const float COLLISION_MARGIN = 0.05;
   const float WALKING_ANIMATION_SPEED_THRESHOLD = 0.3;
   const float ANIMATION_FRAME_SIZE = 0.125; // of the texture

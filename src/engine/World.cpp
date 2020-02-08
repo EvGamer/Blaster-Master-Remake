@@ -95,7 +95,7 @@ void World::updateMissles() {
     if (!missle.hit) {
       missle.x += missle.speedX;
       missle.y += missle.speedY;
-      if (missle.falling) missle.speedY -= 0.1 * _gravity;
+      if (missle.falling) missle.speedY -= 0.1;
       missle.hit = isSolidTileAtCoord(missle.x, missle.y);
     }
   }
