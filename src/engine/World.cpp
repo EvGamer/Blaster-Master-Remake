@@ -115,11 +115,11 @@ void World::updateCamera() {
   if (room.width < _halfScreenWidth * 2) {
     _cameraX = room.getCenterX();
   }
-  else if (_cameraX - _halfScreenWidth < room.getRight()) {
-    _cameraX = room.getRight() + _halfScreenWidth;
+  else if (_cameraX - _halfScreenWidth < room.getLeft()) {
+    _cameraX = room.getLeft() + _halfScreenWidth;
   }
-  else if (_cameraX + _halfScreenWidth > room.getLeft()) {
-    _cameraX = room.getLeft() - _halfScreenWidth;
+  else if (_cameraX + _halfScreenWidth > room.getRight()) {
+    _cameraX = room.getRight() - _halfScreenWidth;
   }
 
   if (room.height < _halfScreenHeight * 2) {
@@ -233,9 +233,9 @@ void World::update() {
 }
 
 void World::drawMap() {
-  UInt tX0 = max(max(floor(_cameraX - _halfScreenWidth), 0), ceil(_currentRoom.area.getRight()));
+  UInt tX0 = max(max(floor(_cameraX - _halfScreenWidth), 0), ceil(_currentRoom.area.getLeft()));
   UInt tY0 = max(max(floor(_cameraY - _halfScreenHeight), 0), ceil(_currentRoom.area.getBottom()));
-  UInt tXn = min(max(ceil(_cameraX + _halfScreenWidth), 0), floor(_currentRoom.area.getLeft()));
+  UInt tXn = min(max(ceil(_cameraX + _halfScreenWidth), 0), floor(_currentRoom.area.getRight()));
   UInt tYn = min(max(ceil(_cameraY + _halfScreenHeight), 0), floor(_currentRoom.area.getTop()));
   for (UInt i = tX0; i < tXn; i++) {
     for (UInt j = tY0; j < tYn; j++) {

@@ -16,10 +16,10 @@ class Rect {
     inline float getBottom() {
       return y;
     };
-    inline float getLeft() {
+    inline float getRight() {
       return x + width;
     };
-    inline float getRight() {
+    inline float getLeft() {
       return x;
     };
     inline float getCenterX() {
@@ -29,16 +29,16 @@ class Rect {
       return y + height / 2;
     }
     inline Point getTopRightCorner() {
-      return Point({ getLeft(), getTop() });
-    };
-    inline Point getTopLeftCorner() {
       return Point({ getRight(), getTop() });
     };
+    inline Point getTopLeftCorner() {
+      return Point({ getLeft(), getTop() });
+    };
     inline Point getBottomRightCorner() {
-      return Point({ getLeft(), getBottom() });
+      return Point({ getRight(), getBottom() });
     };
     inline Point getBottomLeftCorner() {
-      return Point({ getRight(), getBottom() });
+      return Point({ getLeft(), getBottom() });
     };
     inline bool isContainPoint(float a_x, float a_y) {
       return (

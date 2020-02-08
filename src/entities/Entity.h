@@ -15,8 +15,8 @@ class Entity {
     inline Rect getRect() { return Rect(_x, _y, _width, _height); }
     inline float getX() { return _x; }
     inline float getY() { return _y; }
-    inline float getRight() { return getX(); }
-    inline float getLeft() { return _x + _width; }
+    inline float getLeft() { return getX(); }
+    inline float getRight() { return _x + _width; }
     inline float getBottom() { return getY(); }
     inline float getTop() { return _y + _height; }
     inline char getDirrectionX() {

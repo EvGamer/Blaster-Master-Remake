@@ -6,7 +6,8 @@
 
 namespace PlayerConstants {
   constexpr float WIDTH = 26.0 / 16;
-  constexpr float HEIGHT = 18.0 / 16;
+  //constexpr float HEIGHT = 18.0 / 16;
+  constexpr float HEIGHT = 1;
   const float MAX_HEALTH = 8;
   const float MAX_JUMP_HEIGHT = 4;
   const float JUMP_SPEED = 0.20;
