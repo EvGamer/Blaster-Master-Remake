@@ -5,7 +5,8 @@ using namespace PlayerConstants;
 void Player::move(int dirrection) {
   if (_isControlable) {
     _dirrection = dirrection;
-    if (abs(_speedX) < MAX_SPEED_X) _speedX += copysignf(WALK_ACCELERATION, _dirrection);
+    _speedX += copysignf(WALK_ACCELERATION, _dirrection);
+    if (abs(_speedX) > MAX_SPEED_X) _speedX = copysignf(MAX_SPEED_X, _speedX);
   }
   // wheels should only turn then player presses the button
   getCurrentAnimation().unfreeze();
@@ -18,7 +19,7 @@ void Player::jump() {
       _speedY = INITIAL_JUMP_SPEED_Y;
       _jumpBeingPressedDuration = REQUIRED_FULL_JUMP_PRESSING_DURATION;
       _isOnGround = false;
-      _halfJumpMaxY = _y + JUMP_HEIGHT;
+      _halfJumpMaxY = _y + SHORT_JUMP_HEIGHT;
     } else {
       _jumpBeingPressedDuration--;
     }
@@ -77,7 +78,6 @@ void Player::update() {
       _jumpBeingPressedDuration = 0;
     }
     _speedY -= GRAVITY_ACCELERATION_Y;
-    _accelerationY = max(0, _accelerationY - JUMP_ACCELERATION_LOSS);
     if (_isOnGround) _speedX = decellerate(_speedX, DRAG_DECELLERATION_X);
 
     _hitDamage = _world->hit(_x - 0.5, _y, _x + _width + 0.5,
@@ -153,7 +153,7 @@ Player::Player(float a_x, float a_y, GLuint a_textureId,
   _y = a_y;
   _dirrection = 1;
   _hitDamage = 0;
-  _halfJumpMaxY = _y + JUMP_HEIGHT;
+  _halfJumpMaxY = _y + SHORT_JUMP_HEIGHT;
   _jumpBeingPressedDuration = 0;
   _world = &a_world;
   _speedX = 0;

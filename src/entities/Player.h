@@ -11,6 +11,7 @@ namespace PlayerConstants {
   const float MAX_HEALTH = 8;
 
   const float MAX_JUMP_HEIGHT = 4;
+  const float SHORT_JUMP_HEIGHT = 3;
   const float JUMP_SPEED_RELATIVE_TO_HEIGHT = 0.08;
   const float INITIAL_JUMP_SPEED_Y = JUMP_SPEED_RELATIVE_TO_HEIGHT * MAX_JUMP_HEIGHT;
   const float GRAVITY_ACCELERATION_Y = (
@@ -19,13 +20,9 @@ namespace PlayerConstants {
     * INITIAL_JUMP_SPEED_Y
   );
 
-  const float JUMP_HEIGHT = 3;
-  const float JUMP_SPEED_COEFFICIENT = 2;
-  const float JUMP_INITIAL_ACCELERATION = 0.1;
-  const float JUMP_ACCELERATION_LOSS = 0.03;
   const float MAX_SPEED_X = 0.11;
-  const float DRAG_DECELLERATION_X = 0.07 * MAX_SPEED_X;
-  const float WALK_ACCELERATION = 0.05 * MAX_SPEED_X + DRAG_DECELLERATION_X;
+  const float WALK_ACCELERATION = 0.1 * MAX_SPEED_X;
+  const float DRAG_DECELLERATION_X = 0.5 * WALK_ACCELERATION;
   const int REQUIRED_FULL_JUMP_PRESSING_DURATION = 20;
   const int LIFE_WITHOUT_HEALTH_DURATION = 45;
   const int LIFE_WITHOUT_HEALTH_AFTER_LANDING_DURATION = 2;
