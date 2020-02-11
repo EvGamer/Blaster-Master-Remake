@@ -9,8 +9,16 @@ namespace PlayerConstants {
   //constexpr float HEIGHT = 18.0 / 16;
   constexpr float HEIGHT = 1;
   const float MAX_HEALTH = 8;
+
   const float MAX_JUMP_HEIGHT = 4;
-  const float JUMP_SPEED = 0.20;
+  const float JUMP_SPEED_RELATIVE_TO_HEIGHT = 0.08;
+  const float INITIAL_JUMP_SPEED_Y = JUMP_SPEED_RELATIVE_TO_HEIGHT * MAX_JUMP_HEIGHT;
+  const float GRAVITY_ACCELERATION_Y = (
+    0.5
+    * JUMP_SPEED_RELATIVE_TO_HEIGHT
+    * INITIAL_JUMP_SPEED_Y
+  );
+
   const float JUMP_HEIGHT = 3;
   const float JUMP_SPEED_COEFFICIENT = 2;
   const float JUMP_INITIAL_ACCELERATION = 0.1;

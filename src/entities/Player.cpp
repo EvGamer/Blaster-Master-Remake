@@ -15,7 +15,7 @@ void Player::jump() {
   if (_isControlable) {
     _jumpBeingPressedDuration--;
     if (_isOnGround) {
-      _accelerationY = JUMP_INITIAL_ACCELERATION;
+      _speedY = INITIAL_JUMP_SPEED_Y;
       _jumpBeingPressedDuration = REQUIRED_FULL_JUMP_PRESSING_DURATION;
       _isOnGround = false;
       _halfJumpMaxY = _y + JUMP_HEIGHT;
@@ -76,7 +76,7 @@ void Player::update() {
       _speedY = 0;
       _jumpBeingPressedDuration = 0;
     }
-    _speedY += _accelerationY - _world->getGravity();
+    _speedY -= GRAVITY_ACCELERATION_Y;
     _accelerationY = max(0, _accelerationY - JUMP_ACCELERATION_LOSS);
     if (_isOnGround) _speedX = decellerate(_speedX, DRAG_DECELLERATION_X);
 
