@@ -57,8 +57,9 @@ void Player::onTileCollision(Point correction) {
   if (correction.y != 0) {
     _y += _speedY + correction.y;
     _speedY = 0;
+    if (correction.y > 0) _isOnGround = true;
   }
-  _isOnGround = correction.y > 0;
+  
 }
 
 float Player::getSpeedX() {
@@ -72,6 +73,7 @@ inline float decellerate(const float &speed, const float &decelleration) {
 void Player::update() {
   _x += _speedX;
   _y += _speedY;
+  if (_speedY != 0) _isOnGround = false;
   if (&getCurrentAnimation() != &_deathAnimation) {
     _world->hit(_x, _y, _x + _width, _y + _height, true);
     if (_timeToLiveWithoutHealth > 0) _timeToLiveWithoutHealth--;
