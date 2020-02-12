@@ -29,7 +29,7 @@ namespace PlayerConstants {
   const float HIT_SPEED_COEFFICIENT = 0.5;
   const float HIT_ACCELERATION_Y = 0.11;
   const float COLLISION_MARGIN = 0.05;
-  const float WALKING_ANIMATION_SPEED_THRESHOLD = 0.3;
+  const float WALKING_ANIMATION_SPEED_THRESHOLD = 0.033;
   const float ANIMATION_FRAME_SIZE = 0.125; // of the texture
   const float DEATH_ANIMATION_FRAME_SIZE = 0.25;
   const int WEAPON_COOLDOWN = 15;
