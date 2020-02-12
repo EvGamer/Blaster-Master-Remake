@@ -50,10 +50,14 @@ void Player::shoot() {  // if(_isControlable)
 }
 
 void Player::onTileCollision(Point correction) {
-  _x += _speedX + correction.x;
-  _y += _speedY + correction.y;
-  if (correction.x != 0) _speedX = 0;
-  if (correction.y != 0) _speedY = 0;
+  if (correction.x != 0) {
+    _x += _speedX + correction.x;
+    _speedX = 0;
+  }
+  if (correction.y != 0) {
+    _y += _speedY + correction.y;
+    _speedY = 0;
+  }
   _isOnGround = correction.y > 0;
 }
 
