@@ -20,8 +20,7 @@ class World: public IWorld{
   float _halfScreenHeight = 12;
   float _cameraX = 0;
   float _cameraY = 0;
-  Room _currentRoom;
-  
+  Room _currentRoom;  
   //ToDo make singletones in classes what use them
   GLuint _playerTextureId;
   GLuint _playerMissleTextureId;
@@ -33,6 +32,7 @@ class World: public IWorld{
 
   std::list<Missle> _missles;
 
+  Point* _getSingleTileCollision(Rect &entity, UInt tileX, UInt tileY, float dx, float dy);
 
  public:
   std::list<Enemy> enemies;
@@ -41,7 +41,7 @@ class World: public IWorld{
   void init();
   void addMissle(float x, float y, float speedX, float speedY, MissleTraits *wpn);
   float hit(float x1, float y1, float x2, float y2, bool foe);
-  bool collide(float x, float y);
+  bool isSolidTileAtCoord(float x, float y);
   float getGravity() override {
     return _gravity;
   };
@@ -55,6 +55,7 @@ class World: public IWorld{
   };
   bool isPlayerInRoom(Room& room);
   void applyCamera();
+  void detectTileCollision(Entity& entity);
   void updateCamera();
   void updateCurrentRoom();
   void updateMissles();

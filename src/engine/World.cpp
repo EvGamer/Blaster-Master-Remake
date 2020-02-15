@@ -5,7 +5,7 @@
 World::World(String filename) {
   _map = Map(filename);
 
-  _gravity = 1;
+  _gravity = 0.01;
   _friction = 0;
   _playerTextureId = loadTexture("Sprites\\SOPHIA.tga");
   _playerMissleTextureId = loadTexture("Sprites\\Shot.tga");
@@ -77,7 +77,7 @@ float World::hit(float x1, float y1, float x2, float y2, bool foe) {
   return damage;
 };
 
-bool World::collide(float x, float y) {
+bool World::isSolidTileAtCoord(float x, float y) {
   if (_map.coordOutOfRange(x, y)) return false;
   return !_map.coordOutOfRange(x, y) && _map.getTileTraits(floor(x), floor(y)).isSolid;
 };
@@ -95,8 +95,8 @@ void World::updateMissles() {
     if (!missle.hit) {
       missle.x += missle.speedX;
       missle.y += missle.speedY;
-      if (missle.falling) missle.speedY -= 0.1 * _gravity;
-      missle.hit = collide(missle.x, missle.y);
+      if (missle.falling) missle.speedY -= 0.1;
+      missle.hit = isSolidTileAtCoord(missle.x, missle.y);
     }
   }
   _missles.remove_if(isMissleExploded);
@@ -115,21 +115,21 @@ void World::updateCamera() {
   if (room.width < _halfScreenWidth * 2) {
     _cameraX = room.getCenterX();
   }
-  else if (_cameraX - _halfScreenWidth < room.getWest()) {
-    _cameraX = room.getWest() + _halfScreenWidth;
+  else if (_cameraX - _halfScreenWidth < room.getLeft()) {
+    _cameraX = room.getLeft() + _halfScreenWidth;
   }
-  else if (_cameraX + _halfScreenWidth > room.getEast()) {
-    _cameraX = room.getEast() - _halfScreenWidth;
+  else if (_cameraX + _halfScreenWidth > room.getRight()) {
+    _cameraX = room.getRight() - _halfScreenWidth;
   }
 
   if (room.height < _halfScreenHeight * 2) {
     _cameraY = room.getCenterY();
   }
-  else if (_cameraY - _halfScreenHeight < room.getSouth()) {
-    _cameraY = room.getSouth() + _halfScreenHeight;
+  else if (_cameraY - _halfScreenHeight < room.getBottom()) {
+    _cameraY = room.getBottom() + _halfScreenHeight;
   }
-  else if (_cameraY + _halfScreenHeight > room.getNorth()) {
-    _cameraY = room.getNorth() - _halfScreenHeight;
+  else if (_cameraY + _halfScreenHeight > room.getTop()) {
+    _cameraY = room.getTop() - _halfScreenHeight;
   }
 }
 
@@ -154,17 +154,89 @@ void World::updateCurrentRoom() {
   }
 }
 
+Point* getCorrectionFromOverlap(const Rect& overlap, bool shouldPushVertical, float dx, float dy) {
+  return shouldPushVertical 
+    ? new Point{ 0, copysignf(overlap.height, -dy) }
+    : new Point{ copysignf(overlap.width, -dx), 0 };
+}
+
+Point* World::_getSingleTileCollision(Rect &entity, UInt tileX, UInt tileY, float dx, float dy) {
+  if (!_map.getTileTraits(tileX, tileY).isSolid) return nullptr;
+  Rect tile(tileX, tileY, 1, 1);
+  Rect& overlap = entity.getOverlap(tile);
+  return overlap.getTop() == tile.getTop()
+    ? getCorrectionFromOverlap(overlap, dy < 0, dx, dy)
+    : getCorrectionFromOverlap(overlap, dy > 0, dx, dy);
+}
+
+void World::detectTileCollision(Entity& entity) {
+  Point correction{0, 0};
+  Rect &box = entity.getRect();
+  Rect &newBox = entity.getRect();
+  float dx = entity.getSpeedX();
+  float dy = entity.getSpeedY();
+  newBox.x += dx;
+  newBox.y += dy;
+  UInt tileXLeft = max(0, floor(newBox.x));
+  UInt tileYBottom = max(0, floor(newBox.y));
+  UInt tileXRight = max(0, floor(newBox.getRight()));
+  UInt tileYTop = max(0, floor(newBox.getTop()));
+  bool isSolidLeftBottom = _map.getTileTraits(tileXLeft, tileYBottom).isSolid;
+  bool isSolidLeftTop = _map.getTileTraits(tileXLeft, tileYTop).isSolid;
+  bool isSolidRightBottom = _map.getTileTraits(tileXRight, tileYBottom).isSolid;
+  bool isSolidRightTop = _map.getTileTraits(tileXRight, tileYTop).isSolid;
+  if (isSolidLeftBottom && isSolidLeftTop) {
+    correction.x = copysignf(newBox.getOverlap(tileXLeft, tileYBottom, 1, 2).width, -dx);
+  }
+  else if (isSolidRightBottom && isSolidRightTop) {
+    correction.x = copysignf(newBox.getOverlap(tileXRight, tileYBottom, 1, 2).width, -dx);
+  }
+  
+  if (isSolidLeftBottom && isSolidRightBottom) {
+    correction.y = copysignf(newBox.getOverlap(tileXLeft, tileYBottom, 2, 1).height, -dy);
+  }
+  else if (isSolidLeftTop && isSolidRightTop) {
+    correction.y = copysignf(newBox.getOverlap(tileXLeft, tileYTop, 2, 1).height, -dy);
+  }
+
+  if (correction.x != 0 || correction.y != 0) {
+    entity.onTileCollision(correction);
+    return;
+  }
+
+  struct TileCoord{ UInt x; UInt y; };
+
+  std::array<TileCoord, 4> tilesToCheck{
+    TileCoord{tileXLeft, tileYBottom},
+    TileCoord{tileXLeft, tileYTop},
+    TileCoord{tileXRight, tileYBottom},
+    TileCoord{tileXRight, tileYTop},
+  };
+  
+  for (TileCoord& tile : tilesToCheck) {
+    Point *v = _getSingleTileCollision(newBox, tile.x, tile.y, dx, dy);
+    if (v != nullptr) {
+      entity.onTileCollision(*v);
+      return;
+    };
+  }
+}
+
 void World::update() {
+  if (player != nullptr) {
+    detectTileCollision(*player);
+    player->update();
+  }
   updateCamera();
   updateMissles();
   updateCurrentRoom();
 }
 
 void World::drawMap() {
-  UInt tX0 = max(max(floor(_cameraX - _halfScreenWidth), 0), ceil(_currentRoom.area.getWest()));
-  UInt tY0 = max(max(floor(_cameraY - _halfScreenHeight), 0), ceil(_currentRoom.area.getSouth()));
-  UInt tXn = min(max(ceil(_cameraX + _halfScreenWidth), 0), floor(_currentRoom.area.getEast()));
-  UInt tYn = min(max(ceil(_cameraY + _halfScreenHeight), 0), floor(_currentRoom.area.getNorth()));
+  UInt tX0 = max(max(floor(_cameraX - _halfScreenWidth), 0), ceil(_currentRoom.area.getLeft()));
+  UInt tY0 = max(max(floor(_cameraY - _halfScreenHeight), 0), ceil(_currentRoom.area.getBottom()));
+  UInt tXn = min(max(ceil(_cameraX + _halfScreenWidth), 0), floor(_currentRoom.area.getRight()));
+  UInt tYn = min(max(ceil(_cameraY + _halfScreenHeight), 0), floor(_currentRoom.area.getTop()));
   for (UInt i = tX0; i < tXn; i++) {
     for (UInt j = tY0; j < tYn; j++) {
       _map.drawTile(i, j);
@@ -200,5 +272,6 @@ void World::drawMissles() {
 
 void World::draw() {
   drawMap();
+  player->draw();
   drawMissles();
 }

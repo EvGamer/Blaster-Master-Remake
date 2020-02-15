@@ -70,7 +70,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
   EnableOpenGL(hWnd, &hDC, &hRC);
   World world("maps/Area3.tmx");
   world.setGlobalFriction(1);
-  world.setGravity(1);
   world.init();
   float camX = 8;
   float camY = 7;
@@ -107,7 +106,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       world.update();  //
       world.draw();
       // world.player->drawGizmo();
-      world.player->update();
       
       for (auto& enemy : world.enemies) {
         enemy.update(*world.player);
@@ -116,7 +114,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
       world.enemies.remove_if([](Enemy &e){
         return e.isDead();
       });
-      world.player->draw();
       // drawing healthBar
       const float HBx = 0;
       const float HBy = 5;

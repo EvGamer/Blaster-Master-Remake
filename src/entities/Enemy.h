@@ -1,4 +1,5 @@
 #pragma once
+#include "Entity.h"
 #include "Player.h"
 
 namespace EnemyConstants {
@@ -7,22 +8,15 @@ namespace EnemyConstants {
 
 using namespace EnemyConstants;
 
-class Enemy {
+class Enemy : public Entity{
  private:
   float _health;
   bool _isHit;
-  float _x;
-  float _y;
-  float _width;
-  float _height;
-  float _speedX = SPEED_X;
-  float _speedY;
   char _dirrection;
   Animation _deathAnimation;
   Animation _walkAnimation;
   Animation _shootAnimation;
   Animation *_currentAnimation;
-  GLuint _textureId;
   IWorld *_world;
 
   //ToDo replace by weapon class
@@ -37,4 +31,5 @@ class Enemy {
   void kill();
   void update(Player &p1);
   void draw();
+  void onTileCollision(Point correction) {};
 };
