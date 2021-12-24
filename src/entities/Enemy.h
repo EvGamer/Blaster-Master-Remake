@@ -26,7 +26,7 @@ class Enemy : public Entity{
   MissleTraits _missleType;
 
  public:
-  Enemy(float a_x, float a_y, char a_dirrection, GLuint a_textureId, IWorld *a_world);
+  Enemy(float a_x, float a_y, char a_dirrection, Texture2D a_texture, IWorld *a_world);
   inline bool isDead() { return _deathAnimation.isEnded(); }
   void kill();
   void update(Player &p1);

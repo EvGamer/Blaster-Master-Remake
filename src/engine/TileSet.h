@@ -13,7 +13,7 @@ namespace TileSetConstants {
 class TileSet {
   public:
     String name = "";
-    GLuint textureId = 0;
+    Texture2D texture;
     UInt tileWidth = 16;
     UInt tileHeight = 16;
     UInt count = 256;

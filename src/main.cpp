@@ -74,10 +74,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
   float camX = 8;
   float camY = 7;
 
-  GLuint texHealthBar = loadTexture("Sprites\\HealthBar.tga");
-  GLuint texMessage = loadTexture("Sprites\\Message.tga");
-  GLuint texVictory = loadTexture("Sprites\\Victory.tga");
-  GLuint texBack = loadTextureL("Sprites\\Background.bmp");  //
+  Texture2D texHealthBar = loadTexture("Sprites\\HealthBar.tga");
+  Texture2D texMessage = loadTexture("Sprites\\Message.tga");
+  Texture2D texVictory = loadTexture("Sprites\\Victory.tga");
+  Texture2D texBack = loadTextureL("Sprites\\Background.bmp");  //
 
   // testdraw();
   // DrawTile(0,1,0,0,world.get_texture());r//

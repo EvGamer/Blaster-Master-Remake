@@ -7,9 +7,9 @@ World::World(String filename) {
 
   _gravity = 0.01;
   _friction = 0;
-  _playerTextureId = loadTexture("Sprites\\SOPHIA.tga");
-  _playerMissleTextureId = loadTexture("Sprites\\Shot.tga");
-  _enemyTextureId = loadTexture("Sprites\\enemy.tga");
+  _playerTexture = loadTexture("Sprites\\SOPHIA.tga");
+  _playerMissleTexture = loadTexture("Sprites\\Shot.tga");
+  _enemyTexture = loadTexture("Sprites\\enemy.tga");
 }
 
 World::~World() {
@@ -25,8 +25,8 @@ void World::init() {
       if (player == nullptr) {
         player = new Player(
           pos.x, pos.y,
-          _playerTextureId,
-          _playerMissleTextureId,
+          _playerTexture,
+          _playerMissleTexture,
           *this
         );
       }
@@ -35,7 +35,7 @@ void World::init() {
       enemies.emplace_back(
         pos.x, pos.y,
         entity.isFacingRight ? 1 : -1,
-        _enemyTextureId,
+        _enemyTexture,
         this
       );
     }

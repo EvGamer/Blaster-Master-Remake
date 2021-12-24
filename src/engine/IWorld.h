@@ -8,7 +8,7 @@ struct MissleTraits {
   float spriteY;
   bool foe;
   float damage;
-  GLuint textureId;
+  Texture2D texture;
   bool falling;
 };
 

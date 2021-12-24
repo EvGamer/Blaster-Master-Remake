@@ -1,17 +1,17 @@
 #include "../stdafx.h"
 #pragma once
 
-void drawSprite(GLuint textureId, float x1, float y1, float x2, float y2,
+void drawSprite(Texture2D texture, float x1, float y1, float x2, float y2,
                 float tx1, float ty1, float tx2, float ty2);
 
-GLuint loadTexture (const char* filename, GLint filtration);
+Texture2D loadTexture (const char* filename, int filtration);
 
-GLuint loadTexture (const char* filename);
+Texture2D loadTexture (const char* filename);
 
-GLuint loadTexture (const char* filename);
+Texture2D loadTexture (const char* filename);
 
-GLuint loadTexture(std::string filename, GLint filtration);
+Texture2D loadTexture(std::string filename, int filtration);
 
-GLuint loadTexture(std::string filename);
+Texture2D loadTexture(std::string filename);
 
-GLuint loadTextureL(std::string filename);
+Texture2D loadTextureL(std::string filename);

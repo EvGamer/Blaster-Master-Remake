@@ -153,8 +153,8 @@ void Player::draw() {
     currentAnimation.draw(-1, x1 - 0.5, _y, x1 + 3.5, _y + 4);
 }
 
-Player::Player(float a_x, float a_y, GLuint a_textureId,
-               GLuint a_missleTextureId, IWorld &a_world) {
+Player::Player(float a_x, float a_y, Texture2D a_texture,
+               Texture2D a_missleTexture, IWorld &a_world) {
   _x = a_x;
   _y = a_y;
   _dirrection = 1;
@@ -169,24 +169,24 @@ Player::Player(float a_x, float a_y, GLuint a_textureId,
   _isControlable = true;
 
   // Animation
-  _textureId = a_textureId;
-  _missleTextureId = a_missleTextureId;
-  _standAnimation = Animation(_textureId, ANIMATION_FRAME_SIZE, 0, 0, 1, 4, 1, LOOP);
-  _walkAnimation = Animation(_textureId, ANIMATION_FRAME_SIZE, 0, 0, 3, 4, 3, LOOP);
-  _jumpAnimation = Animation(_textureId, ANIMATION_FRAME_SIZE, 0, 3, 1, 4, 2, LOOP);
-  _fallAnimation = Animation(_textureId, ANIMATION_FRAME_SIZE, 0, 2, 1, 4, 2, LOOP);
-  _deathAnimation = Animation(_textureId, DEATH_ANIMATION_FRAME_SIZE, 0, 2, 1, 3, 3, ONCE);
+  _texture = a_texture;
+  _missleTexture = a_missleTexture;
+  _standAnimation = Animation(_texture, ANIMATION_FRAME_SIZE, 0, 0, 1, 4, 1, LOOP);
+  _walkAnimation = Animation(_texture, ANIMATION_FRAME_SIZE, 0, 0, 3, 4, 3, LOOP);
+  _jumpAnimation = Animation(_texture, ANIMATION_FRAME_SIZE, 0, 3, 1, 4, 2, LOOP);
+  _fallAnimation = Animation(_texture, ANIMATION_FRAME_SIZE, 0, 2, 1, 4, 2, LOOP);
+  _deathAnimation = Animation(_texture, DEATH_ANIMATION_FRAME_SIZE, 0, 2, 1, 3, 3, ONCE);
   _currentAnimationFrameIndex = 0;
 
   // Weapon
   _missleType = {
-    /*burstAnim*/ Animation(a_missleTextureId, 0.25f, 3, 0, 4, 1, 2, ONCE),
-    /*flyAnim*/ Animation(a_missleTextureId, 0.5f, 0.25f, 0, 0, 1, 1, 0, LOOP),
+    /*burstAnim*/ Animation(a_missleTexture, 0.25f, 3, 0, 4, 1, 2, ONCE),
+    /*flyAnim*/ Animation(a_missleTexture, 0.5f, 0.25f, 0, 0, 1, 1, 0, LOOP),
     /*spriteX*/ -1.5,
     /*spriteY*/ -0.4,
     /*foe*/ false,
     /*damage*/ 1.5,
-    /*textureId*/ a_missleTextureId,
+    /*texture*/ a_missleTexture,
     /*falling*/ false,
   };
 }

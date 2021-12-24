@@ -22,12 +22,12 @@ class World: public IWorld{
   float _cameraY = 0;
   Room _currentRoom;  
   //ToDo make singletones in classes what use them
-  GLuint _playerTextureId;
-  GLuint _playerMissleTextureId;
-  GLuint _enemyTextureId;
+  Texture2D _playerTexture;
+  Texture2D _playerMissleTexture;
+  Texture2D _enemyTexture;
   Map _map;
 
-  GLuint _texture;
+  Texture2D _texture;
   // Map, hardcoded in haste
 
   std::list<Missle> _missles;

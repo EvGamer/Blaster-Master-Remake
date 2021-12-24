@@ -26,7 +26,7 @@ TileSet::TileSet(String filename) {
   tileTraits = std::vector<TileTraits>(count);
 
   Tag* imageTag = tileSetTag->FirstChildElement("image");
-  textureId = loadTexture(imageTag->Attribute("source"));
+  texture = loadTexture(imageTag->Attribute("source"));
 
   Tag* tileTag = tileSetTag->FirstChildElement("tile");
   
@@ -76,5 +76,5 @@ void TileSet::drawTile(ULong x, ULong y, TileTraitsIndex index){
   GLfloat texTop = (GLfloat)tile.texY / rows + TILE_TEXTURE_SIDES_CUTOFF;
   GLfloat texRight = (GLfloat)(tile.texX + 1) / columns - TILE_TEXTURE_SIDES_CUTOFF;
   GLfloat texBottom = (GLfloat)(tile.texY + 1) / rows - TILE_TEXTURE_SIDES_CUTOFF;
-  drawSprite(textureId, x, y, x + 1, y + 1, texLeft, texTop, texRight, texBottom);
+  drawSprite(texture, x, y, x + 1, y + 1, texLeft, texTop, texRight, texBottom);
 };

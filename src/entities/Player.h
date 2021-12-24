@@ -48,7 +48,7 @@ using namespace PlayerConstants;
 
 class Player : public Entity {
  protected:
-  GLuint _missleTextureId;
+  Texture2D _missleTexture;
   float _health = MAX_HEALTH;
   float _accelerationY = 0;
   bool _isControlable;
@@ -75,12 +75,13 @@ class Player : public Entity {
   MissleTraits _missleType;
 
  public:
-  Player(float x, float y, GLuint textureId, GLuint missleTextureId,
+  Player(float x, float y, Texture2D texture, Texture2D missleTexture,
          IWorld &world);
   
   inline Rect getRect() {
     return Rect(_x, _y, _width, _height);
   };
+
   float getSpeedX();
   void move(int dirrection);
   void jump();

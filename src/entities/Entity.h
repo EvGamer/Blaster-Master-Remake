@@ -37,6 +37,6 @@ class Entity {
     float _width = 0;
     float _height = 0;
     char _dirrection = 1;
-    GLuint _textureId;
+    Texture2D _texture;
 };
 

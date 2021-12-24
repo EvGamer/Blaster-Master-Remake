@@ -6,10 +6,10 @@
 class EnemyFactory
 {
   public:
-  EnemyFactory(GLuint textureId, IWorld* world);
+  EnemyFactory(Texture2D texture, IWorld* world);
   Enemy create(float x, float y, char dirrection);
 
   private:
-    GLuint _textureId;
+    Texture2D _texture;
     IWorld* _world;
 };
