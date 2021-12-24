@@ -102,13 +102,7 @@ void Player::update() {
 
 void Player::drawGizmo()  // debug option. Displays collision box.
 {
-  glColor3f(0, 1, 1);
-  glBegin(GL_QUADS);
-  glVertex2f(floor(_x), floor(_y));
-  glVertex2f(floor(_x), ceil(_y + _height));
-  glVertex2f(ceil(_x + _width), ceil(_y + _height));
-  glVertex2f(ceil(_x + _width), floor(_y));
-  glEnd();
+  DrawRectangle(floor(_x), floor(_y), ceil(_height), ceil(_height), YELLOW);
 }
 
 Animation& Player::getCurrentAnimation() {
@@ -132,18 +126,6 @@ void Player::draw() {
   };
   Animation& currentAnimation = getCurrentAnimation();
   if (&currentAnimation != &_deathAnimation) {
-    switch (_timeToLiveWithoutHealth % 3) {
-      case 0:
-        glColor3f(1, 1, 1);
-        break;
-      case 1:
-        glColor3f(0.5, 1, 0.7);
-        break;
-      case 2:
-        glColor3f(1, 0.3, 0);
-        break;
-    }
-
     currentAnimation.setCol(_currentAnimationFrameIndex);
     // Preserving wheel position between animations
 

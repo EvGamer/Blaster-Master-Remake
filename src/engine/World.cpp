@@ -134,12 +134,11 @@ void World::updateCamera() {
 }
 
 void World::applyCamera() {
-  glLoadIdentity();
-  glTranslatef(
-    -_cameraX / _halfScreenWidth + 1,
-    -_cameraY / _halfScreenHeight + 1,
-    0
-  );
+  BeginMode2D({ 
+    .target = {_cameraX, _cameraY},
+    .offset = {0, 0},
+    .rotation = 0,
+  });
 }
 
 void World::updateCurrentRoom() {
