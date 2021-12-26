@@ -12,14 +12,19 @@
 #include "Room.h"
 
 
+struct WorldTextureFileNames {
+  String player;
+  String playerMissle;
+  String enemy;
+  String area;
+};
+
 class World: public IWorld{
  private:
   float _friction;
   float _gravity;
   float _halfScreenWidth = 16;
   float _halfScreenHeight = 12;
-  float _cameraX = 0;
-  float _cameraY = 0;
   Room _currentRoom;  
   //ToDo make singletones in classes what use them
   Texture2D _playerTexture;
@@ -38,7 +43,11 @@ class World: public IWorld{
   std::list<Enemy> enemies;
   Player* player;
 
+  float _cameraX = 0;
+  float _cameraY = 0;
+
   void init();
+  void loadTextures(WorldTextureFileNames fileNams);
   void addMissle(float x, float y, float speedX, float speedY, MissleTraits *wpn);
   float hit(float x1, float y1, float x2, float y2, bool foe);
   bool isSolidTileAtCoord(float x, float y);
@@ -62,6 +71,6 @@ class World: public IWorld{
   void drawMap();
   void drawMissles();
   void draw();
-  World(String fileName);
+  World();
   ~World();
 };

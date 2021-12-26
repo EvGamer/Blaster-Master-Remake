@@ -2,19 +2,31 @@
 #include "../typeAliases.h"
 #include "../stdafx.h"
 
-void drawSprite(Texture2D texture, float x1, float y1, float x2, float y2,
-                float tx1, float ty1, float tx2, float ty2) {
-  const float tileWidth = tx2 - tx1;
-  const float width = x2 - x1;
-  Rectangle source{tx1, ty1, tileWidth, ty2 - ty1};
-  Rectangle destination{x1, y1, width, y2 - y1};
-  DrawTextureTiled(texture, source, destination, {0,0}, 0, width / tileWidth, WHITE)
+const unsigned COORD_UNIT = 32;
+
+void drawSprite(Texture2D texture, float worldX0, float worldY0, float worldX, float worldY,
+                float relativeCropX0, float relativeCropY0, float relativeCropX, float relativeCropY) {
+  const float cropX0 = relativeCropX0 * texture.width;
+  const float cropX = relativeCropX * texture.width;
+  const float cropY0 = relativeCropY0 * texture.height;
+  const float cropY = relativeCropY * texture.height;
+  const float x0 = worldX0 * COORD_UNIT;
+  const float x = worldX * COORD_UNIT;
+  const float y0 = worldY0 * COORD_UNIT;
+  const float y = worldY * COORD_UNIT;
+  
+  const float cropWidth = cropX - cropX0;
+  const float cropHeight = cropY - cropY0;
+  const float width = x - x0;
+  Rectangle source{cropX0, cropY0, cropWidth, -cropHeight};
+  Rectangle destination{x0, y, width, y - y0};
+  DrawTexturePro(texture, source, destination, {0,0}, 0, WHITE);
 }
 
 Texture2D loadTexture(const char* filename, int filtration) {
   Texture2D texture = LoadTexture(filename);
   SetTextureFilter(texture, filtration);
-  return LoadTexture(filename);
+  return texture;
 }
 
 Texture2D loadTexture(const char* filename) {
@@ -22,7 +34,7 @@ Texture2D loadTexture(const char* filename) {
 }
 
 Texture2D loadTextureL(const char* filename) {
-  return loadTexture(filename, GL_LINEAR);
+  return loadTexture(filename, TEXTURE_FILTER_BILINEAR);
 }
 
 Texture2D loadTexture(String filename, int filtration) {

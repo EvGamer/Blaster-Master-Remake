@@ -1,7 +1,7 @@
 #include "EnemyFactory.h"
 
 EnemyFactory::EnemyFactory(Texture texture, IWorld* world) {
-  _texture = texture
+  _texture = texture;
   _world = world;
 };
 

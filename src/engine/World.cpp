@@ -2,17 +2,23 @@
 #include <vector>
 #include "World.h"
 
-World::World(String filename) {
-  _map = Map(filename);
 
+World::World() {
   _gravity = 0.01;
   _friction = 0;
-  _playerTexture = loadTexture("Sprites\\SOPHIA.tga");
-  _playerMissleTexture = loadTexture("Sprites\\Shot.tga");
-  _enemyTexture = loadTexture("Sprites\\enemy.tga");
+  _playerTexture;
+  _playerMissleTexture;
+  _enemyTexture;
 }
 
 World::~World() {
+}
+
+void World::loadTextures(WorldTextureFileNames fileNames) {
+  _playerTexture = loadTexture(fileNames.player);
+  _playerMissleTexture = loadTexture(fileNames.playerMissle);
+  _enemyTexture = loadTexture(fileNames.enemy);
+  _map = Map(fileNames.area);
 }
 
 void World::init() {
@@ -135,9 +141,10 @@ void World::updateCamera() {
 
 void World::applyCamera() {
   BeginMode2D({ 
-    .target = {_cameraX, _cameraY},
-    .offset = {0, 0},
+    .offset = {_halfScreenWidth * 32, _halfScreenHeight * 32},
+    .target = {_cameraX * 32, _cameraY * 32},
     .rotation = 0,
+    .zoom = 1,
   });
 }
 
@@ -162,7 +169,7 @@ Point* getCorrectionFromOverlap(const Rect& overlap, bool shouldPushVertical, fl
 Point* World::_getSingleTileCollision(Rect &entity, UInt tileX, UInt tileY, float dx, float dy) {
   if (!_map.getTileTraits(tileX, tileY).isSolid) return nullptr;
   Rect tile(tileX, tileY, 1, 1);
-  Rect& overlap = entity.getOverlap(tile);
+  Rect overlap = entity.getOverlap(tile);
   return overlap.getTop() == tile.getTop()
     ? getCorrectionFromOverlap(overlap, dy < 0, dx, dy)
     : getCorrectionFromOverlap(overlap, dy > 0, dx, dy);
@@ -170,16 +177,17 @@ Point* World::_getSingleTileCollision(Rect &entity, UInt tileX, UInt tileY, floa
 
 void World::detectTileCollision(Entity& entity) {
   Point correction{0, 0};
-  Rect &box = entity.getRect();
-  Rect &newBox = entity.getRect();
+  Rect box = entity.getRect();
+  Rect newBox = entity.getRect();
   float dx = entity.getSpeedX();
   float dy = entity.getSpeedY();
   newBox.x += dx;
   newBox.y += dy;
-  UInt tileXLeft = max(0, floor(newBox.x));
-  UInt tileYBottom = max(0, floor(newBox.y));
-  UInt tileXRight = max(0, floor(newBox.getRight()));
-  UInt tileYTop = max(0, floor(newBox.getTop()));
+  using std::max;
+  UInt tileXLeft = max<UInt>(0, floor(newBox.x));
+  UInt tileYBottom = max<UInt>(0, floor(newBox.y));
+  UInt tileXRight = max<UInt>(0, floor(newBox.getRight()));
+  UInt tileYTop = max<UInt>(0, floor(newBox.getTop()));
   bool isSolidLeftBottom = _map.getTileTraits(tileXLeft, tileYBottom).isSolid;
   bool isSolidLeftTop = _map.getTileTraits(tileXLeft, tileYTop).isSolid;
   bool isSolidRightBottom = _map.getTileTraits(tileXRight, tileYBottom).isSolid;
@@ -232,10 +240,12 @@ void World::update() {
 }
 
 void World::drawMap() {
-  UInt tX0 = max(max(floor(_cameraX - _halfScreenWidth), 0), ceil(_currentRoom.area.getLeft()));
-  UInt tY0 = max(max(floor(_cameraY - _halfScreenHeight), 0), ceil(_currentRoom.area.getBottom()));
-  UInt tXn = min(max(ceil(_cameraX + _halfScreenWidth), 0), floor(_currentRoom.area.getRight()));
-  UInt tYn = min(max(ceil(_cameraY + _halfScreenHeight), 0), floor(_currentRoom.area.getTop()));
+  using std::min;
+  using std::max;
+  UInt tX0 = max<UInt>(max<UInt>(floor(_cameraX - _halfScreenWidth), 0), ceil(_currentRoom.area.getLeft()));
+  UInt tY0 = max<UInt>(max<UInt>(floor(_cameraY - _halfScreenHeight), 0), ceil(_currentRoom.area.getBottom()));
+  UInt tXn = min<UInt>(max<UInt>(ceil(_cameraX + _halfScreenWidth), 0), floor(_currentRoom.area.getRight()));
+  UInt tYn = min<UInt>(max<UInt>(ceil(_cameraY + _halfScreenHeight), 0), floor(_currentRoom.area.getTop()));
   for (UInt i = tX0; i < tXn; i++) {
     for (UInt j = tY0; j < tYn; j++) {
       _map.drawTile(i, j);

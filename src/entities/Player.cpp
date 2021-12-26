@@ -67,7 +67,7 @@ float Player::getSpeedX() {
 }
 
 inline float decellerate(const float &speed, const float &decelleration) {
-  return copysignf(max(0, abs(speed) - decelleration), speed);
+  return copysignf(std::max<UInt>(0, abs(speed) - decelleration), speed);
 }
 
 void Player::update() {

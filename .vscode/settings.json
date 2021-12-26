@@ -2,6 +2,13 @@
     "cmake.sourceDirectory": "${workspaceFolder}/src",
     "files.associations": {
         "functional": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "vector": "cpp",
+        "*.m": "cpp",
+        "ios": "cpp",
+        "istream": "cpp",
+        "locale": "cpp",
+        "ostream": "cpp",
+        "iosfwd": "cpp"
     }
 }

@@ -55,7 +55,7 @@ class Rect {
         && y < a_y && a_y + a_height < y + height
       );
     };
-    inline bool isContainRectangle(Rect &otherRect) {
+    inline bool isContainRectangle(const Rect &otherRect) {
       return isContainRectangle(
         otherRect.x,
         otherRect.y,

@@ -97,7 +97,6 @@ void Enemy::draw() {
     x1 = _x;
     x2 = x1 + 2;
   }
-  if (_isHit) glColor3f(1, 0.5, 0);
   _currentAnimation->draw(-_dirrection, x1, _y, x2, _y + 2);
   _isHit = false;
 }

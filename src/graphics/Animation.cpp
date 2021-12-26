@@ -68,6 +68,5 @@ unsigned Animation ::draw(char dir, float x1, float y1, float x2, float y2) {
       _timer--;
     };
   }
-  glColor3f(1, 1, 1);
   return _x;
 }
