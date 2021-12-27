@@ -142,7 +142,7 @@ void World::updateCamera() {
 void World::applyCamera() {
   BeginMode2D({ 
     .offset = {_halfScreenWidth * 32, _halfScreenHeight * 32},
-    .target = {_cameraX * 32, _cameraY * 32},
+    .target = {_cameraX * 32, -_cameraY * 32},
     .rotation = 0,
     .zoom = 1,
   });

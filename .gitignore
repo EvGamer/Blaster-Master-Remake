@@ -12,3 +12,4 @@ Release
 *.vcxproj.filters
 *.cmake
 build
+.vscode/
