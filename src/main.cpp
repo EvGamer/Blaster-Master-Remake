@@ -8,7 +8,6 @@
 #include "entities/EnemyFactory.h"
 #include "engine/World.h"
 #include <list>
-#include <sstream>
 
 #if defined(PLATFORM_WEB)
   #include <emscripten/emscripten.h>
@@ -23,10 +22,10 @@ constexpr unsigned TILE_ROWS = WINDOW_HEIGHT / COORD_UNIT;
 
 unsigned int key;
 
-int keyLeft = KEY_LEFT;
-int keyRight = KEY_RIGHT;
-int keyJump = KEY_UP;
-int keyShoot = KEY_KP_0;
+int keyLeft = KEY_A;
+int keyRight = KEY_D;
+int keyJump = KEY_W;
+int keyShoot = KEY_SPACE;
 int keyRestart = KEY_ENTER;
 unsigned char n = 0;
 
@@ -90,13 +89,13 @@ void drawAndUpdate(void) {
 
   static int frameCounter = 0;
 
+  world.update();  //
   if (isRightPressed || isLeftPressed) {
     world.player->move(dir);
   }
   if (IsKeyDown(keyJump)) world.player->jump();
   if (IsKeyDown(keyShoot)) world.player->shoot();
 
-  world.update();  //
   for (auto& enemy : world.enemies) enemy.update(*world.player);
 
 
@@ -128,8 +127,5 @@ void drawAndUpdate(void) {
         world.init();
       }
     }
-  std::ostringstream cameraStateText;
-  cameraStateText << "Camera\nx: " << world._cameraX * 32 << "\ny: " << world._cameraY * 32;
-  DrawText(cameraStateText.str().c_str(), 0, 0, 8, GREEN);
   EndDrawing();
 }
