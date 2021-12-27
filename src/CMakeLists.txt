@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
+set(CMAKE_C_STANDARD 11) # Required by Raylib
+
 project(BlasterMasterRemake VERSION 0.0.0)
 
 file(

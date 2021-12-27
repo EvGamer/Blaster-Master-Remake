@@ -19,7 +19,7 @@ void drawSprite(Texture2D texture, float worldX0, float worldY0, float worldX, f
   const float cropHeight = cropY - cropY0;
   const float width = x - x0;
   const float height = y - y0;
-  Rectangle source{cropX0, cropY0, cropWidth, cropHeight};
+  Rectangle source{cropWidth > 0 ? cropX0 : cropX, cropY0, cropWidth, cropHeight};
   Rectangle destination{x0, -y, width, height};
   DrawTexturePro(texture, source, destination, {0, 0}, 0, WHITE);
 }
