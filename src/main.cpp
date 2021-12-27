@@ -27,7 +27,6 @@ int keyRight = KEY_D;
 int keyJump = KEY_W;
 int keyShoot = KEY_SPACE;
 int keyRestart = KEY_ENTER;
-unsigned char n = 0;
 
 Texture2D texHealthBar;
 Texture2D texMessage;
@@ -76,12 +75,8 @@ int main() {
 }
 
 void drawAndUpdate(void) {
-  static bool isLeftPressed = false;
-  static bool isRightPressed = IsKeyDown(keyRight);
-  if (IsKeyPressed(keyLeft)) isLeftPressed = true;
-  else if (IsKeyReleased(keyLeft)) isLeftPressed = false;
-  if (IsKeyPressed(keyRight)) isRightPressed = true;
-  else if (IsKeyReleased(keyRight)) isRightPressed = false;
+  bool isLeftPressed = IsKeyDown(keyLeft);
+  bool isRightPressed = IsKeyDown(keyRight);
 
   int dir = 0;
   if (isRightPressed) dir = 1;
