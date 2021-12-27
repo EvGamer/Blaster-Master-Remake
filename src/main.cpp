@@ -57,7 +57,7 @@ int main() {
   world.loadTextures({
     .player = "Sprites/SOPHIA.png",
     .playerMissle = "Sprites/Shot.png",
-    .enemy = "Sprites/enemy.png",
+    .enemy = "Sprites/Enemy.png",
     .area = "maps/Area3.tmx",
   });
   world.init();
