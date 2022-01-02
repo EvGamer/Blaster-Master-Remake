@@ -6,6 +6,9 @@
 		<canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
 		
 		<script>
+			window.addEventListener('keydown', (event) => {
+				if (event.key === ' ') { event.preventDefault(); }
+			});
 			var Module = {
 				canvas: (function() {
           var canvas = document.getElementById('canvas');
@@ -23,7 +26,7 @@
 			!function(_window, _document) {
 				console.log("Loading client...");
 
-				var wasmFilePath = "wasm_hello_world.js";
+				var wasmFilePath = "BlasterMasterRemake.js";
 				console.log("Script set to " + wasmFilePath);
 				var wasmScriptElement = _document.createElement("script");
 				wasmScriptElement.async = !0;
