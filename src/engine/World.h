@@ -5,6 +5,7 @@
 
 #include "../entities/Player.h"
 #include "../entities/Enemy.h"
+#include "../graphics/TextureKeeper.h"
 #include "../typeAliases.h"
 #include "IWorld.h"
 #include "TileTraits.h"
@@ -27,12 +28,12 @@ class World: public IWorld{
   float _halfScreenHeight = 12;
   Room _currentRoom;  
   //ToDo make singletones in classes what use them
-  Texture2D _playerTexture;
-  Texture2D _playerMissleTexture;
-  Texture2D _enemyTexture;
+  TextureKeeper _playerTexture;
+  TextureKeeper _playerMissleTexture;
+  TextureKeeper _enemyTexture;
   Map _map;
 
-  Texture2D _texture;
+  TextureKeeper _texture;
   // Map, hardcoded in haste
 
   std::list<Missle> _missles;
@@ -41,7 +42,7 @@ class World: public IWorld{
 
  public:
   std::list<Enemy> enemies;
-  Player* player;
+  std::unique_ptr<Player> player;
 
   float _cameraX = 0;
   float _cameraY = 0;
@@ -58,12 +59,11 @@ class World: public IWorld{
     _gravity = a_gravity;
   };
   bool getFrict(unsigned char i, unsigned char j);
-  void update();
+  void update(float timePassed);
   inline void setGlobalFriction(float a_friction) {
     _friction = a_friction;
   };
   bool isPlayerInRoom(Room& room);
-  void applyCamera();
   void detectTileCollision(Entity& entity);
   void updateCamera();
   void updateCurrentRoom();
@@ -72,5 +72,4 @@ class World: public IWorld{
   void drawMissles();
   void draw();
   World();
-  ~World();
 };

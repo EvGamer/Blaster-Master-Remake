@@ -135,8 +135,8 @@ void Player::draw() {
     currentAnimation.draw(-1, x1 - 0.5, _y, x1 + 3.5, _y + 4);
 }
 
-Player::Player(float a_x, float a_y, Texture2D a_texture,
-               Texture2D a_missleTexture, IWorld &a_world) {
+Player::Player(float a_x, float a_y, TextureKeeper a_texture,
+               TextureKeeper a_missleTexture, IWorld &a_world) {
   _x = a_x;
   _y = a_y;
   _dirrection = 1;

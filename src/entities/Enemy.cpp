@@ -2,7 +2,7 @@
 
 const int RELOAD_TIME = 60;
 
-Enemy::Enemy(float a_x, float a_y, char a_dirrection, Texture2D a_texture,
+Enemy::Enemy(float a_x, float a_y, char a_dirrection, TextureKeeper a_texture,
              IWorld *a_world) {
   _weaponReloadCooldown = 0;
   _weaponCooldown = 0;

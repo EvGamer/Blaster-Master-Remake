@@ -6,7 +6,7 @@ enum playType { ONCE = 0x00, LOOP = 0x01, REVERSE = 0x02 };
 class Animation {
  private:
   playType _play;
-  Texture2D _texture;
+  TextureKeeper _texture;
   unsigned _timer;
   unsigned _delay;
   unsigned char _x;
@@ -24,14 +24,14 @@ class Animation {
 
   Animation();
 
-  Animation(Texture2D iTexture, float iSizeX, float iSizeY, uint8_t iX0,
+  Animation(TextureKeeper iTexture, float iSizeX, float iSizeY, uint8_t iX0,
             uint8_t iY0, uint8_t iRows, uint8_t iColums, unsigned iDelay,
             playType iPlay);
 
-  Animation(Texture2D iTexture, float iSize, uint8_t iX0, uint8_t iY0,
+  Animation(TextureKeeper iTexture, float iSize, uint8_t iX0, uint8_t iY0,
             uint8_t iRows, uint8_t iColums, unsigned iDelay, playType iPlay);
 
-  inline void initialize(Texture2D iTexture, float iSizeX, float iSizeY,
+  inline void initialize(TextureKeeper iTexture, float iSizeX, float iSizeY,
                          uint8_t iX0, uint8_t iY0, uint8_t iRows,
                          uint8_t iColums, unsigned iDelay, playType iPlay);
 

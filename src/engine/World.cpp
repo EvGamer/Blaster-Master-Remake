@@ -1,6 +1,7 @@
 
 #include <vector>
 #include "World.h"
+#include <memory>
 
 
 World::World() {
@@ -11,33 +12,27 @@ World::World() {
   _enemyTexture;
 }
 
-World::~World() {
-}
-
 void World::loadTextures(WorldTextureFileNames fileNames) {
-  _playerTexture = loadTexture(fileNames.player);
-  _playerMissleTexture = loadTexture(fileNames.playerMissle);
-  _enemyTexture = loadTexture(fileNames.enemy);
+  _playerTexture = TextureKeeper(fileNames.player);
+  _playerMissleTexture = TextureKeeper(fileNames.playerMissle);
+  _enemyTexture = TextureKeeper(fileNames.enemy);
   _map = Map(fileNames.area);
 }
 
 void World::init() {
   enemies = std::list<Enemy>();
-  player = nullptr;
+  player.reset();
 
   for (EntityDescription entity : _map.entities) {
     Point pos = _map.pixelToTileCoord(entity.pixelCoord);
-    if (entity.type == "Player") {
-      if (player == nullptr) {
-        player = new Player(
-          pos.x, pos.y,
-          _playerTexture,
-          _playerMissleTexture,
-          *this
-        );
-      }
-    }
-    else if (entity.type == "Enemy") {
+    if (entity.type == "Player" && !player) {
+      player = std::make_unique<Player>(
+        pos.x, pos.y,
+        _playerTexture,
+        _playerMissleTexture,
+        *this
+      );
+    } else if (entity.type == "Enemy") {
       enemies.emplace_back(
         pos.x, pos.y,
         entity.isFacingRight ? 1 : -1,
@@ -139,15 +134,6 @@ void World::updateCamera() {
   }
 }
 
-void World::applyCamera() {
-  BeginMode2D({ 
-    .offset = {_halfScreenWidth * 32, _halfScreenHeight * 32},
-    .target = {_cameraX * 32, -_cameraY * 32},
-    .rotation = 0,
-    .zoom = 1,
-  });
-}
-
 void World::updateCurrentRoom() {
   if (isPlayerInRoom(_currentRoom)) return;
 
@@ -229,11 +215,14 @@ void World::detectTileCollision(Entity& entity) {
   }
 }
 
-void World::update() {
+void World::update(float timePassed) {
   if (player != nullptr) {
     detectTileCollision(*player);
     player->update();
   }
+
+  for (auto& enemy : enemies) enemy.update(*player);
+
   updateCamera();
   updateMissles();
   updateCurrentRoom();
@@ -280,7 +269,19 @@ void World::drawMissles() {
 }
 
 void World::draw() {
-  drawMap();
-  player->draw();
-  drawMissles();
+  BeginMode2D({ 
+    .offset = {_halfScreenWidth * 32, _halfScreenHeight * 32},
+    .target = {_cameraX * 32, -_cameraY * 32},
+    .rotation = 0,
+    .zoom = 1,
+  });
+
+    drawMap();
+    player->draw();
+
+    drawMissles();
+
+    for (auto& enemy : enemies) enemy.draw();
+
+  EndMode2D();
 }

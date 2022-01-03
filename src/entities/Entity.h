@@ -2,6 +2,7 @@
 #include "../stdafx.h"
 #include "../typeAliases.h"
 #include "../utils/Rectangle.h"
+#include "../graphics/TextureKeeper.h"
 
 class Entity {
   public:
@@ -37,6 +38,6 @@ class Entity {
     float _width = 0;
     float _height = 0;
     char _dirrection = 1;
-    Texture2D _texture;
+    TextureKeeper _texture;
 };
 

@@ -48,7 +48,7 @@ using namespace PlayerConstants;
 
 class Player : public Entity {
  protected:
-  Texture2D _missleTexture;
+  TextureKeeper _missleTexture;
   float _health = MAX_HEALTH;
   float _accelerationY = 0;
   bool _isControlable;
@@ -75,7 +75,7 @@ class Player : public Entity {
   MissleTraits _missleType;
 
  public:
-  Player(float x, float y, Texture2D texture, Texture2D missleTexture,
+  Player(float x, float y, TextureKeeper texture, TextureKeeper missleTexture,
          IWorld &world);
   
   inline Rect getRect() {
