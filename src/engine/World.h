@@ -8,6 +8,7 @@
 #include "../graphics/TextureKeeper.h"
 #include "../typeAliases.h"
 #include "IWorld.h"
+#include "constants.h"
 #include "TileTraits.h"
 #include "Map.h"
 #include "Room.h"
@@ -24,8 +25,8 @@ class World: public IWorld{
  private:
   float _friction;
   float _gravity;
-  float _halfScreenWidth = 16;
-  float _halfScreenHeight = 12;
+  float _halfScreenWidth = TILE_COLUMNS / 2;
+  float _halfScreenHeight = TILE_ROWS / 2;
   Room _currentRoom;  
   //ToDo make singletones in classes what use them
   TextureKeeper _playerTexture;

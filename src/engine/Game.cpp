@@ -27,8 +27,8 @@ void Game::update(float timePassed) {
   bool isRightPressed = IsKeyDown(_keyRight);
 
   int dir = 0;
-  if (isRightPressed) dir = 1;
-  else if (isLeftPressed) dir = -1;
+  if (isRightPressed) dir = FACING_RIGHT;
+  else if (isLeftPressed) dir = FACING_LEFT;
 
   if (isRightPressed || isLeftPressed) {
     _world.player->move(dir);

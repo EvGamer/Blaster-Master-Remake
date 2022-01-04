@@ -4,13 +4,9 @@
 #include "../graphics/TextureKeeper.h"
 #include "World.h"
 #include "MainWindow.h"
+#include "constants.h"
 #include <list>
 
-const unsigned COORD_UNIT = 32;
-const unsigned WINDOW_WIDTH = 1024;
-const unsigned WINDOW_HEIGHT = 640;
-constexpr unsigned TILE_COLUMNS = WINDOW_WIDTH / COORD_UNIT;
-constexpr unsigned TILE_ROWS = WINDOW_HEIGHT / COORD_UNIT;
 
 class Game {
   public:

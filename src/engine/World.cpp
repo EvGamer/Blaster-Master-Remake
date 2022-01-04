@@ -43,8 +43,10 @@ void World::init() {
   }
 }
 
-void World::addMissle(float x, float y, float speedX, float speedY,
-                    MissleTraits *wpn) {
+void World::addMissle(
+  float x, float y, float speedX, float speedY,
+  MissleTraits *wpn
+) {
   _missles.push_back({
       wpn->burstAnim,
       wpn->flyAnim,
@@ -270,8 +272,8 @@ void World::drawMissles() {
 
 void World::draw() {
   BeginMode2D({ 
-    .offset = {_halfScreenWidth * 32, _halfScreenHeight * 32},
-    .target = {_cameraX * 32, -_cameraY * 32},
+    .offset = {_halfScreenWidth * COORD_UNIT, _halfScreenHeight * COORD_UNIT},
+    .target = {_cameraX * COORD_UNIT, -_cameraY * COORD_UNIT},
     .rotation = 0,
     .zoom = 1,
   });
