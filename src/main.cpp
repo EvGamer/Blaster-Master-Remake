@@ -16,14 +16,16 @@
 
 int main() {
   Game game;
-  TraceLog(LOG_INFO, "INIT !!!!!!!!!!!!! HELLO WORLD!!!!!!!!!!!!!");
+  TraceLog(LOG_INFO, "INIT");
 
   #if defined(PLATFORM_WEB)
     emscripten_set_main_loop_arg(mainLoop,  &game,  0, 1);
   #else
     SetTargetFPS(60);
-    while (!WindowShouldClose()) {
-      game.mainLoop();
-    }
+
+    game.mainLoop();
+    // while (!WindowShouldClose()) {
+    //   game.mainLoop();
+    // }
   #endif
 }
