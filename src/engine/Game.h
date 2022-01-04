@@ -3,6 +3,7 @@
 #include "../entities/EnemyFactory.h"
 #include "../graphics/TextureKeeper.h"
 #include "World.h"
+#include "MainWindow.h"
 #include <list>
 
 const unsigned COORD_UNIT = 32;
@@ -21,6 +22,7 @@ class Game {
     virtual void mainLoop();
 
   private:
+    MainWindow _window;
     TextureKeeper _texHealthBar;
     TextureKeeper _texMessage;
     TextureKeeper _texVictory;

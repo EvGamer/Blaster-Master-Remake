@@ -23,9 +23,8 @@ int main() {
   #else
     SetTargetFPS(60);
 
-    game.mainLoop();
-    // while (!WindowShouldClose()) {
-    //   game.mainLoop();
-    // }
+    while (!WindowShouldClose()) {
+      game.mainLoop();
+    }
   #endif
 }

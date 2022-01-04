@@ -11,12 +11,16 @@ class TextureKeeper {
   TextureKeeper(const char* filename);
   TextureKeeper(const TextureKeeper& toCopy);
   ~TextureKeeper();
-  TextureKeeper operator=(const TextureKeeper& toCopy);
+  TextureKeeper& operator=(const TextureKeeper& toCopy);
   inline const Texture2D& getTexture() { return _texture; };
   void load(String filename);
+  void copy(const TextureKeeper& toCopy);
 
   private:
-  std::atomic_uint_fast32_t* _sharedCounter;
-  Texture2D _texture;
+  UInt* _sharedCounter;
+  UInt _copyOrder = 0;
+  Texture2D _texture = {
+    .id = 0,
+  };
   String _filename;
 };

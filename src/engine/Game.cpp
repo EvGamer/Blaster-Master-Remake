@@ -1,7 +1,7 @@
 #include "Game.h"
 
 Game::Game() {
-  InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Blaster Master Remake");
+  _window = MainWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Blaster Master Remake");
 
   _world = World();
 
@@ -19,7 +19,7 @@ Game::Game() {
 }
 
 Game::~Game() {
-  CloseWindow();
+  TraceLog(LOG_INFO, "[GAME] Closed");
 }
 
 void Game::update(float timePassed) {
