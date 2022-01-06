@@ -20,19 +20,19 @@ set (ASSET_DIR ${PROJECT_BINARY_DIR}/../assets)
 ## Add asset folder links
 add_custom_command(
   TARGET ${PROJECT_NAME} PRE_BUILD
-  COMMAND ${CMAKE_COMMAND} -E create_symlink
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
   ${ASSET_DIR}/maps $<TARGET_FILE_DIR:${PROJECT_NAME}>/maps
 )
 
 add_custom_command(
   TARGET ${PROJECT_NAME} PRE_BUILD
-  COMMAND ${CMAKE_COMMAND} -E create_symlink
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
   ${ASSET_DIR}/Sprites $<TARGET_FILE_DIR:${PROJECT_NAME}>/Sprites
 )
 
 add_custom_command(
   TARGET ${PROJECT_NAME} PRE_BUILD
-  COMMAND ${CMAKE_COMMAND} -E create_symlink
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
   ${ASSET_DIR}/tilesets $<TARGET_FILE_DIR:${PROJECT_NAME}>/tilesets
 )
 
@@ -79,7 +79,7 @@ if (EMSCRIPTEN)
 		${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/index.html
 		COPYONLY
 	)
-  set(COMMON_LINK_FLAGS "-s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -s ASYNCIFY -s EXPORTED_FUNCTIONS='[_main]' --preload-file ${ASSET_DIR}@ ")
+  set(COMMON_LINK_FLAGS "-s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -s ASYNCIFY -s EXPORTED_FUNCTIONS=[\"_main\"] --preload-file ${ASSET_DIR}@/")
 	set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS ${COMMON_LINK_FLAGS})
   set(CMAKE_EXECUTABLE_SUFFIX ".html") # This line is used to set your executable to build with the emscripten html template so taht you can directly open it.
 

@@ -13,4 +13,4 @@ class TextureFragment {
     float _bottom;
     float _left;
     float _right;
-}
+};

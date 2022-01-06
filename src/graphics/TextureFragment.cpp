@@ -18,6 +18,10 @@ void TextureFragment::_getTextureCoordFromImageCoord(Rectangle source) {
   _right = (source.x + source.width) / texture.width;
 }
 
-void TextureFragment::draw(PixelPoint position) {
+void TextureFragment::draw(Vector2 position) {
+  
+}
 
+void TextureFragment::draw(Rectangle position) {
+  
 }
