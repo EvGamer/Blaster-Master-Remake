@@ -1,4 +1,3 @@
-
 #include <vector>
 #include "World.h"
 #include <memory>
@@ -7,9 +6,6 @@
 World::World() {
   _gravity = 0.01;
   _friction = 0;
-  _playerTexture;
-  _playerMissleTexture;
-  _enemyTexture;
 }
 
 void World::loadTextures(WorldTextureFileNames fileNames) {
@@ -48,18 +44,18 @@ void World::addMissle(
   MissleTraits *wpn
 ) {
   _missles.push_back({
-      wpn->burstAnim,
-      wpn->flyAnim,
-      wpn->spriteX,
-      wpn->spriteY,
-      x,
-      y,
-      speedX,
-      speedY,
-      false,
-      wpn->foe,
-      wpn->falling,
-      wpn->damage,
+    wpn->burstAnim,
+    wpn->flyAnim,
+    wpn->spriteX,
+    wpn->spriteY,
+    x,
+    y,
+    speedX,
+    speedY,
+    false,
+    wpn->foe,
+    wpn->falling,
+    wpn->damage,
   });
 };
 

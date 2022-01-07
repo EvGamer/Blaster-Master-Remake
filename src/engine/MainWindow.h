@@ -5,7 +5,7 @@ class MainWindow {
   public:
     MainWindow() {};
     MainWindow(int width, int height, String title);
-    MainWindow& operator=(const MainWindow& toCopy);
+    void operator=(const MainWindow& toCopy);
     ~MainWindow();
   private:
     static bool _isOpened; 

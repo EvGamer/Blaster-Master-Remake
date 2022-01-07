@@ -11,7 +11,7 @@ class TextureKeeper {
   TextureKeeper(const char* filename);
   TextureKeeper(const TextureKeeper& toCopy);
   ~TextureKeeper();
-  TextureKeeper& operator=(const TextureKeeper& toCopy);
+  void operator=(const TextureKeeper& toCopy);
   inline const Texture2D& getTexture() { return _texture; };
   void load(String filename);
   void copy(const TextureKeeper& toCopy);

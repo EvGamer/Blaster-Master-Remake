@@ -15,7 +15,6 @@ TextureKeeper::TextureKeeper(String filename) {
 }
 
 void TextureKeeper::load(String filename) {
-  TraceLog(LOG_INFO, "TEXKEEP: Load texture");
   _filename = filename;
   _texture = LoadTexture(_filename.c_str());
 }
@@ -33,7 +32,7 @@ TextureKeeper::TextureKeeper(const TextureKeeper& toCopy) {
   copy(toCopy);
 }
 
-TextureKeeper& TextureKeeper::operator=(const TextureKeeper& toCopy) {
+void TextureKeeper::operator=(const TextureKeeper& toCopy) {
   copy(toCopy);
 }
 

@@ -3,8 +3,6 @@
 Game::Game() {
   _window = MainWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Blaster Master Remake");
 
-  _world = World();
-
   _texHealthBar = TextureKeeper("Sprites/HealthBar.png");
   _texMessage = TextureKeeper("Sprites/Message.png");
   _texVictory = TextureKeeper("Sprites/Victory.png");
