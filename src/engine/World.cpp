@@ -1,6 +1,7 @@
 #include <vector>
-#include "World.h"
 #include <memory>
+#include "World.h"
+#include "../utils/Point.h"
 
 
 World::World() {
@@ -20,7 +21,7 @@ void World::init() {
   player.reset();
 
   for (EntityDescription entity : _map.entities) {
-    Point pos = _map.pixelToTileCoord(entity.pixelCoord);
+    WorldVector pos = _map.pixelToTileCoord(entity.pixelCoord);
     if (entity.type == "Player" && !player) {
       player = std::make_unique<Player>(
         pos.x, pos.y,
@@ -144,23 +145,22 @@ void World::updateCurrentRoom() {
   }
 }
 
-Point* getCorrectionFromOverlap(const Rect& overlap, bool shouldPushVertical, float dx, float dy) {
+WorldVector getCorrectionFromOverlap(const Rect& overlap, bool shouldPushVertical, float dx, float dy) {
   return shouldPushVertical 
-    ? new Point{ 0, copysignf(overlap.height, -dy) }
-    : new Point{ copysignf(overlap.width, -dx), 0 };
+    ? WorldVector{ 0, copysignf(overlap.height, -dy) }
+    : WorldVector{ copysignf(overlap.width, -dx), 0 };
 }
 
-Point* World::_getSingleTileCollision(Rect &entity, UInt tileX, UInt tileY, float dx, float dy) {
-  if (!_map.getTileTraits(tileX, tileY).isSolid) return nullptr;
+WorldVector World::_getSingleTileCollision(Rect &entity, UInt tileX, UInt tileY, float dx, float dy) {
   Rect tile(tileX, tileY, 1, 1);
   Rect overlap = entity.getOverlap(tile);
-  return overlap.getTop() == tile.getTop()
+  return overlap.getTop() >= tile.getTop()
     ? getCorrectionFromOverlap(overlap, dy < 0, dx, dy)
     : getCorrectionFromOverlap(overlap, dy > 0, dx, dy);
 }
 
 void World::detectTileCollision(Entity& entity) {
-  Point correction{0, 0};
+  WorldVector correction{0, 0};
   Rect box = entity.getRect();
   Rect newBox = entity.getRect();
   float dx = entity.getSpeedX();
@@ -205,11 +205,9 @@ void World::detectTileCollision(Entity& entity) {
   };
   
   for (TileCoord& tile : tilesToCheck) {
-    Point *v = _getSingleTileCollision(newBox, tile.x, tile.y, dx, dy);
-    if (v != nullptr) {
-      entity.onTileCollision(*v);
-      return;
-    };
+    if (!_map.getTileTraits(tile.x, tile.y).isSolid) continue;
+    WorldVector correction = _getSingleTileCollision(newBox, tile.x, tile.y, dx, dy);
+    entity.onTileCollision(correction);
   }
 }
 

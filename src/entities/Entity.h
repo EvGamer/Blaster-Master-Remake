@@ -2,6 +2,7 @@
 #include "../stdafx.h"
 #include "../typeAliases.h"
 #include "../utils/Rectangle.h"
+#include "../utils/Point.h"
 #include "../graphics/TextureKeeper.h"
 
 class Entity {
@@ -27,7 +28,7 @@ class Entity {
     }
     inline float getSpeedX() { return _speedX; }
     virtual float getSpeedY() { return _speedY; }
-    virtual void onTileCollision(Point correction) = 0;
+    virtual void onTileCollision(WorldVector correction) = 0;
     virtual void draw() = 0;
 
   protected:

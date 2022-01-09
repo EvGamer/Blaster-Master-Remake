@@ -1,5 +1,6 @@
 #include "Map.h"
 #include "../utils/Rectangle.h"
+#include "../typeAliases.h"
 
 Map::Map() {
 };
@@ -36,8 +37,8 @@ void Map::_parseEntityGroup(Tag &objGroupTag) {
       String(objTag->Attribute("name")),
       String(objTag->Attribute("type")),
       {
-        (long)objTag->IntAttribute("x"),
-        (long)objTag->IntAttribute("y"),
+        (ULong)objTag->IntAttribute("x"),
+        (ULong)objTag->IntAttribute("y"),
       },
       isFacingRight,
     });
@@ -54,8 +55,8 @@ void Map::_parseRoomGroup(Tag &objGroupTag) {
 
     float roomHeight = objTag->UnsignedAttribute("height") / tileSet.tileHeight;
     float roomWidth = objTag->UnsignedAttribute("width") / tileSet.tileWidth;
-    float roomX = pixelToTileX(objTag->IntAttribute("x"));
-    float roomY = pixelToTileY(objTag->IntAttribute("y")) - roomHeight;
+    float roomX = screenToTileX(objTag->IntAttribute("x"));
+    float roomY = screenToTileY(objTag->IntAttribute("y")) - roomHeight;
 
     rooms.emplace_back(
       objTag->UnsignedAttribute("id"),

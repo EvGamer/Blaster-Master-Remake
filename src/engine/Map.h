@@ -5,6 +5,7 @@
 #include "TileSet.h"
 #include "Room.h"
 #include "../typeAliases.h"
+#include "../utils/Point.h"
 #include "../thirdParty/tinyxml2/tinyxml2.h"
 
 typedef tinyxml2::XMLElement Tag;
@@ -13,7 +14,7 @@ struct EntityDescription {
   IntID id;
   String name;
   String type;
-  PixelPoint pixelCoord;
+  ScreenVector pixelCoord;
   bool isFacingRight;
 };
 
@@ -41,14 +42,14 @@ class Map {
     };
     inline long tileToPixelX(float x) { return round((double)x * tileSet.tileWidth); }
     inline long tileToPixelY(float y) { return round((double)y * tileSet.tileHeight); }
-    inline float pixelToTileX(long x) {
+    inline float screenToTileX(long x) {
       return (float)x / tileSet.tileWidth;
     };
-    inline float pixelToTileY(long y) {
+    inline float screenToTileY(long y) {
       return height - (float)y / tileSet.tileHeight;
     }
-    inline Point pixelToTileCoord(PixelPoint p) {
-      return { pixelToTileX(p.x), pixelToTileY(p.y) };
+    inline WorldVector pixelToTileCoord(ScreenVector p) {
+      return { screenToTileX(p.x), screenToTileY(p.y) };
     }
     TileTraits getTileTraits(ULong x, ULong y);
     void drawTile(ULong x, ULong y);

@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include "../typeAliases.h"
+#include "../utils/Point.h"
 
 class Rect {
   public:
@@ -28,17 +29,17 @@ class Rect {
     inline float getCenterY() {
       return y + height / 2;
     }
-    inline Point getTopRightCorner() {
-      return Point({ getRight(), getTop() });
+    inline WorldVector getTopRightCorner() {
+      return WorldVector({ getRight(), getTop() });
     };
-    inline Point getTopLeftCorner() {
-      return Point({ getLeft(), getTop() });
+    inline WorldVector getTopLeftCorner() {
+      return WorldVector({ getLeft(), getTop() });
     };
-    inline Point getBottomRightCorner() {
-      return Point({ getRight(), getBottom() });
+    inline WorldVector getBottomRightCorner() {
+      return WorldVector({ getRight(), getBottom() });
     };
-    inline Point getBottomLeftCorner() {
-      return Point({ getLeft(), getBottom() });
+    inline WorldVector getBottomLeftCorner() {
+      return WorldVector({ getLeft(), getBottom() });
     };
     inline bool isContainPoint(float a_x, float a_y) {
       return (
@@ -46,7 +47,7 @@ class Rect {
         && y < a_y && a_y < y + height
       );
     };
-    inline bool isContainPoint(Point &point) {
+    inline bool isContainPoint(WorldVector &point) {
       return isContainPoint(point.x, point.y);
     };
     inline bool isContainRectangle(float a_x, float a_y, float a_width, float a_height) {

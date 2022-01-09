@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "Player.h"
+#include "../utils/Point.h"
 #include "../graphics/TextureKeeper.h"
 
 namespace EnemyConstants {
@@ -32,5 +33,5 @@ class Enemy : public Entity{
   void kill();
   void update(Player &p1);
   void draw();
-  void onTileCollision(Point correction) {};
+  void onTileCollision(WorldVector correction) {};
 };

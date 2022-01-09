@@ -6,6 +6,7 @@
 #include "../entities/Player.h"
 #include "../entities/Enemy.h"
 #include "../graphics/TextureKeeper.h"
+#include "../utils/Point.h"
 #include "../typeAliases.h"
 #include "IWorld.h"
 #include "constants.h"
@@ -22,24 +23,6 @@ struct WorldTextureFileNames {
 };
 
 class World: public IWorld{
- private:
-  float _friction;
-  float _gravity;
-  float _halfScreenWidth = TILE_COLUMNS / 2;
-  float _halfScreenHeight = TILE_ROWS / 2;
-  Room _currentRoom;  
-  //ToDo make singletones in classes what use them
-  TextureKeeper _playerTexture;
-  TextureKeeper _playerMissleTexture;
-  TextureKeeper _enemyTexture;
-  Map _map;
-
-  TextureKeeper _texture;
-  // Map, hardcoded in haste
-
-  std::list<Missle> _missles;
-
-  Point* _getSingleTileCollision(Rect &entity, UInt tileX, UInt tileY, float dx, float dy);
 
  public:
   std::list<Enemy> enemies;
@@ -73,4 +56,22 @@ class World: public IWorld{
   void drawMissles();
   void draw();
   World();
+ private:
+  float _friction;
+  float _gravity;
+  float _halfScreenWidth = TILE_COLUMNS / 2;
+  float _halfScreenHeight = TILE_ROWS / 2;
+  Room _currentRoom;  
+  //ToDo make singletones in classes what use them
+  TextureKeeper _playerTexture;
+  TextureKeeper _playerMissleTexture;
+  TextureKeeper _enemyTexture;
+  Map _map;
+
+  TextureKeeper _texture;
+  // Map, hardcoded in haste
+
+  std::list<Missle> _missles;
+
+  WorldVector _getSingleTileCollision(Rect &entity, UInt tileX, UInt tileY, float dx, float dy);
 };

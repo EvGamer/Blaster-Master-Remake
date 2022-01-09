@@ -2,6 +2,7 @@
 #include "../entities/Enemy.h"
 #include "../entities/EnemyFactory.h"
 #include "../graphics/TextureKeeper.h"
+#include "../graphics/TextureFragment.h"
 #include "World.h"
 #include "MainWindow.h"
 #include "constants.h"
@@ -22,6 +23,7 @@ class Game {
     TextureKeeper _texHealthBar;
     TextureKeeper _texMessage;
     TextureKeeper _texVictory;
+    ScreenTextureFragment _endGameMessage;
     World _world = World();
 
     int _keyLeft = KEY_A;

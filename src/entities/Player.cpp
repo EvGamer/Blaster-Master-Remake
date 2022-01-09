@@ -49,7 +49,7 @@ void Player::shoot() {  // if(_isControlable)
   }
 }
 
-void Player::onTileCollision(Point correction) {
+void Player::onTileCollision(WorldVector correction) {
   if (correction.x != 0) {
     _x += _speedX + correction.x;
     _speedX = 0;

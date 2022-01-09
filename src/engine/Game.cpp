@@ -1,10 +1,12 @@
 #include "Game.h"
+#include "../graphics/TextureFragment.h"
+#include "../utils/Point.h"
 
 Game::Game() {
   _window = MainWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Blaster Master Remake");
 
   _texHealthBar = TextureKeeper("Sprites/HealthBar.png");
-  _texMessage = TextureKeeper("Sprites/Message.png");
+  _endGameMessage = ScreenTextureFragment("Sprites/Message.png", { 0, 0, 256, 256 });
   _texVictory = TextureKeeper("Sprites/Victory.png");
 
   _world.loadTextures({
@@ -50,8 +52,9 @@ void Game::draw() {
 
   drawSprite(_texHealthBar, HBx, HBy, HBx1, HBy1, 0, 0, 0.5, 1);
   drawSprite(_texHealthBar, HBx, HBy, HBx1, HBy + 4 * rate, 0.5, 1 - rate, 1, 1);
+
   if (_world.player->isDead()) {
-    drawSprite(_texMessage, 15, 15, 23, 23, 0, 0, 1, 1);
+    _endGameMessage.draw({ 200, 180 });
     if (IsKeyDown(_keyRestart)) {
       _world.init();
     }

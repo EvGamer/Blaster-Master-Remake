@@ -2,6 +2,7 @@
 #include "../engine/IWorld.h"
 #include "../engine/TileTraits.h"
 #include "../utils/Rectangle.h"
+#include "../utils/Point.h"
 #include "Entity.h"
 
 namespace PlayerConstants {
@@ -95,7 +96,7 @@ class Player : public Entity {
     return _dirrection < 0 ? _x : _x + _width;
   }
   void shoot();
-  void onTileCollision(Point correction);
+  void onTileCollision(WorldVector correction);
   void update();
   inline bool isDead() { return _deathAnimation.isEnded(); }
   void drawGizmo();
