@@ -3,8 +3,6 @@
 #include "../typeAliases.h"
 #include "../thirdParty/tinyxml2/tinyxml2.h"
 
-using namespace TileSetConstants;
-
 TileSet::TileSet() {
   for (UInt i = 0; i < count; i++) {
     addTileTraits(i, "Background");
@@ -26,7 +24,7 @@ TileSet::TileSet(String filename) {
   tileTraits = std::vector<TileTraits>(count);
 
   Tag* imageTag = tileSetTag->FirstChildElement("image");
-  textureId = loadTexture(imageTag->Attribute("source"));
+  texture = TextureKeeper(imageTag->Attribute("source"));
 
   Tag* tileTag = tileSetTag->FirstChildElement("tile");
   
@@ -72,9 +70,9 @@ TileTraits& TileSet::operator[](TileTraitsIndex index) {
 
 void TileSet::drawTile(ULong x, ULong y, TileTraitsIndex index){
   TileTraits &tile = tileTraits[index];
-  GLfloat texLeft = (GLfloat)tile.texX / columns + TILE_TEXTURE_SIDES_CUTOFF;
-  GLfloat texTop = (GLfloat)tile.texY / rows + TILE_TEXTURE_SIDES_CUTOFF;
-  GLfloat texRight = (GLfloat)(tile.texX + 1) / columns - TILE_TEXTURE_SIDES_CUTOFF;
-  GLfloat texBottom = (GLfloat)(tile.texY + 1) / rows - TILE_TEXTURE_SIDES_CUTOFF;
-  drawSprite(textureId, x, y, x + 1, y + 1, texLeft, texTop, texRight, texBottom);
+  float texLeft = (float)tile.texX / columns;
+  float texTop = (float)tile.texY / rows;
+  float texRight = (float)(tile.texX + 1) / columns;
+  float texBottom = (float)(tile.texY + 1) / rows;
+  drawSprite(texture, x, y, x + 1, y + 1, texLeft, texTop, texRight, texBottom);
 };

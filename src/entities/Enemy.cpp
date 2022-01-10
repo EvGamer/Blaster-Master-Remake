@@ -2,11 +2,11 @@
 
 const int RELOAD_TIME = 60;
 
-Enemy::Enemy(float a_x, float a_y, char a_dirrection, GLuint a_textureId,
+Enemy::Enemy(float a_x, float a_y, char a_dirrection, TextureKeeper a_texture,
              IWorld *a_world) {
   _weaponReloadCooldown = 0;
   _weaponCooldown = 0;
-  _textureId = a_textureId;
+  _texture = a_texture;
   _dirrection = a_dirrection;
   _health = 6;
   _speedY = 0;
@@ -17,18 +17,18 @@ Enemy::Enemy(float a_x, float a_y, char a_dirrection, GLuint a_textureId,
   _width = 1.6;
   _height = 1.1;
   _world = a_world;
-  _deathAnimation = Animation(_textureId, 0.25, 0, 2, 1, 4, 2, ONCE);
-  _walkAnimation = Animation(_textureId, 0.25, 0, 0, 1, 4, 5, LOOP);
-  _shootAnimation = Animation(_textureId, 0.25, 0, 1, 1, 4, 3, ONCE);
+  _deathAnimation = Animation(_texture, 0.25, 0, 2, 1, 4, 2, ONCE);
+  _walkAnimation = Animation(_texture, 0.25, 0, 0, 1, 4, 5, LOOP);
+  _shootAnimation = Animation(_texture, 0.25, 0, 1, 1, 4, 3, ONCE);
   _currentAnimation = &_walkAnimation;
   _missleType = {
-      /*burstAnim*/ Animation(_textureId, 0.125, 0, 7, 1, 4, 2, ONCE),
-      /*flyAnim*/ Animation(_textureId, 0.25, 0.125, 0, 6, 1, 1, 2, ONCE),
+      /*burstAnim*/ Animation(_texture, 0.125, 0, 7, 1, 4, 2, ONCE),
+      /*flyAnim*/ Animation(_texture, 0.25, 0.125, 0, 6, 1, 1, 2, ONCE),
       /*spriteX*/ -0.75,
       /*spriteY*/ -0.5,
       /*foe*/ true,
       /*damage*/ 1,
-      /*textureId*/ _textureId,
+      /*texture*/ _texture,
       /*falling*/ true,
   };
 }
@@ -97,7 +97,6 @@ void Enemy::draw() {
     x1 = _x;
     x2 = x1 + 2;
   }
-  if (_isHit) glColor3f(1, 0.5, 0);
   _currentAnimation->draw(-_dirrection, x1, _y, x2, _y + 2);
   _isHit = false;
 }

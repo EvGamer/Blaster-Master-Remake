@@ -2,6 +2,7 @@
 #include "../engine/IWorld.h"
 #include "../engine/TileTraits.h"
 #include "../utils/Rectangle.h"
+#include "../utils/Point.h"
 #include "Entity.h"
 
 namespace PlayerConstants {
@@ -48,7 +49,7 @@ using namespace PlayerConstants;
 
 class Player : public Entity {
  protected:
-  GLuint _missleTextureId;
+  TextureKeeper _missleTexture;
   float _health = MAX_HEALTH;
   float _accelerationY = 0;
   bool _isControlable;
@@ -75,12 +76,13 @@ class Player : public Entity {
   MissleTraits _missleType;
 
  public:
-  Player(float x, float y, GLuint textureId, GLuint missleTextureId,
+  Player(float x, float y, TextureKeeper texture, TextureKeeper missleTexture,
          IWorld &world);
   
   inline Rect getRect() {
     return Rect(_x, _y, _width, _height);
   };
+
   float getSpeedX();
   void move(int dirrection);
   void jump();
@@ -94,7 +96,7 @@ class Player : public Entity {
     return _dirrection < 0 ? _x : _x + _width;
   }
   void shoot();
-  void onTileCollision(Point correction);
+  void onTileCollision(WorldVector correction);
   void update();
   inline bool isDead() { return _deathAnimation.isEnded(); }
   void drawGizmo();

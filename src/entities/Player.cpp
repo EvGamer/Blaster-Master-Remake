@@ -49,7 +49,7 @@ void Player::shoot() {  // if(_isControlable)
   }
 }
 
-void Player::onTileCollision(Point correction) {
+void Player::onTileCollision(WorldVector correction) {
   if (correction.x != 0) {
     _x += _speedX + correction.x;
     _speedX = 0;
@@ -67,7 +67,7 @@ float Player::getSpeedX() {
 }
 
 inline float decellerate(const float &speed, const float &decelleration) {
-  return copysignf(max(0, abs(speed) - decelleration), speed);
+  return copysignf(std::max<float>(0, abs(speed) - decelleration), speed);
 }
 
 void Player::update() {
@@ -102,13 +102,7 @@ void Player::update() {
 
 void Player::drawGizmo()  // debug option. Displays collision box.
 {
-  glColor3f(0, 1, 1);
-  glBegin(GL_QUADS);
-  glVertex2f(floor(_x), floor(_y));
-  glVertex2f(floor(_x), ceil(_y + _height));
-  glVertex2f(ceil(_x + _width), ceil(_y + _height));
-  glVertex2f(ceil(_x + _width), floor(_y));
-  glEnd();
+  DrawRectangle(floor(_x), floor(_y), ceil(_height), ceil(_height), YELLOW);
 }
 
 Animation& Player::getCurrentAnimation() {
@@ -132,18 +126,6 @@ void Player::draw() {
   };
   Animation& currentAnimation = getCurrentAnimation();
   if (&currentAnimation != &_deathAnimation) {
-    switch (_timeToLiveWithoutHealth % 3) {
-      case 0:
-        glColor3f(1, 1, 1);
-        break;
-      case 1:
-        glColor3f(0.5, 1, 0.7);
-        break;
-      case 2:
-        glColor3f(1, 0.3, 0);
-        break;
-    }
-
     currentAnimation.setCol(_currentAnimationFrameIndex);
     // Preserving wheel position between animations
 
@@ -153,8 +135,8 @@ void Player::draw() {
     currentAnimation.draw(-1, x1 - 0.5, _y, x1 + 3.5, _y + 4);
 }
 
-Player::Player(float a_x, float a_y, GLuint a_textureId,
-               GLuint a_missleTextureId, IWorld &a_world) {
+Player::Player(float a_x, float a_y, TextureKeeper a_texture,
+               TextureKeeper a_missleTexture, IWorld &a_world) {
   _x = a_x;
   _y = a_y;
   _dirrection = 1;
@@ -169,24 +151,24 @@ Player::Player(float a_x, float a_y, GLuint a_textureId,
   _isControlable = true;
 
   // Animation
-  _textureId = a_textureId;
-  _missleTextureId = a_missleTextureId;
-  _standAnimation = Animation(_textureId, ANIMATION_FRAME_SIZE, 0, 0, 1, 4, 1, LOOP);
-  _walkAnimation = Animation(_textureId, ANIMATION_FRAME_SIZE, 0, 0, 3, 4, 3, LOOP);
-  _jumpAnimation = Animation(_textureId, ANIMATION_FRAME_SIZE, 0, 3, 1, 4, 2, LOOP);
-  _fallAnimation = Animation(_textureId, ANIMATION_FRAME_SIZE, 0, 2, 1, 4, 2, LOOP);
-  _deathAnimation = Animation(_textureId, DEATH_ANIMATION_FRAME_SIZE, 0, 2, 1, 3, 3, ONCE);
+  _texture = a_texture;
+  _missleTexture = a_missleTexture;
+  _standAnimation = Animation(_texture, ANIMATION_FRAME_SIZE, 0, 0, 1, 4, 1, LOOP);
+  _walkAnimation = Animation(_texture, ANIMATION_FRAME_SIZE, 0, 0, 3, 4, 3, LOOP);
+  _jumpAnimation = Animation(_texture, ANIMATION_FRAME_SIZE, 0, 3, 1, 4, 2, LOOP);
+  _fallAnimation = Animation(_texture, ANIMATION_FRAME_SIZE, 0, 2, 1, 4, 2, LOOP);
+  _deathAnimation = Animation(_texture, DEATH_ANIMATION_FRAME_SIZE, 0, 2, 1, 3, 3, ONCE);
   _currentAnimationFrameIndex = 0;
 
   // Weapon
   _missleType = {
-    /*burstAnim*/ Animation(a_missleTextureId, 0.25f, 3, 0, 4, 1, 2, ONCE),
-    /*flyAnim*/ Animation(a_missleTextureId, 0.5f, 0.25f, 0, 0, 1, 1, 0, LOOP),
+    /*burstAnim*/ Animation(a_missleTexture, 0.25f, 3, 0, 4, 1, 2, ONCE),
+    /*flyAnim*/ Animation(a_missleTexture, 0.5f, 0.25f, 0, 0, 1, 1, 0, LOOP),
     /*spriteX*/ -1.5,
     /*spriteY*/ -0.4,
     /*foe*/ false,
     /*damage*/ 1.5,
-    /*textureId*/ a_missleTextureId,
+    /*texture*/ a_missleTexture,
     /*falling*/ false,
   };
 }

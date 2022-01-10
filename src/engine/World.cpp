@@ -1,62 +1,62 @@
-
 #include <vector>
+#include <memory>
 #include "World.h"
+#include "../utils/Point.h"
 
-World::World(String filename) {
-  _map = Map(filename);
 
+World::World() {
   _gravity = 0.01;
   _friction = 0;
-  _playerTextureId = loadTexture("Sprites\\SOPHIA.tga");
-  _playerMissleTextureId = loadTexture("Sprites\\Shot.tga");
-  _enemyTextureId = loadTexture("Sprites\\enemy.tga");
 }
 
-World::~World() {
+void World::loadTextures(WorldTextureFileNames fileNames) {
+  _playerTexture = TextureKeeper(fileNames.player);
+  _playerMissleTexture = TextureKeeper(fileNames.playerMissle);
+  _enemyTexture = TextureKeeper(fileNames.enemy);
+  _map = Map(fileNames.area);
 }
 
 void World::init() {
   enemies = std::list<Enemy>();
-  player = nullptr;
+  player.reset();
 
   for (EntityDescription entity : _map.entities) {
-    Point pos = _map.pixelToTileCoord(entity.pixelCoord);
-    if (entity.type == "Player") {
-      if (player == nullptr) {
-        player = new Player(
-          pos.x, pos.y,
-          _playerTextureId,
-          _playerMissleTextureId,
-          *this
-        );
-      }
-    }
-    else if (entity.type == "Enemy") {
+    WorldVector pos = _map.pixelToTileCoord(entity.pixelCoord);
+    if (entity.type == "Player" && !player) {
+      player = std::make_unique<Player>(
+        pos.x, pos.y,
+        _playerTexture,
+        _playerMissleTexture,
+        *this
+      );
+    } else if (entity.type == "Enemy") {
       enemies.emplace_back(
         pos.x, pos.y,
         entity.isFacingRight ? 1 : -1,
-        _enemyTextureId,
+        _enemyTexture,
         this
       );
     }
   }
 }
 
-void World::addMissle(float x, float y, float speedX, float speedY,
-                    MissleTraits *wpn) {
+void World::addMissle(
+  float x, float y, float speedX, float speedY,
+  MissleTraits *wpn
+) {
   _missles.push_back({
-      wpn->burstAnim,
-      wpn->flyAnim,
-      wpn->spriteX,
-      wpn->spriteY,
-      x,
-      y,
-      speedX,
-      speedY,
-      false,
-      wpn->foe,
-      wpn->falling,
-      wpn->damage,
+    wpn->burstAnim,
+    wpn->flyAnim,
+    wpn->spriteX,
+    wpn->spriteY,
+    x,
+    y,
+    speedX,
+    speedY,
+    false,
+    wpn->foe,
+    wpn->falling,
+    wpn->damage,
   });
 };
 
@@ -133,15 +133,6 @@ void World::updateCamera() {
   }
 }
 
-void World::applyCamera() {
-  glLoadIdentity();
-  glTranslatef(
-    -_cameraX / _halfScreenWidth + 1,
-    -_cameraY / _halfScreenHeight + 1,
-    0
-  );
-}
-
 void World::updateCurrentRoom() {
   if (isPlayerInRoom(_currentRoom)) return;
 
@@ -154,33 +145,33 @@ void World::updateCurrentRoom() {
   }
 }
 
-Point* getCorrectionFromOverlap(const Rect& overlap, bool shouldPushVertical, float dx, float dy) {
+WorldVector getCorrectionFromOverlap(const Rect& overlap, bool shouldPushVertical, float dx, float dy) {
   return shouldPushVertical 
-    ? new Point{ 0, copysignf(overlap.height, -dy) }
-    : new Point{ copysignf(overlap.width, -dx), 0 };
+    ? WorldVector{ 0, copysignf(overlap.height, -dy) }
+    : WorldVector{ copysignf(overlap.width, -dx), 0 };
 }
 
-Point* World::_getSingleTileCollision(Rect &entity, UInt tileX, UInt tileY, float dx, float dy) {
-  if (!_map.getTileTraits(tileX, tileY).isSolid) return nullptr;
+WorldVector World::_getSingleTileCollision(Rect &entity, UInt tileX, UInt tileY, float dx, float dy) {
   Rect tile(tileX, tileY, 1, 1);
-  Rect& overlap = entity.getOverlap(tile);
-  return overlap.getTop() == tile.getTop()
+  Rect overlap = entity.getOverlap(tile);
+  return overlap.getTop() >= tile.getTop()
     ? getCorrectionFromOverlap(overlap, dy < 0, dx, dy)
     : getCorrectionFromOverlap(overlap, dy > 0, dx, dy);
 }
 
 void World::detectTileCollision(Entity& entity) {
-  Point correction{0, 0};
-  Rect &box = entity.getRect();
-  Rect &newBox = entity.getRect();
+  WorldVector correction{0, 0};
+  Rect box = entity.getRect();
+  Rect newBox = entity.getRect();
   float dx = entity.getSpeedX();
   float dy = entity.getSpeedY();
   newBox.x += dx;
   newBox.y += dy;
-  UInt tileXLeft = max(0, floor(newBox.x));
-  UInt tileYBottom = max(0, floor(newBox.y));
-  UInt tileXRight = max(0, floor(newBox.getRight()));
-  UInt tileYTop = max(0, floor(newBox.getTop()));
+  using std::max;
+  UInt tileXLeft = max<UInt>(0, floor(newBox.x));
+  UInt tileYBottom = max<UInt>(0, floor(newBox.y));
+  UInt tileXRight = max<UInt>(0, floor(newBox.getRight()));
+  UInt tileYTop = max<UInt>(0, floor(newBox.getTop()));
   bool isSolidLeftBottom = _map.getTileTraits(tileXLeft, tileYBottom).isSolid;
   bool isSolidLeftTop = _map.getTileTraits(tileXLeft, tileYTop).isSolid;
   bool isSolidRightBottom = _map.getTileTraits(tileXRight, tileYBottom).isSolid;
@@ -214,29 +205,32 @@ void World::detectTileCollision(Entity& entity) {
   };
   
   for (TileCoord& tile : tilesToCheck) {
-    Point *v = _getSingleTileCollision(newBox, tile.x, tile.y, dx, dy);
-    if (v != nullptr) {
-      entity.onTileCollision(*v);
-      return;
-    };
+    if (!_map.getTileTraits(tile.x, tile.y).isSolid) continue;
+    WorldVector correction = _getSingleTileCollision(newBox, tile.x, tile.y, dx, dy);
+    entity.onTileCollision(correction);
   }
 }
 
-void World::update() {
+void World::update(float timePassed) {
   if (player != nullptr) {
     detectTileCollision(*player);
     player->update();
   }
+
+  for (auto& enemy : enemies) enemy.update(*player);
+
   updateCamera();
   updateMissles();
   updateCurrentRoom();
 }
 
 void World::drawMap() {
-  UInt tX0 = max(max(floor(_cameraX - _halfScreenWidth), 0), ceil(_currentRoom.area.getLeft()));
-  UInt tY0 = max(max(floor(_cameraY - _halfScreenHeight), 0), ceil(_currentRoom.area.getBottom()));
-  UInt tXn = min(max(ceil(_cameraX + _halfScreenWidth), 0), floor(_currentRoom.area.getRight()));
-  UInt tYn = min(max(ceil(_cameraY + _halfScreenHeight), 0), floor(_currentRoom.area.getTop()));
+  using std::min;
+  using std::max;
+  UInt tX0 = max<UInt>(max<UInt>(floor(_cameraX - _halfScreenWidth), 0), ceil(_currentRoom.area.getLeft()));
+  UInt tY0 = max<UInt>(max<UInt>(floor(_cameraY - _halfScreenHeight), 0), ceil(_currentRoom.area.getBottom()));
+  UInt tXn = min<UInt>(max<UInt>(ceil(_cameraX + _halfScreenWidth), 0), floor(_currentRoom.area.getRight()));
+  UInt tYn = min<UInt>(max<UInt>(ceil(_cameraY + _halfScreenHeight), 0), floor(_currentRoom.area.getTop()));
   for (UInt i = tX0; i < tXn; i++) {
     for (UInt j = tY0; j < tYn; j++) {
       _map.drawTile(i, j);
@@ -271,7 +265,19 @@ void World::drawMissles() {
 }
 
 void World::draw() {
-  drawMap();
-  player->draw();
-  drawMissles();
+  BeginMode2D({ 
+    .offset = {_halfScreenWidth * COORD_UNIT, _halfScreenHeight * COORD_UNIT},
+    .target = {_cameraX * COORD_UNIT, -_cameraY * COORD_UNIT},
+    .rotation = 0,
+    .zoom = 1,
+  });
+
+    drawMap();
+    player->draw();
+
+    drawMissles();
+
+    for (auto& enemy : enemies) enemy.draw();
+
+  EndMode2D();
 }

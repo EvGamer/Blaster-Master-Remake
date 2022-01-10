@@ -1,6 +1,8 @@
 #pragma once
 #include "Entity.h"
 #include "Player.h"
+#include "../utils/Point.h"
+#include "../graphics/TextureKeeper.h"
 
 namespace EnemyConstants {
   const float SPEED_X = 1;
@@ -26,10 +28,10 @@ class Enemy : public Entity{
   MissleTraits _missleType;
 
  public:
-  Enemy(float a_x, float a_y, char a_dirrection, GLuint a_textureId, IWorld *a_world);
+  Enemy(float a_x, float a_y, char a_dirrection, TextureKeeper a_texture, IWorld *a_world);
   inline bool isDead() { return _deathAnimation.isEnded(); }
   void kill();
   void update(Player &p1);
   void draw();
-  void onTileCollision(Point correction) {};
+  void onTileCollision(WorldVector correction) {};
 };

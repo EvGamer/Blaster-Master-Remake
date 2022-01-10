@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head></head>
+	<body>
+		<div id="console"></div>
+		<canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+		
+		<script>
+			window.addEventListener('keydown', (event) => {
+				if (event.key === ' ') { event.preventDefault(); }
+			});
+			var Module = {
+				canvas: (function() {
+          var canvas = document.getElementById('canvas');
+
+          // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+          // application robust, you may want to override this behavior before shipping!
+          // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+          canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+
+          return canvas;
+        })(),
+			};
+		</script>
+		<script>
+			!function(_window, _document) {
+				console.log("Loading client...");
+
+				var wasmFilePath = "BlasterMasterRemake.js";
+				console.log("Script set to " + wasmFilePath);
+				var wasmScriptElement = _document.createElement("script");
+				wasmScriptElement.async = !0;
+				wasmScriptElement.type = "text/javascript";
+				wasmScriptElement.src = wasmFilePath;
+				wasmScriptElement.onerror = function(t) {
+					console.error("Script Error"), console.error(t), setTimeout(function() {
+						_window.location.reload(!0)
+					}, 3e3)
+				};
+				var thisScriptElement = _document.getElementsByTagName("script")[0];
+				thisScriptElement.parentNode.insertBefore(wasmScriptElement, thisScriptElement)
+			}(window, document);
+		</script>
+	</body>
+</html>
