@@ -3,6 +3,7 @@
 #include "../entities/EnemyFactory.h"
 #include "../graphics/TextureKeeper.h"
 #include "../graphics/TextureFragment.h"
+#include "../ui/FillBar.h"
 #include "World.h"
 #include "MainWindow.h"
 #include "constants.h"
@@ -20,10 +21,10 @@ class Game {
 
   private:
     MainWindow _window;
-    TextureKeeper _texHealthBar;
     TextureKeeper _texMessage;
     TextureKeeper _texVictory;
     ScreenTextureFragment _endGameMessage;
+    FillBar _healthBar;
     World _world = World();
 
     int _keyLeft = KEY_A;

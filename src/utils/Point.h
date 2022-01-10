@@ -14,10 +14,18 @@ struct Vector2D {
   constexpr Vector2D<float> operator/ (const float divisor) {
     return { x / divisor, y / divisor };
   }
+
+  constexpr Vector2D<T> operator+ (const Vector2D<T>& operand) {
+    return { x + operand.x, y + operand.y };
+  }
+
+  constexpr Vector2D<T> operator- (const Vector2D<T>& operand) {
+    return { x - operand.x, y - operand.x };
+  }
 };
 
 typedef Vector2D<UInt> TextureVector;
-typedef Vector2D<ULong> ScreenVector;
+typedef Vector2D<Long> ScreenVector;
 typedef Vector2D<float> WorldVector;
 
 constexpr WorldVector toWorldVector(ScreenVector screenVector) {

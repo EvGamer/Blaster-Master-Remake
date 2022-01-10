@@ -5,7 +5,12 @@
 Game::Game() {
   _window = MainWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Blaster Master Remake");
 
-  _texHealthBar = TextureKeeper("Sprites/HealthBar.png");
+  _healthBar = FillBar(
+    "Sprites/HealthBar.png",
+    { 12, 7, 9, 50 },
+    { 45, 8, 6, 31 },
+    { 1, 1 }
+  );
   _endGameMessage = ScreenTextureFragment("Sprites/Message.png", { 0, 0, 256, 256 });
   _texVictory = TextureKeeper("Sprites/Victory.png");
 
@@ -37,6 +42,7 @@ void Game::update(float timePassed) {
   if (IsKeyDown(_keyShoot)) _world.player->shoot();
 
   _world.update(timePassed);
+  _healthBar.update(_world.player)
 }
 
 void Game::draw() {
