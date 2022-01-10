@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "../graphics/TextureFragment.h"
 #include "../utils/Point.h"
 
 Game::Game() {
@@ -9,7 +8,9 @@ Game::Game() {
     "Sprites/HealthBar.png",
     { 12, 7, 9, 50 },
     { 45, 8, 6, 31 },
-    { 1, 1 }
+    { 2, 2 },
+    2,
+    8
   );
   _endGameMessage = ScreenTextureFragment("Sprites/Message.png", { 0, 0, 256, 256 });
   _texVictory = TextureKeeper("Sprites/Victory.png");
@@ -42,22 +43,12 @@ void Game::update(float timePassed) {
   if (IsKeyDown(_keyShoot)) _world.player->shoot();
 
   _world.update(timePassed);
-  _healthBar.update(_world.player)
+  _healthBar.update(_world.player->getHealth() / PlayerConstants::MAX_HEALTH);
 }
 
 void Game::draw() {
   _world.draw();
-
-  // drawing healthBar
-  const float HBx = 0;
-  const float HBy = 5;
-  const float HBx1 = HBx + 2;
-  const float HBy1 = HBy + 4;
-  const float bl = 25 / 64;
-  float rate = (1 - bl) * ceil(_world.player->getHealth() + 8) * 0.0625 - 0.125;  //
-
-  drawSprite(_texHealthBar, HBx, HBy, HBx1, HBy1, 0, 0, 0.5, 1);
-  drawSprite(_texHealthBar, HBx, HBy, HBx1, HBy + 4 * rate, 0.5, 1 - rate, 1, 1);
+  _healthBar.draw({ 20, 200 });
 
   if (_world.player->isDead()) {
     _endGameMessage.draw({ 200, 180 });

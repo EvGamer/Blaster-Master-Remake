@@ -37,8 +37,8 @@ void Map::_parseEntityGroup(Tag &objGroupTag) {
       String(objTag->Attribute("name")),
       String(objTag->Attribute("type")),
       {
-        (ULong)objTag->IntAttribute("x"),
-        (ULong)objTag->IntAttribute("y"),
+        (Long)objTag->IntAttribute("x"),
+        (Long)objTag->IntAttribute("y"),
       },
       isFacingRight,
     });

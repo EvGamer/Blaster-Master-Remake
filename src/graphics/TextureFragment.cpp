@@ -2,24 +2,24 @@
 #include "utils.h"
 #include "../engine/constants.h"
 
-TextureFragment::TextureFragment(TextureKeeper texture, Rectangle source) {
+TextureFragment::TextureFragment(TextureKeeper texture, Rectangle source, float scale) {
   _texture = texture;
-  _getTextureCoordFromImageCoord(source);
+  _getTextureCoordFromImageCoord(source, scale);
 }
 
-TextureFragment::TextureFragment(const char* filename, Rectangle source) {
+TextureFragment::TextureFragment(const char* filename, Rectangle source, float scale) {
   _texture = TextureKeeper(filename);
-  _getTextureCoordFromImageCoord(source);
+  _getTextureCoordFromImageCoord(source, scale);
 }
 
-void TextureFragment::_getTextureCoordFromImageCoord(Rectangle source) {
+void TextureFragment::_getTextureCoordFromImageCoord(Rectangle source, float scale) {
   auto texture = _texture.getTexture();
   _top = source.y / texture.height;
   _bottom = (source.y + source.height) / texture.height;
   _left = source.x / texture.width;
   _right = (source.x + source.width) / texture.width;
 
-  _sizeInWorld = WorldVector{ source.width, source.height } / COORD_UNIT;
+  _sizeInWorld = WorldVector{ source.width, source.height } / COORD_UNIT * scale;
 
 }
 

@@ -5,10 +5,10 @@
 class TextureFragment {
   public:
     TextureFragment() = default;
-    TextureFragment(TextureKeeper texture, Rectangle source);
-    TextureFragment(const char* filename, Rectangle source);
+    TextureFragment(TextureKeeper texture, Rectangle source, float scale = 1);
+    TextureFragment(const char* filename, Rectangle source, float scale = 1);
   protected:
-    void _getTextureCoordFromImageCoord(Rectangle source);
+    void _getTextureCoordFromImageCoord(Rectangle source, float scale = 1);
     TextureKeeper _texture;
     float _top;
     float _bottom;
