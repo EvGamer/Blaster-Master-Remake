@@ -1,6 +1,7 @@
 ## Platformer Game
 Continuation of my platformer project, that originally started as assignment for Computer Graphics course.
 Recently changed to use Raylib to support multiple platforms
+
 Assets and level layout ripped from Blaster Master
 
 ### Dependencies
