@@ -7,8 +7,8 @@ const ScreenVector MESSAGE_POSITION = { 200, 180 };
 Game::Game():
   _window(MainWindow::init(WINDOW_WIDTH, WINDOW_HEIGHT, "Blaster Master Remake")),
   _healthBar("Sprites/HealthBar.png"),
-  _endGameMessage("Sprites/Message.png", MESSAGE_SOURCE),
-  _victoryMessage("Sprites/Victory.png", MESSAGE_SOURCE)
+  _endGameMessage("Sprites/Message.png"),
+  _victoryMessage("Sprites/Victory.png")
 {
 
   _world.loadTextures({
@@ -40,6 +40,10 @@ void Game::update(float timePassed) {
 
   _world.update(timePassed);
   _healthBar.update(_world.player->getHealth() / PlayerConstants::MAX_HEALTH);
+
+  if (_world.player->isDead() && IsKeyDown(_keyRestart)) {
+    _world.init();
+  }
 }
 
 void Game::draw() {
@@ -48,9 +52,6 @@ void Game::draw() {
 
   if (_world.player->isDead()) {
     _endGameMessage.draw(MESSAGE_POSITION);
-    if (IsKeyDown(_keyRestart)) {
-      _world.init();
-    }
   }
 
   _world.enemies.remove_if([](Enemy &enemy){

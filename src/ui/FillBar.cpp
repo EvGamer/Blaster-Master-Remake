@@ -12,8 +12,8 @@ FillBar::FillBar(
 ) {
   _texture = TextureKeeper(filename);
   _scale = scale;
-  _background = ScreenTextureFragment(_texture, backgroundTexFrame, _scale);
-  _bar = ScreenTextureFragment(_texture, barTexFrame, _scale);
+  _background = ScreenSprite(_texture, backgroundTexFrame, _scale);
+  _bar = ScreenSprite(_texture, barTexFrame, _scale);
   _barTexFrame = barTexFrame;
   _barShift = barShift;
   _wholeSteps = wholeSteps;
@@ -29,7 +29,7 @@ void FillBar::update(float fillRatio) {
   _fillRatio = fillRatio;
   _cutoff = floor((1 - fillRatio) * _barTexFrame.height);
 
-  _bar = ScreenTextureFragment(
+  _bar = ScreenSprite(
     _texture,
     {
       _barTexFrame.x,

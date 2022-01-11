@@ -2,7 +2,7 @@
 #include "../entities/Enemy.h"
 #include "../entities/EnemyFactory.h"
 #include "../graphics/TextureKeeper.h"
-#include "../graphics/TextureFragment.h"
+#include "../graphics/Sprite.h"
 #include "../ui/FillBar.h"
 #include "World.h"
 #include "MainWindow.h"
@@ -22,8 +22,8 @@ class Game {
   private:
     MainWindowPtr _window;
     TextureKeeper _texVictory;
-    ScreenTextureFragment _endGameMessage;
-    ScreenTextureFragment _victoryMessage;
+    ScreenSprite _endGameMessage;
+    ScreenSprite _victoryMessage;
     BrickFillBar _healthBar;
     World _world = World();
 
