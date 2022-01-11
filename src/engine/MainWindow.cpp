@@ -13,7 +13,7 @@ MainWindow::~MainWindow() {
 
 MainWindowPtr MainWindow::init(uint16_t width, uint16_t height, String title) {
   if (!_instance) {
-    _instance = std::make_shared<MainWindow>(width, height, title);
+    _instance = MainWindowPtr(new MainWindow(width, height, title));
   }
   return _instance;
 }

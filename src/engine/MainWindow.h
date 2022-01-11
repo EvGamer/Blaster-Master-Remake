@@ -10,9 +10,9 @@ class MainWindow {
   public:
     static MainWindowPtr init(uint16_t width, uint16_t height, String title);
     static MainWindowPtr get();
-    MainWindow(uint16_t width, uint16_t height, String title);
     ~MainWindow();
   private:
+    MainWindow(uint16_t width, uint16_t height, String title);
     static bool _isOpened; 
     static MainWindowPtr _instance;
 };
