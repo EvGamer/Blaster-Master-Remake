@@ -1,19 +1,15 @@
 #include "Game.h"
 #include "../utils/Point.h"
 
-Game::Game() {
-  _window = MainWindow::init(WINDOW_WIDTH, WINDOW_HEIGHT, "Blaster Master Remake");
+const Rectangle MESSAGE_SOURCE = { 0, 0, 256, 256 };
+const ScreenVector MESSAGE_POSITION = { 200, 180 };
 
-  _healthBar = FillBar(
-    "Sprites/HealthBar.png",
-    { 12, 7, 9, 50 },
-    { 45, 8, 6, 31 },
-    { 2, 2 },
-    2,
-    8
-  );
-  _endGameMessage = ScreenTextureFragment("Sprites/Message.png", { 0, 0, 256, 256 });
-  _texVictory = TextureKeeper("Sprites/Victory.png");
+Game::Game():
+  _window(MainWindow::init(WINDOW_WIDTH, WINDOW_HEIGHT, "Blaster Master Remake")),
+  _healthBar("Sprites/HealthBar.png"),
+  _endGameMessage("Sprites/Message.png", MESSAGE_SOURCE),
+  _victoryMessage("Sprites/Victory.png", MESSAGE_SOURCE)
+{
 
   _world.loadTextures({
     .player = "Sprites/SOPHIA.png",
@@ -51,7 +47,7 @@ void Game::draw() {
   _healthBar.draw({ 20, 200 });
 
   if (_world.player->isDead()) {
-    _endGameMessage.draw({ 200, 180 });
+    _endGameMessage.draw(MESSAGE_POSITION);
     if (IsKeyDown(_keyRestart)) {
       _world.init();
     }

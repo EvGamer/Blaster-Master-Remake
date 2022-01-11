@@ -21,10 +21,10 @@ class Game {
 
   private:
     MainWindowPtr _window;
-    TextureKeeper _texMessage;
     TextureKeeper _texVictory;
     ScreenTextureFragment _endGameMessage;
-    FillBar _healthBar;
+    ScreenTextureFragment _victoryMessage;
+    BrickFillBar _healthBar;
     World _world = World();
 
     int _keyLeft = KEY_A;
