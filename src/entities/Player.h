@@ -52,7 +52,7 @@ class Player : public Entity {
   TextureKeeper _missleTexture;
   float _health = MAX_HEALTH;
   float _accelerationY = 0;
-  bool _isControlable;
+  bool _isControlable = true;
   bool _isOnGround = true;
   float _maxJumpHeight = MAX_JUMP_HEIGHT;
 

@@ -3,27 +3,25 @@
 using namespace PlayerConstants;
 
 void Player::move(int dirrection) {
-  if (_isControlable) {
-    _dirrection = dirrection;
-    _speedX += copysignf(WALK_ACCELERATION, _dirrection);
-    if (abs(_speedX) > MAX_SPEED_X) _speedX = copysignf(MAX_SPEED_X, _speedX);
-  }
+  if (!_isControlable) return;
+  _dirrection = dirrection;
+  _speedX += copysignf(WALK_ACCELERATION, _dirrection);
+  if (abs(_speedX) > MAX_SPEED_X) _speedX = copysignf(MAX_SPEED_X, _speedX);
   // wheels should only turn then player presses the button
   getCurrentAnimation().unfreeze();
 }
 
 void Player::jump() {
-  if (_isControlable) {
+  if (!_isControlable) return;
+  _jumpBeingPressedDuration--;
+  if (!_isOnGround) {
     _jumpBeingPressedDuration--;
-    if (_isOnGround) {
-      _speedY = INITIAL_JUMP_SPEED_Y;
-      _jumpBeingPressedDuration = REQUIRED_FULL_JUMP_PRESSING_DURATION;
-      _isOnGround = false;
-      _halfJumpMaxY = _y + SHORT_JUMP_HEIGHT;
-    } else {
-      _jumpBeingPressedDuration--;
-    }
+    return; 
   }
+  _speedY = INITIAL_JUMP_SPEED_Y;
+  _jumpBeingPressedDuration = REQUIRED_FULL_JUMP_PRESSING_DURATION;
+  _isOnGround = false;
+  _halfJumpMaxY = _y + SHORT_JUMP_HEIGHT;
 }
 
 void Player::hurt(float damage) {
@@ -36,7 +34,8 @@ void Player::hurt(float damage) {
   }
 }
 
-void Player::shoot() {  // if(_isControlable)
+void Player::shoot() {
+  if (!_isControlable) return;
   if (_weaponCooldown <= 0) {
     _world->addMissle(
       getMissleInititalX(),
@@ -74,30 +73,34 @@ void Player::update() {
   _x += _speedX;
   _y += _speedY;
   if (_speedY != 0) _isOnGround = false;
-  if (&getCurrentAnimation() != &_deathAnimation) {
-    _world->hit(_x, _y, _x + _width, _y + _height, true);
-    if (_timeToLiveWithoutHealth > 0) _timeToLiveWithoutHealth--;
-    if (_weaponCooldown > 0) _weaponCooldown--;
-
-    if ((_y > _halfJumpMaxY) && _jumpBeingPressedDuration > 0) {
-      _speedY = 0;
-      _jumpBeingPressedDuration = 0;
-    }
-    _speedY -= GRAVITY_ACCELERATION_Y;
-    if (_isOnGround) _speedX = decellerate(_speedX, DRAG_DECELLERATION_X);
-
-    _hitDamage = _world->hit(_x - 0.5, _y, _x + _width + 0.5,
-                               _y + _height + 0.5, true);
-    if (_hitDamage != 0) hurt(_hitDamage);
-    if (_health <= 0) {
-      if (_isOnGround) {
-        _isControlable = false;
-        _speedX = 0;
-      } else {
-        _timeToLiveWithoutHealth = LIFE_WITHOUT_HEALTH_AFTER_LANDING_DURATION;
-      }
-    }
+  if (&getCurrentAnimation() == &_deathAnimation) {
+    _isControlable = false;
+    return;
   }
+  _world->hit(_x, _y, _x + _width, _y + _height, true);
+  if (_timeToLiveWithoutHealth > 0) _timeToLiveWithoutHealth--;
+  if (_weaponCooldown > 0) _weaponCooldown--;
+
+  if ((_y > _halfJumpMaxY) && _jumpBeingPressedDuration > 0) {
+    _speedY = 0;
+    _jumpBeingPressedDuration = 0;
+  }
+  _speedY -= GRAVITY_ACCELERATION_Y;
+  if (_isOnGround) _speedX = decellerate(_speedX, DRAG_DECELLERATION_X);
+
+  _hitDamage = _world->hit(
+    _x - 0.5, _y, _x + _width + 0.5,
+    _y + _height + 0.5, true
+  );
+  if (_hitDamage != 0) hurt(_hitDamage);
+
+  if (_health > 0) return;
+  if (_isOnGround) {
+    _isControlable = false;
+    _speedX = 0;
+    return;
+  }
+  _timeToLiveWithoutHealth = LIFE_WITHOUT_HEALTH_AFTER_LANDING_DURATION;
 }
 
 void Player::drawGizmo()  // debug option. Displays collision box.
