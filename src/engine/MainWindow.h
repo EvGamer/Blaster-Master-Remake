@@ -1,13 +1,18 @@
 #pragma once
 #include "../typeAliases.h"
+#include <memory>
+
+class MainWindow;
+
+using MainWindowPtr = std::shared_ptr<MainWindow>;
 
 class MainWindow {
   public:
-    MainWindow() {};
-    MainWindow(int width, int height, String title);
-    void operator=(const MainWindow& toCopy);
+    static MainWindowPtr init(uint16_t width, uint16_t height, String title);
+    static MainWindowPtr get();
+    MainWindow(uint16_t width, uint16_t height, String title);
     ~MainWindow();
   private:
     static bool _isOpened; 
-    static UInt _useCounter;
+    static MainWindowPtr _instance;
 };

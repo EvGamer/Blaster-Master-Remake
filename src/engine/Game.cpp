@@ -2,7 +2,7 @@
 #include "../utils/Point.h"
 
 Game::Game() {
-  _window = MainWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Blaster Master Remake");
+  _window = MainWindow::init(WINDOW_WIDTH, WINDOW_HEIGHT, "Blaster Master Remake");
 
   _healthBar = FillBar(
     "Sprites/HealthBar.png",

@@ -1,24 +1,23 @@
 #include "MainWindow.h"
 #include <raylib.h>
 
-bool MainWindow::_isOpened = false;
-UInt MainWindow::_useCounter = 0;
+MainWindowPtr MainWindow::_instance{nullptr};
 
-MainWindow::MainWindow(int width, int height, String title) {
-  if (!_isOpened) {
-
-    InitWindow(width, height, title.c_str());
-    _isOpened = true;
-  }
-  _useCounter++;
-}
-
-void MainWindow::operator=(const MainWindow& toCopy) {
-  _useCounter++;
+MainWindow::MainWindow(uint16_t width, uint16_t height, String title) {
+  InitWindow(width, height, title.c_str());
 }
 
 MainWindow::~MainWindow() {
-  _useCounter--;
-  if (_isOpened && _useCounter == 0) 
-    CloseWindow();
+  CloseWindow();
+}
+
+MainWindowPtr MainWindow::init(uint16_t width, uint16_t height, String title) {
+  if (!_instance) {
+    _instance = std::make_shared<MainWindow>(width, height, title);
+  }
+  return _instance;
+}
+
+MainWindowPtr MainWindow::get() {
+  return _instance;
 }

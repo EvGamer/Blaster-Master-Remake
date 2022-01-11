@@ -20,7 +20,7 @@ class Game {
     virtual void mainLoop();
 
   private:
-    MainWindow _window;
+    MainWindowPtr _window;
     TextureKeeper _texMessage;
     TextureKeeper _texVictory;
     ScreenTextureFragment _endGameMessage;
