@@ -52,7 +52,7 @@ void WorldSprite::draw(WorldVector inWorldPosition) {
 };
 
 void ScreenSprite::draw(ScreenVector position) {
-  WorldVector inWorldPosition = position / COORD_UNIT;
+  WorldVector inWorldPosition(position / COORD_UNIT);
   drawSprite(
     _texture,
     inWorldPosition.x, -inWorldPosition.y - _sizeInWorld.y,
