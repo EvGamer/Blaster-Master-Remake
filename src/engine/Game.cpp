@@ -20,21 +20,18 @@ Game::Game():
   _world.init();
 }
 
-Game::~Game() {
-  TraceLog(LOG_INFO, "[GAME] Closed");
-}
-
 void Game::update(float timePassed) {
-  bool isLeftPressed = IsKeyDown(_keyLeft);
   bool isRightPressed = IsKeyDown(_keyRight);
+  bool isLeftPressed = IsKeyDown(_keyLeft);
+  uint8_t dirrection = 
+    isRightPressed && isLeftPressed ? 0 :
+    isLeftPressed ? FACING_LEFT :
+    isRightPressed ? FACING_RIGHT :
+    0
+  ;
 
-  int dir = 0;
-  if (isRightPressed) dir = FACING_RIGHT;
-  else if (isLeftPressed) dir = FACING_LEFT;
+  if (dirrection) _world.player->move(dirrection);
 
-  if (isRightPressed || isLeftPressed) {
-    _world.player->move(dir);
-  }
   if (IsKeyDown(_keyJump)) _world.player->jump();
   if (IsKeyDown(_keyShoot)) _world.player->shoot();
 

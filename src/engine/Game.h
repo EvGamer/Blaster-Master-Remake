@@ -13,7 +13,6 @@
 class Game {
   public:
     Game();
-    ~Game();
 
     void draw();
     void update(float timePassed);
