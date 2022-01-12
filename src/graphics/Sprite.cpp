@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "Sprite.h"
 #include "utils.h"
 #include "../engine/constants.h"
@@ -33,6 +35,7 @@ Sprite::Sprite(TextureKeeper texture, Rectangle source, float scale):
 
 void Sprite::_getCropLimits(Rectangle source) {
   auto texture = _texture.getTexture();
+  assert(texture.height > 0 && texture.width > 0); // Can't be 0. Texture is not loaded or loaded incorrectly
   _top = source.y / texture.height;
   _bottom = (source.y + source.height) / texture.height;
   _left = source.x / texture.width;
