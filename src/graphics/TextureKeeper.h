@@ -11,7 +11,7 @@ class TextureKeeper {
     TextureKeeper(const TextureKeeper& toCopy);
     ~TextureKeeper();
     void operator=(const TextureKeeper& toCopy);
-    inline const Texture2D& texture() { return _texture; };
+    inline const Texture2D& texture() const { return _texture; };
 
   private:
     void _copy(const TextureKeeper& toCopy);
