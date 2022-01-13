@@ -98,7 +98,7 @@ class Player : public Entity {
   void shoot();
   void onTileCollision(WorldVector correction);
   void update();
-  inline bool isDead() { return _deathAnimation.isEnded(); }
+  inline bool isDead() { return _deathAnimation.isStopped(); }
   void drawGizmo();
   inline bool isPointWithin(float ox, float oy) {
     return (ox > _x) && (ox < _x + _width) && (oy > _y) &&

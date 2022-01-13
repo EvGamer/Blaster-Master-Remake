@@ -71,7 +71,7 @@ float World::hit(float x1, float y1, float x2, float y2, bool foe) {
     if (isInside && (foe == missle.foe) && (!missle.hit)) {
       if (missle.damage > damage) damage = missle.damage;
       missle.hit = true;
-      missle.burstAnim.freeze();
+      missle.burstAnim.stop();
     }
   }
   return damage;
@@ -87,7 +87,7 @@ bool World::getFrict(unsigned char i, unsigned char j) {
 }
 
 bool isMissleExploded(Missle &value) {
-  return value.burstAnim.isEnded();
+  return value.burstAnim.isStopped();
 }
 
 void World::updateMissles() {

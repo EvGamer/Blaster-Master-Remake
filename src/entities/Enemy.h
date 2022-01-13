@@ -29,7 +29,7 @@ class Enemy : public Entity{
 
  public:
   Enemy(float a_x, float a_y, char a_dirrection, TextureKeeper a_texture, IWorld *a_world);
-  inline bool isDead() { return _deathAnimation.isEnded(); }
+  inline bool isDead() { return _deathAnimation.isStopped(); }
   void kill();
   void update(Player &p1);
   void draw();

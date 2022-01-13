@@ -8,7 +8,7 @@ void Player::move(int dirrection) {
   _speedX += copysignf(WALK_ACCELERATION, _dirrection);
   if (abs(_speedX) > MAX_SPEED_X) _speedX = copysignf(MAX_SPEED_X, _speedX);
   // wheels should only turn then player presses the button
-  getCurrentAnimation().unfreeze();
+  getCurrentAnimation().resume();
 }
 
 void Player::jump() {
@@ -133,7 +133,7 @@ void Player::draw() {
     // Preserving wheel position between animations
 
     _currentAnimationFrameIndex = currentAnimation.draw(-_dirrection, x1, _y, x2, _y + 2);
-    currentAnimation.freeze();
+    currentAnimation.stop();
   } else
     currentAnimation.draw(-1, x1 - 0.5, _y, x1 + 3.5, _y + 4);
 }
