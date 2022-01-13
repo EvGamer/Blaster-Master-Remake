@@ -9,7 +9,7 @@ void drawSprite(
   TextureKeeper textureKeeper, float worldX0, float worldY0, float worldX, float worldY,
   float relativeCropX0, float relativeCropY0, float relativeCropX, float relativeCropY
 ) {
-  auto texture = textureKeeper.getTexture();
+  auto texture = textureKeeper.texture();
   const float cropX0 = relativeCropX0 * texture.width;
   const float cropX = relativeCropX * texture.width;
   const float cropY0 = relativeCropY0 * texture.height;

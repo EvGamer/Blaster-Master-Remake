@@ -7,14 +7,14 @@
 Sprite::Sprite(TextureKeeper texture, float scale):
   _texture(texture)
 {
-  const auto image = _texture.getTexture();
+  const auto image = _texture.texture();
   _sizeInWorld = _toSizeInWorld(image.width, image.height, scale);
 }
 
 Sprite::Sprite(const char* filename, float scale):
   _texture(filename)
 {
-  const auto image = _texture.getTexture();
+  const auto image = _texture.texture();
   _sizeInWorld = _toSizeInWorld(image.width, image.height, scale);
 }
 
@@ -34,7 +34,7 @@ Sprite::Sprite(TextureKeeper texture, Rectangle source, float scale):
 }
 
 void Sprite::_getCropLimits(Rectangle source) {
-  auto texture = _texture.getTexture();
+  auto texture = _texture.texture();
   assert(texture.height > 0 && texture.width > 0); // Can't be 0. Texture is not loaded or loaded incorrectly
   _top = source.y / texture.height;
   _bottom = (source.y + source.height) / texture.height;
