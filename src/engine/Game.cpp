@@ -1,8 +1,10 @@
 #include "Game.h"
 #include "../utils/Point.h"
 
-const Rectangle MESSAGE_SOURCE = { 0, 0, 256, 256 };
-const ScreenVector MESSAGE_POSITION = { 200, 180 };
+namespace {
+  const Rectangle MESSAGE_SOURCE = { 0, 0, 256, 256 };
+  const ScreenVector MESSAGE_POSITION = { 200, 180 };
+}
 
 Game::Game():
   _window(MainWindow::init(WINDOW_WIDTH, WINDOW_HEIGHT, "Blaster Master Remake")),
@@ -30,17 +32,22 @@ void Game::update(float timePassed) {
     0
   ;
 
-  if (dirrection) _world.player->move(dirrection);
+  auto& player = _world.player;
 
-  if (IsKeyDown(_keyJump)) _world.player->jump();
-  if (IsKeyDown(_keyShoot)) _world.player->shoot();
+  if (dirrection) 
+    player->move(dirrection);
+
+  if (IsKeyDown(_keyJump))
+    player->jump();
+  
+  if (IsKeyDown(_keyShoot))
+    player->shoot();
 
   _world.update(timePassed);
-  _healthBar.update(_world.player->getHealth() / PlayerConstants::MAX_HEALTH);
+  _healthBar.update(player->health() / PlayerConstants::MAX_HEALTH);
 
-  if (_world.player->isDead() && IsKeyDown(_keyRestart)) {
-    _world.init();
-  }
+  if (!(player->isDead() && IsKeyDown(_keyRestart))) return;
+  _world.init();
 }
 
 void Game::draw() {

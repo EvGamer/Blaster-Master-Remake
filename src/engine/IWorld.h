@@ -34,5 +34,5 @@ class IWorld {
   virtual float hit(float x1, float y1, float x2, float y2, bool foe) = 0;
   virtual bool isSolidTileAtCoord(float x, float y) = 0;
   virtual float getGravity() = 0;
-  virtual bool getFrict(unsigned char i, unsigned char j) = 0;
+  virtual bool getTileFriction(unsigned char i, unsigned char j) = 0;
 };

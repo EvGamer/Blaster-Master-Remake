@@ -24,7 +24,7 @@ void Player::jump() {
   _halfJumpMaxY = _y + SHORT_JUMP_HEIGHT;
 }
 
-void Player::hurt(float damage) {
+void Player::takeDamage(float damage) {
   if (_timeToLiveWithoutHealth <= 0) {
     _timeToLiveWithoutHealth = LIFE_WITHOUT_HEALTH_DURATION;
     _speedX *= HIT_SPEED_COEFFICIENT;
@@ -92,7 +92,7 @@ void Player::update() {
     _x - 0.5, _y, _x + _width + 0.5,
     _y + _height + 0.5, true
   );
-  if (_hitDamage != 0) hurt(_hitDamage);
+  if (_hitDamage != 0) takeDamage(_hitDamage);
 
   if (_health > 0) return;
   if (_isOnGround) {

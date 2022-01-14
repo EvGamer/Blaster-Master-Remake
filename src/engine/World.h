@@ -33,16 +33,16 @@ class World: public IWorld{
 
   void init();
   void loadTextures(WorldTextureFileNames fileNams);
-  virtual void addMissle(float x, float y, float speedX, float speedY, MissleTraits *wpn) override;
-  virtual float hit(float x1, float y1, float x2, float y2, bool foe) override;
-  virtual bool isSolidTileAtCoord(float x, float y) override;
+  void addMissle(float x, float y, float speedX, float speedY, MissleTraits *wpn) override final;
+  float hit(float x1, float y1, float x2, float y2, bool foe) override final;
+  bool isSolidTileAtCoord(float x, float y) override;
   float getGravity() override {
     return _gravity;
   };
   inline void setGravity(float a_gravity) {
     _gravity = a_gravity;
   };
-  virtual bool getFrict(unsigned char i, unsigned char j) override;
+  bool getTileFriction(unsigned char i, unsigned char j) override final;
   void update(float timePassed);
   inline void setGlobalFriction(float a_friction) {
     _friction = a_friction;

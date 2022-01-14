@@ -82,7 +82,7 @@ bool World::isSolidTileAtCoord(float x, float y) {
   return !_map.coordOutOfRange(x, y) && _map.getTileTraits(floor(x), floor(y)).isSolid;
 };
 
-bool World::getFrict(unsigned char i, unsigned char j) {
+bool World::getTileFriction(unsigned char i, unsigned char j) {
   return !_map.coordOutOfRange(i, j) && _map.getTileTraits(i, j).isSolid ? _friction : 0;
 }
 
