@@ -103,33 +103,33 @@ void World::updateMissles() {
 }
 
 bool World::isPlayerInRoom(Room& room) {
-  return room.id != 0 && room.area.isContainRectangle(player->getRect());
+  return room.id != 0 && room.area.isContainRectangle(player->rect());
 };
 
 void World::updateCamera() {
   if (player == nullptr) return;
-  _cameraX = player->getX();
-  _cameraY = player->getY();
+  _cameraX = player->x();
+  _cameraY = player->y();
   Rect& room = _currentRoom.area;
 
   if (room.width < _halfScreenWidth * 2) {
-    _cameraX = room.getCenterX();
+    _cameraX = room.centerX();
   }
-  else if (_cameraX - _halfScreenWidth < room.getLeft()) {
-    _cameraX = room.getLeft() + _halfScreenWidth;
+  else if (_cameraX - _halfScreenWidth < room.left()) {
+    _cameraX = room.left() + _halfScreenWidth;
   }
-  else if (_cameraX + _halfScreenWidth > room.getRight()) {
-    _cameraX = room.getRight() - _halfScreenWidth;
+  else if (_cameraX + _halfScreenWidth > room.right()) {
+    _cameraX = room.right() - _halfScreenWidth;
   }
 
   if (room.height < _halfScreenHeight * 2) {
-    _cameraY = room.getCenterY();
+    _cameraY = room.centerY();
   }
-  else if (_cameraY - _halfScreenHeight < room.getBottom()) {
-    _cameraY = room.getBottom() + _halfScreenHeight;
+  else if (_cameraY - _halfScreenHeight < room.bottom()) {
+    _cameraY = room.bottom() + _halfScreenHeight;
   }
-  else if (_cameraY + _halfScreenHeight > room.getTop()) {
-    _cameraY = room.getTop() - _halfScreenHeight;
+  else if (_cameraY + _halfScreenHeight > room.top()) {
+    _cameraY = room.top() - _halfScreenHeight;
   }
 }
 
@@ -154,24 +154,24 @@ WorldVector getCorrectionFromOverlap(const Rect& overlap, bool shouldPushVertica
 WorldVector World::_getSingleTileCollision(Rect &entity, UInt tileX, UInt tileY, float dx, float dy) {
   Rect tile(tileX, tileY, 1, 1);
   Rect overlap = entity.getOverlap(tile);
-  return overlap.getTop() >= tile.getTop()
+  return overlap.top() >= tile.top()
     ? getCorrectionFromOverlap(overlap, dy < 0, dx, dy)
     : getCorrectionFromOverlap(overlap, dy > 0, dx, dy);
 }
 
 void World::detectTileCollision(Entity& entity) {
   WorldVector correction{0, 0};
-  Rect box = entity.getRect();
-  Rect newBox = entity.getRect();
-  float dx = entity.getSpeedX();
-  float dy = entity.getSpeedY();
+  Rect box = entity.rect();
+  Rect newBox = entity.rect();
+  float dx = entity.speedX();
+  float dy = entity.speedY();
   newBox.x += dx;
   newBox.y += dy;
   using std::max;
   UInt tileXLeft = max<UInt>(0, floor(newBox.x));
   UInt tileYBottom = max<UInt>(0, floor(newBox.y));
-  UInt tileXRight = max<UInt>(0, floor(newBox.getRight()));
-  UInt tileYTop = max<UInt>(0, floor(newBox.getTop()));
+  UInt tileXRight = max<UInt>(0, floor(newBox.right()));
+  UInt tileYTop = max<UInt>(0, floor(newBox.top()));
   bool isSolidLeftBottom = _map.getTileTraits(tileXLeft, tileYBottom).isSolid;
   bool isSolidLeftTop = _map.getTileTraits(tileXLeft, tileYTop).isSolid;
   bool isSolidRightBottom = _map.getTileTraits(tileXRight, tileYBottom).isSolid;
@@ -227,10 +227,10 @@ void World::update(float timePassed) {
 void World::drawMap() {
   using std::min;
   using std::max;
-  UInt tX0 = max<UInt>(max<UInt>(floor(_cameraX - _halfScreenWidth), 0), ceil(_currentRoom.area.getLeft()));
-  UInt tY0 = max<UInt>(max<UInt>(floor(_cameraY - _halfScreenHeight), 0), ceil(_currentRoom.area.getBottom()));
-  UInt tXn = min<UInt>(max<UInt>(ceil(_cameraX + _halfScreenWidth), 0), floor(_currentRoom.area.getRight()));
-  UInt tYn = min<UInt>(max<UInt>(ceil(_cameraY + _halfScreenHeight), 0), floor(_currentRoom.area.getTop()));
+  UInt tX0 = max<UInt>(max<UInt>(floor(_cameraX - _halfScreenWidth), 0), ceil(_currentRoom.area.left()));
+  UInt tY0 = max<UInt>(max<UInt>(floor(_cameraY - _halfScreenHeight), 0), ceil(_currentRoom.area.bottom()));
+  UInt tXn = min<UInt>(max<UInt>(ceil(_cameraX + _halfScreenWidth), 0), floor(_currentRoom.area.right()));
+  UInt tYn = min<UInt>(max<UInt>(ceil(_cameraY + _halfScreenHeight), 0), floor(_currentRoom.area.top()));
   for (UInt i = tX0; i < tXn; i++) {
     for (UInt j = tY0; j < tYn; j++) {
       _map.drawTile(i, j);

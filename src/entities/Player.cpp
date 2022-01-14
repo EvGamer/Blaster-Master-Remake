@@ -38,8 +38,8 @@ void Player::shoot() {
   if (!_isControlable) return;
   if (_weaponCooldown <= 0) {
     _world->addMissle(
-      getMissleInititalX(),
-      _y + getMissleInitialY(),
+      missleInititalX(),
+      _y + missleInitialY(),
       MISSLE_SPEED * _dirrection,
       0,
       &_missleType
@@ -61,7 +61,7 @@ void Player::onTileCollision(WorldVector correction) {
   
 }
 
-float Player::getSpeedX() {
+float Player::speedX() {
   return _speedX;
 }
 

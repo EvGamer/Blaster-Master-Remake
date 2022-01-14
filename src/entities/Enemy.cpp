@@ -88,8 +88,8 @@ void Enemy::update(Player &player) {
     if (player.isPointWithin(_x + 0.1, y1) || player.isPointWithin(_x + _width - 0.1, y1))
       player.takeDamage(0.7f);
   
-    if ((floor(player.getY()) == floor(_y)) &&
-        (floor(player.getMissleInititalX() - _x) == 3 * _dirrection) && (_weaponReloadCooldown <= 0)) {
+    if ((floor(player.y()) == floor(_y)) &&
+        (floor(player.missleInititalX() - _x) == 3 * _dirrection) && (_weaponReloadCooldown <= 0)) {
       _weaponReloadCooldown = RELOAD_TIME;
       _weaponMagazine = 4;
     }

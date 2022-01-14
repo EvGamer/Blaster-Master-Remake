@@ -78,21 +78,21 @@ class Player : public Entity {
   Player(float x, float y, TextureKeeper texture, TextureKeeper missleTexture,
          IWorld &world);
   
-  inline Rect getRect() {
+  inline Rect rect() {
     return Rect(_x, _y, _width, _height);
   };
 
-  float getSpeedX();
+  float speedX();
   void move(int dirrection);
   void jump();
   void takeDamage(float damage);
   Animation& getCurrentAnimation();
-  inline float getMissleInitialY() {
+  inline float missleInitialY() {
     using namespace PlayerConstants;
     if (_speedY == 0) return MISSLE_RELATIVE_Y;
     return _speedY > 0 ? MISSLE_RELATIVE_Y_JUMPING : MISSLE_RELATIVE_Y_FALLING;
   }
-  inline float getMissleInititalX() {
+  inline float missleInititalX() {
     return _dirrection < 0 ? _x : _x + _width;
   }
   void shoot();
