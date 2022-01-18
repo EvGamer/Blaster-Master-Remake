@@ -7,27 +7,28 @@
 
 class Entity {
   public:
-    inline void setSpeedX(float speedX) {
-      _speedX = speedX;
-      _dirrection = _speedX > 0 ? 1 : -1;
-    }
-    inline void setSpeedY(float speedY) {
-      _speedY = speedY;
-    }
-    inline Rect getRect() { return Rect(_x, _y, _width, _height); }
-    inline float getX() { return _x; }
-    inline float getY() { return _y; }
-    inline float getLeft() { return getX(); }
-    inline float getRight() { return _x + _width; }
-    inline float getBottom() { return getY(); }
-    inline float getTop() { return _y + _height; }
-    inline char getDirrectionX() {
+    inline Rect rect() { return Rect(_x, _y, _width, _height); }
+    inline float x() { return _x; }
+    inline float y() { return _y; }
+    inline float left() { return x(); }
+    inline float right() { return _x + _width; }
+    inline float bottom() { return y(); }
+    inline float top() { return _y + _height; }
+    inline char dirrectionX() {
       return signbit(_speedX)
         ? -1
         : (_speedX == 0 ? 0 : 1);
     }
-    inline float getSpeedX() { return _speedX; }
-    virtual float getSpeedY() { return _speedY; }
+    inline float speedX() { return _speedX; }
+    inline void speedX(float value) {
+      _speedX = value;
+      _dirrection = _speedX > 0 ? 1 : -1;
+    }
+
+    virtual float speedY() { return _speedY; }
+    inline void speedY(float value) {
+      _speedY = value;
+    }
     virtual void onTileCollision(WorldVector correction) = 0;
     virtual void draw() = 0;
 

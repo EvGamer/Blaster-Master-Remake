@@ -4,7 +4,7 @@
 inline void Animation::initialize(TextureKeeper iTexture, float iSizeX, float iSizeY,
                                   uint8_t iX0, uint8_t iY0, uint8_t iRows,
                                   uint8_t iColums, unsigned iDelay,
-                                  playType iPlay) {
+                                  PlayType iPlay) {
   _play = iPlay;
   _texture = iTexture;
   _timer = iDelay;
@@ -27,15 +27,19 @@ inline void Animation::initialize(TextureKeeper iTexture, float iSizeX, float iS
 
 Animation::Animation() {};
 
-Animation::Animation(TextureKeeper iTexture, float iSizeX, float iSizeY, uint8_t iX0,
-                     uint8_t iY0, uint8_t iRows, uint8_t iColums,
-                     unsigned iDelay, playType iPlay) {
+Animation::Animation(
+  TextureKeeper iTexture, float iSizeX, float iSizeY, uint8_t iX0,
+  uint8_t iY0, uint8_t iRows, uint8_t iColums,
+  uint16_t iDelay, PlayType iPlay
+) {
   initialize(iTexture, iSizeX, iSizeY, iX0, iY0, iRows, iColums, iDelay, iPlay);
 }
 
-Animation::Animation(TextureKeeper iTexture, float iSize, uint8_t iX0, uint8_t iY0,
-                      uint8_t iRows, uint8_t iColums, unsigned iDelay,
-                      playType iPlay) {
+Animation::Animation(
+  TextureKeeper iTexture, float iSize,
+  uint8_t iX0, uint8_t iY0, uint8_t iRows, uint8_t iColums, 
+  unsigned iDelay, PlayType iPlay
+) {
   initialize(iTexture, iSize, iSize, iX0, iY0, iRows, iColums, iDelay, iPlay);
 }
 
@@ -49,10 +53,7 @@ unsigned Animation ::draw(char dir, float x1, float y1, float x2, float y2) {
   }
   fy = (_y + _y0) * _height;
   fy1 = fy + _height;
-  const float by = 0.003;
-  float bx = by * dir;
-
-  drawSprite(_texture, x1, y1, x2, y2, fx, fy + by, fx1 - bx, fy1);
+  drawSprite(_texture, x1, y1, x2, y2, fx, fy, fx1, fy1);
 
   if (!_stop) {
     if (_timer == 0) {

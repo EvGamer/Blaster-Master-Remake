@@ -1,19 +1,17 @@
 #include "Game.h"
 #include "../utils/Point.h"
 
-Game::Game() {
-  _window = MainWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Blaster Master Remake");
+namespace {
+  const Rectangle MESSAGE_SOURCE = { 0, 0, 256, 256 };
+  const ScreenVector MESSAGE_POSITION = { 200, 180 };
+}
 
-  _healthBar = FillBar(
-    "Sprites/HealthBar.png",
-    { 12, 7, 9, 50 },
-    { 45, 8, 6, 31 },
-    { 2, 2 },
-    2,
-    8
-  );
-  _endGameMessage = ScreenTextureFragment("Sprites/Message.png", { 0, 0, 256, 256 });
-  _texVictory = TextureKeeper("Sprites/Victory.png");
+Game::Game():
+  _window(MainWindow::init(WINDOW_WIDTH, WINDOW_HEIGHT, "Blaster Master Remake")),
+  _healthBar("Sprites/HealthBar.png"),
+  _endGameMessage("Sprites/Message.png"),
+  _victoryMessage("Sprites/Victory.png")
+{
 
   _world.loadTextures({
     .player = "Sprites/SOPHIA.png",
@@ -24,26 +22,32 @@ Game::Game() {
   _world.init();
 }
 
-Game::~Game() {
-  TraceLog(LOG_INFO, "[GAME] Closed");
-}
-
 void Game::update(float timePassed) {
-  bool isLeftPressed = IsKeyDown(_keyLeft);
   bool isRightPressed = IsKeyDown(_keyRight);
+  bool isLeftPressed = IsKeyDown(_keyLeft);
+  uint8_t dirrection = 
+    isRightPressed && isLeftPressed ? 0 :
+    isLeftPressed ? FACING_LEFT :
+    isRightPressed ? FACING_RIGHT :
+    0
+  ;
 
-  int dir = 0;
-  if (isRightPressed) dir = FACING_RIGHT;
-  else if (isLeftPressed) dir = FACING_LEFT;
+  auto& player = _world.player;
 
-  if (isRightPressed || isLeftPressed) {
-    _world.player->move(dir);
-  }
-  if (IsKeyDown(_keyJump)) _world.player->jump();
-  if (IsKeyDown(_keyShoot)) _world.player->shoot();
+  if (dirrection) 
+    player->move(dirrection);
+
+  if (IsKeyDown(_keyJump))
+    player->jump();
+  
+  if (IsKeyDown(_keyShoot))
+    player->shoot();
 
   _world.update(timePassed);
-  _healthBar.update(_world.player->getHealth() / PlayerConstants::MAX_HEALTH);
+  _healthBar.update(player->health() / PlayerConstants::MAX_HEALTH);
+
+  if (!(player->isDead() && IsKeyDown(_keyRestart))) return;
+  _world.init();
 }
 
 void Game::draw() {
@@ -51,10 +55,7 @@ void Game::draw() {
   _healthBar.draw({ 20, 200 });
 
   if (_world.player->isDead()) {
-    _endGameMessage.draw({ 200, 180 });
-    if (IsKeyDown(_keyRestart)) {
-      _world.init();
-    }
+    _endGameMessage.draw(MESSAGE_POSITION);
   }
 
   _world.enemies.remove_if([](Enemy &enemy){

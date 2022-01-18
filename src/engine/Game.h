@@ -2,7 +2,7 @@
 #include "../entities/Enemy.h"
 #include "../entities/EnemyFactory.h"
 #include "../graphics/TextureKeeper.h"
-#include "../graphics/TextureFragment.h"
+#include "../graphics/Sprite.h"
 #include "../ui/FillBar.h"
 #include "World.h"
 #include "MainWindow.h"
@@ -13,18 +13,17 @@
 class Game {
   public:
     Game();
-    ~Game();
 
     void draw();
     void update(float timePassed);
     virtual void mainLoop();
 
   private:
-    MainWindow _window;
-    TextureKeeper _texMessage;
+    MainWindowPtr _window;
     TextureKeeper _texVictory;
-    ScreenTextureFragment _endGameMessage;
-    FillBar _healthBar;
+    ScreenSprite _endGameMessage;
+    ScreenSprite _victoryMessage;
+    BrickFillBar _healthBar;
     World _world = World();
 
     int _keyLeft = KEY_A;

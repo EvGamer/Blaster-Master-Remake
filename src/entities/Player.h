@@ -45,16 +45,15 @@ namespace PlayerConstants {
   const float MISSLE_RELATIVE_Y_JUMPING = 0.6;
 }
 
-using namespace PlayerConstants;
 
 class Player : public Entity {
  protected:
   TextureKeeper _missleTexture;
-  float _health = MAX_HEALTH;
+  float _health = PlayerConstants::MAX_HEALTH;
   float _accelerationY = 0;
-  bool _isControlable;
+  bool _isControlable = true;
   bool _isOnGround = true;
-  float _maxJumpHeight = MAX_JUMP_HEIGHT;
+  float _maxJumpHeight = PlayerConstants::MAX_JUMP_HEIGHT;
 
   // ToDo move that to what is inflicting damage
   float _hitDamage;
@@ -79,34 +78,34 @@ class Player : public Entity {
   Player(float x, float y, TextureKeeper texture, TextureKeeper missleTexture,
          IWorld &world);
   
-  inline Rect getRect() {
+  inline Rect rect() {
     return Rect(_x, _y, _width, _height);
   };
 
-  float getSpeedX();
+  float speedX();
   void move(int dirrection);
   void jump();
-  void hurt(float damage);
+  void takeDamage(float damage);
   Animation& getCurrentAnimation();
-  inline float getMissleInitialY() {
+  inline float missleInitialY() {
+    using namespace PlayerConstants;
     if (_speedY == 0) return MISSLE_RELATIVE_Y;
     return _speedY > 0 ? MISSLE_RELATIVE_Y_JUMPING : MISSLE_RELATIVE_Y_FALLING;
   }
-  inline float getMissleInititalX() {
+  inline float missleInititalX() {
     return _dirrection < 0 ? _x : _x + _width;
   }
   void shoot();
   void onTileCollision(WorldVector correction);
   void update();
-  inline bool isDead() { return _deathAnimation.isEnded(); }
+  inline bool isDead() { return _deathAnimation.isStopped(); }
   void drawGizmo();
   inline bool isPointWithin(float ox, float oy) {
     return (ox > _x) && (ox < _x + _width) && (oy > _y) &&
            (oy < _y + _width);
   }
   void draw();
-  inline float getHealth() {
-    if (_health > 0) return _health;
-    return 0;
+  inline float health() {
+    return _health > 0 ? _health : 0;
   }
 };

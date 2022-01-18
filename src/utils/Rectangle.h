@@ -11,35 +11,35 @@ class Rect {
     float y = 0;
     float width = 0;
     float height = 0;
-    inline float getTop() {
+    inline float top() {
       return y + height;
     };
-    inline float getBottom() {
+    inline float bottom() {
       return y;
     };
-    inline float getRight() {
+    inline float right() {
       return x + width;
     };
-    inline float getLeft() {
+    inline float left() {
       return x;
     };
-    inline float getCenterX() {
+    inline float centerX() {
       return x + width / 2;
     }
-    inline float getCenterY() {
+    inline float centerY() {
       return y + height / 2;
     }
-    inline WorldVector getTopRightCorner() {
-      return WorldVector({ getRight(), getTop() });
+    inline WorldVector topRight() {
+      return WorldVector({ right(), top() });
     };
-    inline WorldVector getTopLeftCorner() {
-      return WorldVector({ getLeft(), getTop() });
+    inline WorldVector topLeft() {
+      return WorldVector({ left(), top() });
     };
-    inline WorldVector getBottomRightCorner() {
-      return WorldVector({ getRight(), getBottom() });
+    inline WorldVector bottomRight() {
+      return WorldVector({ right(), bottom() });
     };
-    inline WorldVector getBottomLeftCorner() {
-      return WorldVector({ getLeft(), getBottom() });
+    inline WorldVector bottomLeft() {
+      return WorldVector({ left(), bottom() });
     };
     inline bool isContainPoint(float a_x, float a_y) {
       return (

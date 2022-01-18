@@ -1,6 +1,8 @@
 #include "Enemy.h"
 
-const int RELOAD_TIME = 60;
+namespace {
+  const int RELOAD_TIME = 60;
+}
 
 Enemy::Enemy(float a_x, float a_y, char a_dirrection, TextureKeeper a_texture,
              IWorld *a_world) {
@@ -43,7 +45,7 @@ inline void Enemy::kill() {
   }
 }
 
-void Enemy::update(Player &p1) {
+void Enemy::update(Player &player) {
   if (_health > 0) {
     if (_speedY <= 0) {
       if (_world->isSolidTileAtCoord(_x + 0.05, _y) ||
@@ -67,21 +69,27 @@ void Enemy::update(Player &p1) {
       _currentAnimation = &_walkAnimation;
     }
     _x += 0.05 * _speedX * _dirrection;
-    float hurt = _world->hit(_x, _y, _x + _width, _y + _height, false);
-    if (hurt > 0) _isHit = true;
-    _health -= hurt;
-    if (((_dirrection > 0) && (_world->isSolidTileAtCoord(_x + _width, _y) ||
-                         !_world->isSolidTileAtCoord(_x + _width, _y - 1))) ||
-        ((_dirrection < 0) &&
-         (_world->isSolidTileAtCoord(_x, _y) || !_world->isSolidTileAtCoord(_x, _y - 1))))
+
+    float damage = _world->hit(_x, _y, _x + _width, _y + _height, false);
+    if (damage > 0) _isHit = true;
+    _health -= damage;
+
+    const float frontX = _dirrection < 0 ? _x : _x + _width;
+    bool shouldFlip = 
+      (_dirrection != 0) 
+      && (_world->isSolidTileAtCoord(frontX, _y) || !_world->isSolidTileAtCoord(frontX, _y - 1));
+    
+    if (shouldFlip)
       _dirrection = -_dirrection;
+
     if (_health <= 0) kill();
     float y1 = _y + _height * 0.5;
 
-    if (p1.isPointWithin(_x + 0.1, y1) || p1.isPointWithin(_x + _width - 0.1, y1))
-      p1.hurt(0.7f);
-    if ((floor(p1.getY()) == floor(_y)) &&
-        (floor(p1.getMissleInititalX() - _x) == 3 * _dirrection) && (_weaponReloadCooldown <= 0)) {
+    if (player.isPointWithin(_x + 0.1, y1) || player.isPointWithin(_x + _width - 0.1, y1))
+      player.takeDamage(0.7f);
+  
+    if ((floor(player.y()) == floor(_y)) &&
+        (floor(player.missleInititalX() - _x) == 3 * _dirrection) && (_weaponReloadCooldown <= 0)) {
       _weaponReloadCooldown = RELOAD_TIME;
       _weaponMagazine = 4;
     }
