@@ -5,7 +5,6 @@
 #include "../graphics/TextureKeeper.h"
 
 namespace EnemyConstants {
-  const float SPEED_X = 1;
 }
 
 using namespace EnemyConstants;
