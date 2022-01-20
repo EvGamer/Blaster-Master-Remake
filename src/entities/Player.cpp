@@ -2,20 +2,19 @@
 
 using namespace PlayerConstants;
 
-void Player::move(int dirrection) {
+void Player::move(float timePassed, int dirrection) {
   if (!_isControlable) return;
   _dirrection = dirrection;
-  _speedX += copysignf(WALK_ACCELERATION, _dirrection);
+  _speedX += copysignf(WALK_ACCELERATION, _dirrection) * timePassed;
   if (abs(_speedX) > MAX_SPEED_X) _speedX = copysignf(MAX_SPEED_X, _speedX);
   // wheels should only turn then player presses the button
   getCurrentAnimation().resume();
 }
 
-void Player::jump() {
+void Player::jump(float timePassed) {
   if (!_isControlable) return;
-  _jumpBeingPressedDuration--;
   if (!_isOnGround) {
-    _jumpBeingPressedDuration--;
+    _jumpBeingPressedDuration -= timePassed;
     return; 
   }
   _speedY = INITIAL_JUMP_SPEED_Y;
@@ -25,13 +24,11 @@ void Player::jump() {
 }
 
 void Player::takeDamage(float damage) {
-  if (_timeToLiveWithoutHealth <= 0) {
-    _timeToLiveWithoutHealth = LIFE_WITHOUT_HEALTH_DURATION;
-    _speedX *= HIT_SPEED_COEFFICIENT;
-    _speedY += HIT_ACCELERATION_Y;
-    _health -= damage;
-    damage = 0;
-  }
+  if (_timeToLiveWithoutHealth > 0) return;
+  _timeToLiveWithoutHealth = LIFE_WITHOUT_HEALTH_DURATION;
+  _speedX *= HIT_SPEED_COEFFICIENT;
+  _speedY += HIT_ACCELERATION_Y;
+  _health -= damage;
 }
 
 void Player::shoot() {
@@ -69,7 +66,7 @@ inline float decellerate(const float &speed, const float &decelleration) {
   return copysignf(std::max<float>(0, abs(speed) - decelleration), speed);
 }
 
-void Player::update() {
+void Player::update(float timePassed) {
   _x += _speedX;
   _y += _speedY;
   if (_speedY != 0) _isOnGround = false;
@@ -78,15 +75,15 @@ void Player::update() {
     return;
   }
   _world->hit(_x, _y, _x + _width, _y + _height, true);
-  if (_timeToLiveWithoutHealth > 0) _timeToLiveWithoutHealth--;
-  if (_weaponCooldown > 0) _weaponCooldown--;
+  if (_timeToLiveWithoutHealth > 0) _timeToLiveWithoutHealth -= timePassed;
+  if (_weaponCooldown > 0) _weaponCooldown -= timePassed;
 
   if ((_y > _halfJumpMaxY) && _jumpBeingPressedDuration > 0) {
     _speedY = 0;
     _jumpBeingPressedDuration = 0;
   }
-  _speedY -= GRAVITY_ACCELERATION_Y;
-  if (_isOnGround) _speedX = decellerate(_speedX, DRAG_DECELLERATION_X);
+  _speedY -= GRAVITY_ACCELERATION_Y * timePassed;
+  if (_isOnGround) _speedX = decellerate(_speedX, DRAG_DECELLERATION_X * timePassed);
 
   _hitDamage = _world->hit(
     _x - 0.5, _y, _x + _width + 0.5,
@@ -100,7 +97,7 @@ void Player::update() {
     _speedX = 0;
     return;
   }
-  _timeToLiveWithoutHealth = LIFE_WITHOUT_HEALTH_AFTER_LANDING_DURATION;
+  _timeToLiveWithoutHealth = LIFE_WITHOUT_HEALTH_AFTER_LANDING_DURATION * timePassed;
 }
 
 void Player::drawGizmo()  // debug option. Displays collision box.

@@ -80,7 +80,9 @@ void Enemy::update(Player &player) {
       _weaponCooldown = WEAPON_COOLDOWN;
       _world->addMissle(
         _x + _width * 0.5, _y + _height - 0.4,
-        MISSLE_INITIAL_SPEED_X * _dirrection, MISSLE_INITIAL_SPEED_Y, &_missleType
+        MISSLE_INITIAL_SPEED_X * _dirrection, 
+        MISSLE_INITIAL_SPEED_Y,
+        &_missleType
       );
       _weaponMagazine--;
     } else

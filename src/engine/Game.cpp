@@ -35,10 +35,10 @@ void Game::update(float timePassed) {
   auto& player = _world.player;
 
   if (dirrection) 
-    player->move(dirrection);
+    player->move(timePassed, dirrection);
 
   if (IsKeyDown(_keyJump))
-    player->jump();
+    player->jump(timePassed);
   
   if (IsKeyDown(_keyShoot))
     player->shoot();

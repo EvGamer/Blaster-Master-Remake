@@ -32,7 +32,7 @@ void World::init() {
     } else if (entity.type == "Enemy") {
       enemies.emplace_back(
         pos.x, pos.y,
-        entity.isFacingRight ? 1 : -1,
+        entity.isFacingRight ? FACING_RIGHT : FACING_LEFT,
         _enemyTexture,
         this
       );
@@ -214,7 +214,7 @@ void World::detectTileCollision(Entity& entity) {
 void World::update(float timePassed) {
   if (player != nullptr) {
     detectTileCollision(*player);
-    player->update();
+    player->update(timePassed);
   }
 
   for (auto& enemy : enemies) enemy.update(*player);
