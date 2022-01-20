@@ -1,6 +1,7 @@
 #pragma once
 #include "../engine/IWorld.h"
 #include "../engine/TileTraits.h"
+#include "../engine/Timer.h"
 #include "../utils/Rectangle.h"
 #include "../utils/Point.h"
 #include "Entity.h"
