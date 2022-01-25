@@ -12,5 +12,7 @@ Release
 *.vcxproj.filters
 *.cmake
 build
+build-emscripten
 .vscode
 .DS_Store
+.idea

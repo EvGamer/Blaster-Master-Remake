@@ -16,7 +16,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${ALL_SRC})
 add_executable(${PROJECT_NAME} ${ALL_SRC})
-set (ASSET_DIR ${PROJECT_BINARY_DIR}/../assets)
+set (ASSET_DIR ${PROJECT_SOURCE_DIR}/../assets)
 
 ## Add asset folder links
 add_custom_command(
