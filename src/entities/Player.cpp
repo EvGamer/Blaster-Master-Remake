@@ -47,11 +47,11 @@ void Player::shoot() {
 
 void Player::onTileCollision(WorldVector correction) {
   if (correction.x != 0) {
-    _x += _speedX + correction.x;
+    _x += _moveVector.x + correction.x;
     _speedX = 0;
   }
   if (correction.y != 0) {
-    _y += _speedY + correction.y;
+    _y += _moveVector.y + correction.y;
     _speedY = 0;
     if (correction.y > 0) _isOnGround = true;
   }
@@ -67,9 +67,13 @@ inline float decellerate(const float &speed, const float &decelleration) {
 }
 
 void Player::update(float timePassed) {
-  _x += _speedX;
-  _y += _speedY;
-  if (_speedY != 0) _isOnGround = false;
+  _moveVector.x = _speedX * timePassed;
+  _moveVector.y = _speedY * timePassed;
+
+  _x += _moveVector.x;
+  _y += _moveVector.y;
+
+  if (abs(_speedY) > 1) _isOnGround = false;
   if (&getCurrentAnimation() == &_deathAnimation) {
     _isControlable = false;
     return;
@@ -94,7 +98,7 @@ void Player::update(float timePassed) {
   if (_health > 0) return;
   if (_isOnGround) {
     _isControlable = false;
-    _speedX = 0;
+    _moveVector.y = 0;
     return;
   }
   _timeToLiveWithoutHealth = LIFE_WITHOUT_HEALTH_AFTER_LANDING_DURATION * timePassed;

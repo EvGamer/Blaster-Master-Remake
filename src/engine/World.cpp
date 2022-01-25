@@ -163,8 +163,7 @@ void World::detectTileCollision(Entity& entity) {
   WorldVector correction{0, 0};
   Rect box = entity.rect();
   Rect newBox = entity.rect();
-  float dx = entity.speedX();
-  float dy = entity.speedY();
+  auto [dx, dy] = entity.moveVector();
   newBox.x += dx;
   newBox.y += dy;
   using std::max;
@@ -217,7 +216,7 @@ void World::update(float timePassed) {
     player->update(timePassed);
   }
 
-  for (auto& enemy : enemies) enemy.update(*player);
+//  for (auto& enemy : enemies) enemy.update(*player);
 
   updateCamera();
   updateMissles();

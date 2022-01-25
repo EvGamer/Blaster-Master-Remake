@@ -31,10 +31,14 @@ class Entity {
     }
     virtual void onTileCollision(WorldVector correction) = 0;
     virtual void draw() = 0;
+    inline const WorldVector& moveVector() const {
+      return _moveVector;
+    };
 
   protected:
     float _speedX = 0;
     float _speedY = 0;
+    WorldVector _moveVector = {0, 0};
     float _x = 0;
     float _y = 0;
     float _width = 0;
