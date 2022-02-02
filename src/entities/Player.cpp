@@ -5,7 +5,7 @@ using namespace PlayerConstants;
 void Player::move(float timePassed, int dirrection) {
   if (!_isControlable) return;
   _dirrection = dirrection;
-  _speedX += copysignf(WALK_ACCELERATION, _dirrection) * timePassed;
+  _speedX += copysignf(WALK_SPEED_INCREASE, _dirrection) * timePassed;
   if (abs(_speedX) > MAX_SPEED_X) _speedX = copysignf(MAX_SPEED_X, _speedX);
   // wheels should only turn then player presses the button
   getCurrentAnimation().resume();
@@ -47,11 +47,11 @@ void Player::shoot() {
 
 void Player::onTileCollision(WorldVector correction) {
   if (correction.x != 0) {
-    _x += _moveVector.x + correction.x;
+    _moveVector.x += correction.x;
     _speedX = 0;
   }
   if (correction.y != 0) {
-    _y += _moveVector.y + correction.y;
+    _moveVector.y += correction.y;
     _speedY = 0;
     if (correction.y > 0) _isOnGround = true;
   }
@@ -62,18 +62,17 @@ float Player::speedX() {
   return _speedX;
 }
 
-inline float decellerate(const float &speed, const float &decelleration) {
-  return copysignf(std::max<float>(0, abs(speed) - decelleration), speed);
+inline float slowDown(const float &speed, const float &speedDecrease) {
+  return copysignf(std::max<float>(0, abs(speed) - speedDecrease), speed);
 }
 
 void Player::update(float timePassed) {
-  _moveVector.x = _speedX * timePassed;
-  _moveVector.y = _speedY * timePassed;
-
   _x += _moveVector.x;
   _y += _moveVector.y;
 
-  if (abs(_speedY) > 1) _isOnGround = false;
+  _moveVector.x = _speedX * timePassed;
+  _moveVector.y = _speedY * timePassed;
+
   if (&getCurrentAnimation() == &_deathAnimation) {
     _isControlable = false;
     return;
@@ -86,8 +85,8 @@ void Player::update(float timePassed) {
     _speedY = 0;
     _jumpBeingPressedDuration = 0;
   }
-  _speedY -= GRAVITY_ACCELERATION_Y * timePassed;
-  if (_isOnGround) _speedX = decellerate(_speedX, DRAG_DECELLERATION_X * timePassed);
+  _speedY -= GRAVITY_SPEED_INCREASE_Y * timePassed;
+  if (_isOnGround) _speedX = slowDown(_speedX, DRAG_SPEED_DECREASE_X * timePassed);
 
   _hitDamage = _world->hit(
     _x - 0.5, _y, _x + _width + 0.5,

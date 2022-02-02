@@ -7,7 +7,7 @@
 #include "Entity.h"
 
 namespace PlayerConstants {
-  constexpr float WIDTH = 26.0 / COORD_UNIT;
+  constexpr float WIDTH = 26.0 / 16;
   //constexpr float HEIGHT = 18.0 / 16;
   constexpr float HEIGHT = 1;
   const float MAX_HEALTH = 8;
@@ -16,15 +16,15 @@ namespace PlayerConstants {
   const float SHORT_JUMP_HEIGHT = 3;
   const float JUMP_SPEED_RELATIVE_TO_HEIGHT = 4.8;
   const float INITIAL_JUMP_SPEED_Y = JUMP_SPEED_RELATIVE_TO_HEIGHT * MAX_JUMP_HEIGHT;
-  const float GRAVITY_ACCELERATION_Y = (
+  const float GRAVITY_SPEED_INCREASE_Y = (
     0.5
     * JUMP_SPEED_RELATIVE_TO_HEIGHT
     * INITIAL_JUMP_SPEED_Y
   );
 
   const float MAX_SPEED_X = 6.6;
-  const float WALK_ACCELERATION = 6 * MAX_SPEED_X;
-  const float DRAG_DECELLERATION_X = 0.5 * WALK_ACCELERATION;
+  const float WALK_SPEED_INCREASE = 6 * MAX_SPEED_X;
+  const float DRAG_SPEED_DECREASE_X = 0.5 * WALK_SPEED_INCREASE;
   const float REQUIRED_FULL_JUMP_PRESSING_DURATION = 0.4;
   const float LIFE_WITHOUT_HEALTH_DURATION = 45;
   const float LIFE_WITHOUT_HEALTH_AFTER_LANDING_DURATION = 2;
@@ -105,8 +105,8 @@ class Player : public Entity {
   inline bool isDead() { return _deathAnimation.isStopped(); }
   void drawGizmo();
   inline bool isPointWithin(float ox, float oy) {
-    return 
-      (ox > _x) && (ox < _x + _width) 
+    return
+      (ox > _x) && (ox < _x + _width)
       && (oy > _y) && (oy < _y + _width);
   }
   void draw();

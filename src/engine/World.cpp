@@ -205,7 +205,7 @@ void World::detectTileCollision(Entity& entity) {
   
   for (TileCoord& tile : tilesToCheck) {
     if (!_map.getTileTraits(tile.x, tile.y).isSolid) continue;
-    WorldVector correction = _getSingleTileCollision(newBox, tile.x, tile.y, dx, dy);
+    correction = _getSingleTileCollision(newBox, tile.x, tile.y, dx, dy);
     entity.onTileCollision(correction);
   }
 }
