@@ -5,9 +5,9 @@
 class Sprite {
   public:
     Sprite() = default;
-    Sprite(TextureResource texture, float scale = 1);
+    Sprite(const TextureResource& texture, float scale = 1);
     Sprite(const char* filename, float scale = 1);
-    Sprite(TextureResource texture, Rectangle source, float scale = 1);
+    Sprite(const TextureResource& texture, Rectangle source, float scale = 1);
     Sprite(const char* filename, Rectangle source, float scale = 1);
   protected:
     void _getCropLimits(Rectangle source);

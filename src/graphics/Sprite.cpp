@@ -4,7 +4,7 @@
 #include "utils.h"
 #include "../engine/constants.h"
 
-Sprite::Sprite(TextureResource texture, float scale):
+Sprite::Sprite(const TextureResource& texture, float scale):
   _texture(texture)
 {
   const auto image = _texture.texture();
@@ -26,7 +26,7 @@ Sprite::Sprite(const char* filename, Rectangle source, float scale):
   _getCropLimits(source);
 }
 
-Sprite::Sprite(TextureResource texture, Rectangle source, float scale):
+Sprite::Sprite(const TextureResource& texture, Rectangle source, float scale):
   _texture(texture),
   _sizeInWorld(_toSizeInWorld(source.width, source.height, scale))
 {
@@ -34,12 +34,13 @@ Sprite::Sprite(TextureResource texture, Rectangle source, float scale):
 }
 
 void Sprite::_getCropLimits(Rectangle source) {
-  auto texture = _texture.texture();
-  assert(texture.height > 0 && texture.width > 0); // Can't be 0. Texture is not loaded or loaded incorrectly
-  _top = source.y / texture.height;
-  _bottom = (source.y + source.height) / texture.height;
-  _left = source.x / texture.width;
-  _right = (source.x + source.width) / texture.width;
+  auto& textureHeight = _texture.height();
+  auto& textureWidth = _texture.width();
+  assert(textureHeight > 0 && textureWidth > 0); // Can't be 0. Texture is not loaded or loaded incorrectly
+  _top = source.y / textureHeight;
+  _bottom = (source.y + source.height) / textureHeight;
+  _left = source.x / textureWidth;
+  _right = (source.x + source.width) / textureWidth;
 }
 
 void WorldSprite::draw(WorldVector inWorldPosition) {
