@@ -1,7 +1,7 @@
 
 #include "Animation.h"
 
-inline void Animation::initialize(TextureKeeper iTexture, float iSizeX, float iSizeY,
+inline void Animation::initialize(TextureResource iTexture, float iSizeX, float iSizeY,
                                   uint8_t iX0, uint8_t iY0, uint8_t iRows,
                                   uint8_t iColums, unsigned iDelay,
                                   PlayType iPlay) {
@@ -28,7 +28,7 @@ inline void Animation::initialize(TextureKeeper iTexture, float iSizeX, float iS
 Animation::Animation() {};
 
 Animation::Animation(
-  TextureKeeper iTexture, float iSizeX, float iSizeY, uint8_t iX0,
+  TextureResource iTexture, float iSizeX, float iSizeY, uint8_t iX0,
   uint8_t iY0, uint8_t iRows, uint8_t iColums,
   uint16_t iDelay, PlayType iPlay
 ) {
@@ -36,7 +36,7 @@ Animation::Animation(
 }
 
 Animation::Animation(
-  TextureKeeper iTexture, float iSize,
+  TextureResource iTexture, float iSize,
   uint8_t iX0, uint8_t iY0, uint8_t iRows, uint8_t iColums, 
   unsigned iDelay, PlayType iPlay
 ) {

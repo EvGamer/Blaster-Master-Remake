@@ -5,7 +5,7 @@
 
 #include "../entities/Player.h"
 #include "../entities/Enemy.h"
-#include "../graphics/TextureKeeper.h"
+#include "../graphics/TextureResource.h"
 #include "../utils/Point.h"
 #include "../typeAliases.h"
 #include "IWorld.h"
@@ -33,8 +33,8 @@ class World: public IWorld{
 
   void init();
   void loadTextures(WorldTextureFileNames fileNams);
-  void addMissle(float x, float y, float speedX, float speedY, MissleTraits *wpn) override final;
-  float hit(float x1, float y1, float x2, float y2, bool foe) override final;
+  void addProjectile(float x, float y, float speedX, float speedY, ProjectileFactory *wpn) override final;
+  float checkProjectileCollision(float x1, float y1, float x2, float y2, bool foe) override final;
   bool isSolidTileAtCoord(float x, float y) override;
   float getGravity() override {
     return _gravity;
@@ -63,15 +63,15 @@ class World: public IWorld{
   float _halfScreenHeight = TILE_ROWS / 2;
   Room _currentRoom;  
   //ToDo make singletones in classes what use them
-  TextureKeeper _playerTexture;
-  TextureKeeper _playerMissleTexture;
-  TextureKeeper _enemyTexture;
+  TextureResource _playerTexture;
+  TextureResource _playerProjectileTexture;
+  TextureResource _enemyTexture;
   Map _map;
 
-  TextureKeeper _texture;
+  TextureResource _texture;
   // Map, hardcoded in haste
 
-  std::list<Missle> _missles;
+  std::list<Projectile> _projectiles;
 
   WorldVector _getSingleTileCollision(Rect &entity, UInt tileX, UInt tileY, float dx, float dy);
 };

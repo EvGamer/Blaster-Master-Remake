@@ -34,7 +34,7 @@ void Player::takeDamage(float damage) {
 void Player::shoot() {
   if (!_isControlable) return;
   if (_weaponCooldown <= 0) {
-    _world->addMissle(
+    _world->addProjectile(
       missleInititalX(),
       _y + missleInitialY(),
       MISSLE_SPEED * _dirrection,
@@ -77,7 +77,7 @@ void Player::update(float timePassed) {
     _isControlable = false;
     return;
   }
-  _world->hit(_x, _y, _x + _width, _y + _height, true);
+  _world->checkProjectileCollision(_x, _y, _x + _width, _y + _height, true);
   if (_timeToLiveWithoutHealth > 0) _timeToLiveWithoutHealth -= timePassed;
   if (_weaponCooldown > 0) _weaponCooldown -= timePassed;
 
@@ -88,7 +88,7 @@ void Player::update(float timePassed) {
   _speedY -= GRAVITY_SPEED_INCREASE_Y * timePassed;
   if (_isOnGround) _speedX = slowDown(_speedX, DRAG_SPEED_DECREASE_X * timePassed);
 
-  _hitDamage = _world->hit(
+  _hitDamage = _world->checkProjectileCollision(
     _x - 0.5, _y, _x + _width + 0.5,
     _y + _height + 0.5, true
   );
@@ -138,8 +138,8 @@ void Player::draw() {
     currentAnimation.draw(-1, x1 - 0.5, _y, x1 + 3.5, _y + 4);
 }
 
-Player::Player(float a_x, float a_y, TextureKeeper a_texture,
-               TextureKeeper a_missleTexture, IWorld &a_world) {
+Player::Player(float a_x, float a_y, TextureResource a_texture,
+               TextureResource a_missleTexture, IWorld &a_world) {
   _x = a_x;
   _y = a_y;
   _dirrection = 1;
@@ -169,9 +169,9 @@ Player::Player(float a_x, float a_y, TextureKeeper a_texture,
     /*flyAnim*/ Animation(a_missleTexture, 0.5f, 0.25f, 0, 0, 1, 1, 0, LOOP),
     /*spriteX*/ -1.5,
     /*spriteY*/ -0.4,
-    /*foe*/ false,
+    /*isFromEnemy*/ false,
     /*damage*/ 1.5,
     /*texture*/ a_missleTexture,
-    /*falling*/ false,
+    /*canFall*/ false,
   };
 }

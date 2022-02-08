@@ -49,7 +49,7 @@ namespace PlayerConstants {
 
 class Player : public Entity {
  protected:
-  TextureKeeper _missleTexture;
+  TextureResource _missleTexture;
   float _health = PlayerConstants::MAX_HEALTH;
   float _accelerationY = 0;
   bool _isControlable = true;
@@ -73,12 +73,12 @@ class Player : public Entity {
 
   // ToDo create weapon class
   float _weaponCooldown = 0;
-  MissleTraits _missleType;
+  ProjectileFactory _missleType;
 
  public:
   Player(
     float x, float y,
-    TextureKeeper texture, TextureKeeper missleTexture,
+    TextureResource texture, TextureResource missleTexture,
     IWorld &world
   );
   

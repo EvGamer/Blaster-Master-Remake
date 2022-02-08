@@ -2,7 +2,7 @@
 #include "Entity.h"
 #include "Player.h"
 #include "../utils/Point.h"
-#include "../graphics/TextureKeeper.h"
+#include "../graphics/TextureResource.h"
 
 namespace EnemyConstants {
 }
@@ -24,10 +24,10 @@ class Enemy : public Entity{
   int _weaponCooldown;
   char _weaponMagazine = 0;
   int _weaponReloadCooldown;
-  MissleTraits _missleType;
+  ProjectileFactory _missleType;
 
  public:
-  Enemy(float a_x, float a_y, char a_dirrection, TextureKeeper a_texture, IWorld *a_world);
+  Enemy(float a_x, float a_y, char a_dirrection, TextureResource a_texture, IWorld *a_world);
   inline bool isDead() { return _deathAnimation.isStopped(); }
   void kill();
   void update(Player &p1);

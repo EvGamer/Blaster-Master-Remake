@@ -10,7 +10,7 @@ FillBar::FillBar(
   float scale, 
   Byte wholeSteps
 ) {
-  _texture = TextureKeeper(filename);
+  _texture = TextureResource(filename);
   _scale = scale;
   _background = ScreenSprite(_texture, backgroundTexFrame, _scale);
   _bar = ScreenSprite(_texture, barTexFrame, _scale);

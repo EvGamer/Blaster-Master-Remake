@@ -10,9 +10,9 @@ World::World() {
 }
 
 void World::loadTextures(WorldTextureFileNames fileNames) {
-  _playerTexture = TextureKeeper(fileNames.player);
-  _playerMissleTexture = TextureKeeper(fileNames.playerMissle);
-  _enemyTexture = TextureKeeper(fileNames.enemy);
+  _playerTexture = TextureResource(fileNames.player);
+  _playerProjectileTexture = TextureResource(fileNames.playerMissle);
+  _enemyTexture = TextureResource(fileNames.enemy);
   _map = Map(fileNames.area);
 }
 
@@ -26,7 +26,7 @@ void World::init() {
       player = std::make_unique<Player>(
         pos.x, pos.y,
         _playerTexture,
-        _playerMissleTexture,
+        _playerProjectileTexture,
         *this
       );
     } else if (entity.type == "Enemy") {
@@ -40,11 +40,11 @@ void World::init() {
   }
 }
 
-void World::addMissle(
+void World::addProjectile(
   float x, float y, float speedX, float speedY,
-  MissleTraits *wpn
+  ProjectileFactory *wpn
 ) {
-  _missles.push_back({
+  _projectiles.push_back({
     wpn->burstAnim,
     wpn->flyAnim,
     wpn->spriteX,
@@ -55,23 +55,23 @@ void World::addMissle(
     speedY,
     false,
     wpn->foe,
-    wpn->falling,
+    wpn->canFall,
     wpn->damage,
   });
 };
 
-float World::hit(float x1, float y1, float x2, float y2, bool foe) {
+float World::checkProjectileCollision(float x1, float y1, float x2, float y2, bool foe) {
   float damage = 0;
 
-  for (auto &missle : _missles) {
-    bool isInsideWidth = (missle.x >= x1) && (missle.x <= x2);
-    bool isInsideHeight = (missle.y >= y1) && (missle.y <= y2);
+  for (auto &projectile : _projectiles) {
+    bool isInsideWidth = (projectile.x >= x1) && (projectile.x <= x2);
+    bool isInsideHeight = (projectile.y >= y1) && (projectile.y <= y2);
     bool isInside = isInsideWidth && isInsideHeight;
 
-    if (isInside && (foe == missle.foe) && (!missle.hit)) {
-      if (missle.damage > damage) damage = missle.damage;
-      missle.hit = true;
-      missle.burstAnim.stop();
+    if (isInside && (foe == projectile.isFromEnemy) && (!projectile.hit)) {
+      if (projectile.damage > damage) damage = projectile.damage;
+      projectile.hit = true;
+      projectile.burstAnim.stop();
     }
   }
   return damage;
@@ -86,20 +86,20 @@ bool World::getTileFriction(unsigned char i, unsigned char j) {
   return !_map.coordOutOfRange(i, j) && _map.getTileTraits(i, j).isSolid ? _friction : 0;
 }
 
-bool isMissleExploded(Missle &value) {
+bool isMissleExploded(Projectile &value) {
   return value.burstAnim.isStopped();
 }
 
 void World::updateMissles() {
-  for (auto& missle : _missles) {
+  for (auto& missle : _projectiles) {
     if (!missle.hit) {
       missle.x += missle.speedX;
       missle.y += missle.speedY;
-      if (missle.falling) missle.speedY -= 0.1;
+      if (missle.canFall) missle.speedY -= 0.1;
       missle.hit = isSolidTileAtCoord(missle.x, missle.y);
     }
   }
-  _missles.remove_if(isMissleExploded);
+  _projectiles.remove_if(isMissleExploded);
 }
 
 bool World::isPlayerInRoom(Room& room) {
@@ -242,7 +242,7 @@ void World::drawMissles() {
   float x0;
   float x1, x2;
   float y0;
-  for (auto& missle : _missles) {
+  for (auto& missle : _projectiles) {
     if (missle.speedX < 0) {
       dir = -1;
       x1 = missle.x - missle.spriteX;

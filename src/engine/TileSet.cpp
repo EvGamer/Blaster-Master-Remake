@@ -24,7 +24,7 @@ TileSet::TileSet(String filename) {
   tileTraits = std::vector<TileTraits>(count);
 
   Tag* imageTag = tileSetTag->FirstChildElement("image");
-  texture = TextureKeeper(imageTag->Attribute("source"));
+  texture = TextureResource(imageTag->Attribute("source"));
 
   Tag* tileTag = tileSetTag->FirstChildElement("tile");
   

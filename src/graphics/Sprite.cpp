@@ -4,7 +4,7 @@
 #include "utils.h"
 #include "../engine/constants.h"
 
-Sprite::Sprite(TextureKeeper texture, float scale):
+Sprite::Sprite(TextureResource texture, float scale):
   _texture(texture)
 {
   const auto image = _texture.texture();
@@ -26,7 +26,7 @@ Sprite::Sprite(const char* filename, Rectangle source, float scale):
   _getCropLimits(source);
 }
 
-Sprite::Sprite(TextureKeeper texture, Rectangle source, float scale): 
+Sprite::Sprite(TextureResource texture, Rectangle source, float scale):
   _texture(texture),
   _sizeInWorld(_toSizeInWorld(source.width, source.height, scale))
 {

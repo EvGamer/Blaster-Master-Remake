@@ -1,16 +1,16 @@
-#include "./TextureKeeper.h"
+#include "./TextureResource.h"
 
-TextureKeeper::TextureKeeper(): _sharedCounter{new UInt(1)} {}
+TextureResource::TextureResource(): _sharedCounter{new UInt(1)} {}
 
-TextureKeeper::TextureKeeper(const char* filename): 
+TextureResource::TextureResource(const char* filename):
   _sharedCounter{new UInt(1)},
   _texture{LoadTexture(filename)},
   _filename{filename}
 {}
 
-TextureKeeper::TextureKeeper(String filename): TextureKeeper(filename.c_str()) {}
+TextureResource::TextureResource(String filename): TextureResource(filename.c_str()) {}
 
-void TextureKeeper::_copy(const TextureKeeper& toCopy) {
+void TextureResource::_copy(const TextureResource& toCopy) {
   _texture = toCopy._texture;
   _filename = toCopy._filename;
   _sharedCounter = toCopy._sharedCounter;
@@ -18,15 +18,15 @@ void TextureKeeper::_copy(const TextureKeeper& toCopy) {
   // TraceLog(LOG_INFO, "TEXKEEP: [ID: %i] Copy texture keeper. Counter value: %i", _texture.id, (*_sharedCounter));
 }
 
-TextureKeeper::TextureKeeper(const TextureKeeper& toCopy) {
+TextureResource::TextureResource(const TextureResource& toCopy) {
   _copy(toCopy);
 }
 
-void TextureKeeper::operator=(const TextureKeeper& toCopy) {
+void TextureResource::operator=(const TextureResource& toCopy) {
   _copy(toCopy);
 }
 
-TextureKeeper::~TextureKeeper() {
+TextureResource::~TextureResource() {
   (*_sharedCounter)--;
   auto sharedCounter = (*_sharedCounter);
   auto textureId = _texture.id;

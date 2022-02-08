@@ -18,7 +18,7 @@ namespace {
 }
 
 Enemy::Enemy(
-  float a_x, float a_y, char a_dirrection, TextureKeeper a_texture, IWorld *a_world
+  float a_x, float a_y, char a_dirrection, TextureResource a_texture, IWorld *a_world
 ) {
   _weaponReloadCooldown = 0;
   _weaponCooldown = 0;
@@ -42,10 +42,10 @@ Enemy::Enemy(
     /*flyAnim*/ Animation(_texture, 0.25, 0.125, 0, 6, 1, 1, 2, ONCE),
     /*spriteX*/ -0.75,
     /*spriteY*/ -0.5,
-    /*foe*/ true,
+    /*isFromEnemy*/ true,
     /*damage*/ 1,
     /*texture*/ _texture,
-    /*falling*/ true,
+    /*canFall*/ true,
   };
 }
 
@@ -78,9 +78,9 @@ void Enemy::update(Player &player) {
     _currentAnimation = &_shootAnimation;
     if (_weaponCooldown <= 0) {
       _weaponCooldown = WEAPON_COOLDOWN;
-      _world->addMissle(
+      _world->addProjectile(
         _x + _width * 0.5, _y + _height - 0.4,
-        MISSLE_INITIAL_SPEED_X * _dirrection, 
+        MISSLE_INITIAL_SPEED_X * _dirrection,
         MISSLE_INITIAL_SPEED_Y,
         &_missleType
       );
@@ -94,7 +94,7 @@ void Enemy::update(Player &player) {
   }
   _x += _speedX * _dirrection;
 
-  float damage = _world->hit(_x, _y, _x + _width, _y + _height, false);
+  float damage = _world->checkProjectileCollision(_x, _y, _x + _width, _y + _height, false);
   if (damage > 0) 
     _isHit = true;
   _health -= damage;

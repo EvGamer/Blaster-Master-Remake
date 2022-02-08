@@ -6,10 +6,10 @@
 class EnemyFactory
 {
   public:
-  EnemyFactory(TextureKeeper texture, IWorld* world);
+  EnemyFactory(TextureResource texture, IWorld* world);
   Enemy create(float x, float y, char dirrection);
 
   private:
-    TextureKeeper _texture;
+    TextureResource _texture;
     IWorld* _world;
 };

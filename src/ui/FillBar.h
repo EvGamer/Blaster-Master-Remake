@@ -1,5 +1,5 @@
 #pragma once
-#include "../graphics/TextureKeeper.h"
+#include "../graphics/TextureResource.h"
 #include "../graphics/Sprite.h"
 
 class FillBar {
@@ -16,7 +16,7 @@ class FillBar {
     void update(float fillRatio);
     void draw(ScreenVector position);
   private:
-    TextureKeeper _texture;
+    TextureResource _texture;
     ScreenSprite _background;
     ScreenSprite _bar;
     Rectangle _barTexFrame;

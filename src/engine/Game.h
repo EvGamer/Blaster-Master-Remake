@@ -1,7 +1,7 @@
 #pragma once
 #include "../entities/Enemy.h"
 #include "../entities/EnemyFactory.h"
-#include "../graphics/TextureKeeper.h"
+#include "../graphics/TextureResource.h"
 #include "../graphics/Sprite.h"
 #include "../ui/FillBar.h"
 #include "World.h"
@@ -20,7 +20,7 @@ class Game {
 
   private:
     MainWindowPtr _window;
-    TextureKeeper _texVictory;
+    TextureResource _texVictory;
     ScreenSprite _endGameMessage;
     ScreenSprite _victoryMessage;
     BrickFillBar _healthBar;

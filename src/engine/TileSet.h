@@ -4,13 +4,13 @@
 #include <string>
 #include "TileTraits.h"
 #include "../graphics/utils.h"
-#include "../graphics/TextureKeeper.h"
+#include "../graphics/TextureResource.h"
 #include "../typeAliases.h"
 
 class TileSet {
   public:
     String name = "";
-    TextureKeeper texture;
+    TextureResource texture;
     UInt tileWidth = 16;
     UInt tileHeight = 16;
     UInt count = 256;

@@ -3,7 +3,7 @@
 #include "../typeAliases.h"
 #include "../utils/Rectangle.h"
 #include "../utils/Point.h"
-#include "../graphics/TextureKeeper.h"
+#include "../graphics/TextureResource.h"
 
 class Entity {
   public:
@@ -44,6 +44,6 @@ class Entity {
     float _width = 0;
     float _height = 0;
     char _dirrection = 1;
-    TextureKeeper _texture;
+    TextureResource _texture;
 };
 

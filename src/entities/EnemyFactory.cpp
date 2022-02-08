@@ -1,6 +1,6 @@
 #include "EnemyFactory.h"
 
-EnemyFactory::EnemyFactory(TextureKeeper texture, IWorld* world) {
+EnemyFactory::EnemyFactory(TextureResource texture, IWorld* world) {
   _texture = texture;
   _world = world;
 };

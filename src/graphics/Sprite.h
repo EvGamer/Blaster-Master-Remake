@@ -1,17 +1,17 @@
 #pragma once
-#include "TextureKeeper.h"
+#include "TextureResource.h"
 #include "../utils/Point.h"
 
 class Sprite {
   public:
     Sprite() = default;
-    Sprite(TextureKeeper texture, float scale = 1);
+    Sprite(TextureResource texture, float scale = 1);
     Sprite(const char* filename, float scale = 1);
-    Sprite(TextureKeeper texture, Rectangle source, float scale = 1);
+    Sprite(TextureResource texture, Rectangle source, float scale = 1);
     Sprite(const char* filename, Rectangle source, float scale = 1);
   protected:
     void _getCropLimits(Rectangle source);
-    TextureKeeper _texture;
+    TextureResource _texture;
     float _top = 0;
     float _bottom = 1;
     float _left = 0;
